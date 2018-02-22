@@ -316,7 +316,7 @@ uint8_t u8g_GetPinLevel(uint8_t internal_pin_number) {
 
 #elif defined(U8G_HAL_LINKS)
 
-  #include HAL_LCD_pin_routines
+  #include "HAL_LCD_pin_routines.h"
 
 #else
 

@@ -289,9 +289,9 @@ void u8g_10MicroDelay(void)
 #endif
 
 
-#if defined(USE_HAL_DELAY)
+#ifdef USE_HAL_DELAY
 
-  #include HAL_LCD_delay
+  #include "HAL_LCD_delay.h"
 
 #endif
 

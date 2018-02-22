@@ -59,7 +59,7 @@
 //  #include "HAL_AVR/HAL_ARDUINO_LCD_defines.h"
 
 #elif defined(TARGET_LPC1768)
-  #include "HAL_LPC1768/HAL_LPC1768_LCD_defines.h"
+  #include "HAL_LPC1768_LCD_defines.h"
 
 #else
   #error "Unsupported Platform!"
