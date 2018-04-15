@@ -41,11 +41,11 @@
 #ifdef U8G_HAL_LINKS
 
   #include "U8glibPrint.h"
-  #include "lib/u8g.h"
+  #include "clib/u8g.h"
   class U8GLIB : public U8glibPrint
 #else
   #include <Print.h>
-  #include "lib/u8g.h"
+  #include "clib/u8g.h"
 
   class U8GLIB : public Print
 #endif
