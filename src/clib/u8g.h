@@ -693,6 +693,8 @@ uint8_t u8g_com_msp430_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void 
 uint8_t u8g_com_raspberrypi_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);                /* u8g_com_rasperrypi_hw_spi.c */
 uint8_t u8g_com_raspberrypi_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);    /* u8g_com_raspberrypi_ssd_i2c.c */
 
+uint8_t u8g_com_stm32duino_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);    /* u8g_com_stm32duino_ssd_i2c.cpp */
+
 
 /*
   Translation of system specific com drives to generic com names
@@ -844,6 +846,12 @@ defined(__18CXX) || defined(__PIC32MX)
 #ifndef U8G_COM_SSD_I2C
 #if defined(U8G_RASPBERRY_PI)
 #define U8G_COM_SSD_I2C u8g_com_raspberrypi_ssd_i2c_fn
+#endif
+#endif
+
+#ifndef U8G_COM_SSD_I2C
+#if defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx)
+#define U8G_COM_SSD_I2C u8g_com_stm32duino_ssd_i2c_fn
 #endif
 #endif
 

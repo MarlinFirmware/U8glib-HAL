@@ -44,7 +44,7 @@
 
 /*==== Part 1: Derive suitable delay procedure ====*/
 
-#if defined(ARDUINO)
+#if defined(ARDUINO) && ! (defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx))
 
 #  if ARDUINO < 100
 #    include <WProgram.h>
