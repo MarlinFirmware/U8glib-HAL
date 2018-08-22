@@ -1,6 +1,6 @@
 /*
 
-  u8g_delay.c
+  u8g_delay.cpp
 
   Universal 8bit Graphics Library
 

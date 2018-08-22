@@ -1,5 +1,5 @@
 /*
-  u8g_com_stm32duino_ssd_i2c_fn.cpp
+  u8g_com_stm32duino_ssd_i2c.cpp
 
   communication interface for SSDxxxx chip variant I2C protocol
 */
