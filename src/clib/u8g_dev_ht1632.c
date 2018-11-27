@@ -93,7 +93,7 @@ Usage:
 #define HT1632_DATA_LEN         8               // Data are 4*2 bits
 #define HT1632_ADDR_LEN         7               // Address are 7 bits
 
-#if defined(ARDUINO) && ! (defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx))
+#if defined(ARDUINO) && !(defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx))
 
 #if ARDUINO < 100
 #include <WProgram.h>
@@ -111,7 +111,7 @@ void ht1632_write_data_MSB(u8g_t *u8g, uint8_t cnt, uint8_t data, uint8_t extra)
   uint8_t data_pin = u8g->pin_list[U8G_PI_MOSI];
   uint8_t wr_pin = u8g->pin_list[U8G_PI_SCK];
 
-  for(i = cnt - 1; i >= 0; i--)
+  for (i = cnt - 1; i >= 0; i--)
   {
     if ((data >> i) & 1)
     {
@@ -160,7 +160,6 @@ void ht1632_write_data(u8g_t *u8g, uint8_t cnt, uint8_t data)
     u8g_MicroDelay();
   }
 }
-
 
 void ht1632_init(u8g_t *u8g)
 {
@@ -234,6 +233,7 @@ void ht1632_set_contrast(u8g_t *u8g, uint8_t value)
 }
 
 #else
+
 void ht1632_init(u8g_t *u8g)
 {
 }
@@ -246,12 +246,12 @@ void ht1632_set_contrast(u8g_t *u8g, uint8_t value)
 {
 }
 
-#endif /* ARDUINO */
+#endif /* ARDUINO && !(STM32F1 || STM32F1xx || STM32F4 || STM32F4xx) */
 
 
 uint8_t u8g_dev_ht1632_24x16_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg)
 {
-  switch(msg)
+  switch (msg)
   {
     case U8G_DEV_MSG_INIT:
       ht1632_init(u8g);
@@ -278,4 +278,3 @@ uint8_t u8g_dev_ht1632_24x16_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *a
 uint8_t u8g_dev_ht1632_24x16_buf[WIDTH*2] U8G_NOCOMMON ;
 u8g_pb_t u8g_dev_ht1632_24x16_pb = { {16, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_ht1632_24x16_buf};
 u8g_dev_t u8g_dev_ht1632_24x16 = { u8g_dev_ht1632_24x16_fn, &u8g_dev_ht1632_24x16_pb, u8g_com_null_fn };
-
