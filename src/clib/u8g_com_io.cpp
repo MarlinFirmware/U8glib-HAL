@@ -317,11 +317,11 @@ uint8_t u8g_GetPinLevel(uint8_t internal_pin_number) {
 #include <Arduino.h>
 #include "libmaple/gpio.h"
 void u8g_SetPinOutput(uint8_t IO) {
-    gpio_set_mode(PIN_MAP[IO].gpio_device, PIN_MAP[IO].gpio_bit, GPIO_OUTPUT_PP);
+  gpio_set_mode(PIN_MAP[IO].gpio_device, PIN_MAP[IO].gpio_bit, GPIO_OUTPUT_PP);
 }
 
 void u8g_SetPinLevel(uint8_t IO, uint8_t V) {
-    PIN_MAP[IO].gpio_device->regs->BSRR = (1U << PIN_MAP[IO].gpio_bit) << (16 * !(bool)V);
+  PIN_MAP[IO].gpio_device->regs->BSRR = (1U << PIN_MAP[IO].gpio_bit) << (16 * !(bool)V);
 }
 
 #elif defined(U8G_HAL_LINKS)
