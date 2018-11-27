@@ -9,7 +9,6 @@
 #include "u8g.h"
 #include "Wire.h"
 
-
 /*
   BUFFER_LENGTH is defined in libraries\Wire\utility\WireBase.h
   Default value is 32
@@ -20,19 +19,17 @@
 #define I2C_MAX_LENGTH (BUFFER_LENGTH - 1)
 #endif // BUFFER_LENGTH
 
-
 static uint8_t control;
 static uint8_t msgInitCount = 2; // Ignore all messages until 2nd U8G_COM_MSG_INIT
-
 
 uint8_t u8g_com_stm32duino_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
 {
   if (msgInitCount) {
-    if (msg == U8G_COM_MSG_INIT) msgInitCount --;
+    if (msg == U8G_COM_MSG_INIT) msgInitCount--;
     if (msgInitCount) return -1;
   }
 
-  switch(msg)
+  switch (msg)
   {
     case U8G_COM_MSG_INIT:
       Wire.setClock(400000);
@@ -40,11 +37,7 @@ uint8_t u8g_com_stm32duino_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, 
       break;
 
     case U8G_COM_MSG_ADDRESS:           /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
-      if (arg_val == 0) {
-        control = 0x00;
-      } else {
-        control = 0x40;
-      } 
+      control = arg_val ? 0x40 : 0x00;
       break;
 
     case U8G_COM_MSG_WRITE_BYTE:
@@ -55,7 +48,7 @@ uint8_t u8g_com_stm32duino_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, 
       break;
 
     case U8G_COM_MSG_WRITE_SEQ:
-      {
+    {
       #ifdef I2C_MAX_LENGTH
         while (arg_val > 0) {
           Wire.beginTransmission(0x3c);
@@ -78,10 +71,10 @@ uint8_t u8g_com_stm32duino_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, 
         Wire.endTransmission();
       #endif // I2C_MAX_LENGTH
       break;
-      }
+    }
 
   }
   return 1;
 }
 
-#endif // defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx)
+#endif // STM32F1 || STM32F1xx || STM32F4 || STM32F4xx
