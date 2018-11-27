@@ -314,6 +314,7 @@ uint8_t u8g_GetPinLevel(uint8_t internal_pin_number) {
 }
 
 #elif defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx)
+
 #include <Arduino.h>
 #include "libmaple/gpio.h"
 void u8g_SetPinOutput(uint8_t IO) {
