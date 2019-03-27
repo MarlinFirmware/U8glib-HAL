@@ -762,7 +762,7 @@ defined(__18CXX) || defined(__PIC32MX)
 #endif
 
 #ifndef U8G_COM_HW_SPI
-#if defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx)
+#if defined(ARDUINO_ARCH_STM32)
 #define U8G_COM_HW_SPI u8g_com_stm32duino_hw_spi_fn
 #define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
 #endif
@@ -860,7 +860,7 @@ defined(__18CXX) || defined(__PIC32MX)
 #endif
 
 #ifndef U8G_COM_SSD_I2C
-#if defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx)
+#if defined(ARDUINO_ARCH_STM32)
 #define U8G_COM_SSD_I2C u8g_com_stm32duino_ssd_i2c_fn
 #endif
 #endif
