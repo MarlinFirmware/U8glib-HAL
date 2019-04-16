@@ -873,7 +873,6 @@ defined(__18CXX) || defined(__PIC32MX)
 #endif
 #endif
 
-
 #ifndef U8G_COM_SSD_I2C
 #define U8G_COM_SSD_I2C u8g_com_null_fn
 #endif
