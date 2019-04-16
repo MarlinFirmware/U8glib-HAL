@@ -4,7 +4,7 @@
   communication interface for SSDxxxx chip variant I2C protocol
 */
 
-#if defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx)
+#if defined(ARDUINO_ARCH_STM32)
 
 #include "u8g.h"
 #include "Wire.h"
@@ -77,4 +77,4 @@ uint8_t u8g_com_stm32duino_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, 
   return 1;
 }
 
-#endif // STM32F1 || STM32F1xx || STM32F4 || STM32F4xx
+#endif // ARDUINO_ARCH_STM32

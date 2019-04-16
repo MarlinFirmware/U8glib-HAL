@@ -4,7 +4,7 @@
   communication interface for SPI protocol
 */
 
-#if defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx)
+#if defined(ARDUINO_ARCH_STM32)
 
 #include "u8g.h"
 #include "SPI.h"
@@ -55,17 +55,26 @@ uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, v
 
     case U8G_COM_MSG_WRITE_BYTE:
       SPI.beginTransaction(spiConfig);
-      SPI.send(arg_val);
+      #if defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F4)
+        SPI.send(arg_val);
+      #else
+        SPI.transfer(arg_val);
+      #endif
       SPI.endTransaction();
       break;
 
     case U8G_COM_MSG_WRITE_SEQ:
       SPI.beginTransaction(spiConfig);
-      SPI.send((uint8_t *)arg_ptr, arg_val);
+      #if defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F4)
+        SPI.send((uint8_t *)arg_ptr, arg_val);
+      #else
+        SPI.transfer((uint8_t *)arg_ptr, arg_val);
+      #endif
       SPI.endTransaction();
       break;
   }
   return 1;
 }
 
-#endif // defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx)
+#endif // ARDUINO_ARCH_STM32
+

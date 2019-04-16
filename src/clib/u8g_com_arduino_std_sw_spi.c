@@ -36,7 +36,7 @@
 #include "u8g.h"
 
 
-#if defined(ARDUINO) && ! (defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx))
+#if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32)
 
 #if ARDUINO < 100
 #include <WProgram.h>
@@ -140,4 +140,3 @@ uint8_t u8g_com_arduino_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, 
 }
 
 #endif /* ARDUINO */
-

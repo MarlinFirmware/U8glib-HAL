@@ -38,7 +38,7 @@
 
 #include "u8g.h"
 
-#if defined(ARDUINO) && ! (defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx))
+#if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32)
 
 #if ARDUINO < 100
 #include <WProgram.h>
@@ -71,5 +71,3 @@ void u8g_com_arduino_assign_pin_output_high(u8g_t *u8g)
 
 
 #endif
-
-

@@ -287,16 +287,37 @@
     return digitalRead(internal_pin_number);
   }
 
-#elif defined(STM32F1) || defined(STM32F1xx) || defined(STM32F4) || defined(STM32F4xx)
+#elif defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F4)
 
   #include <Arduino.h>
   #include "libmaple/gpio.h"
+
   void u8g_SetPinOutput(uint8_t IO) {
     gpio_set_mode(PIN_MAP[IO].gpio_device, PIN_MAP[IO].gpio_bit, GPIO_OUTPUT_PP);
   }
 
   void u8g_SetPinLevel(uint8_t IO, uint8_t V) {
     PIN_MAP[IO].gpio_device->regs->BSRR = (1U << PIN_MAP[IO].gpio_bit) << (16 * !(bool)V);
+  }
+
+#elif defined(ARDUINO_ARCH_STM32)
+
+  #include "wiring.h"
+
+  void u8g_SetPinOutput(uint8_t internal_pin_number) {
+    pinMode(internal_pin_number, OUTPUT);
+  }
+
+  void u8g_SetPinInput(uint8_t internal_pin_number) {
+    pinMode(internal_pin_number, INPUT);
+  }
+
+  void u8g_SetPinLevel(uint8_t internal_pin_number, uint8_t level) {
+    digitalWrite(internal_pin_number, level);
+  }
+
+  uint8_t u8g_GetPinLevel(uint8_t internal_pin_number) {
+    return digitalRead(internal_pin_number);
   }
 
 #elif defined(U8G_HAL_LINKS)
