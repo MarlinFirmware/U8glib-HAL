@@ -1,19 +1,18 @@
-/*
-  u8g_com_esp32_ssd_i2c.cpp
-
-  communication interface for SSDxxxx chip variant I2C protocol
-*/
-
-#if defined(ARDUINO_ARCH_ESP32)
+/**
+ * u8g_com_esp32_ssd_i2c.cpp
+ *
+ * communication interface for SSDxxxx chip variant I2C protocol
+ */
+#ifdef ARDUINO_ARCH_ESP32
 
 #include "u8g.h"
 #include "Wire.h"
 
-/*
-  BUFFER_LENGTH is defined in libraries\Wire\utility\WireBase.h
-  Default value is 32
-  Increate this value to 144 to send U8G_COM_MSG_WRITE_SEQ in single block
-*/
+/**
+ * BUFFER_LENGTH is defined in libraries\Wire\utility\WireBase.h
+ * Default value is 32
+ * Increase this value to 144 to send U8G_COM_MSG_WRITE_SEQ in single block
+ */
 
 #if defined(BUFFER_LENGTH) && BUFFER_LENGTH < 144
 #define I2C_MAX_LENGTH (BUFFER_LENGTH - 1)
@@ -21,11 +20,8 @@
 
 static uint8_t control;
 
-uint8_t u8g_com_esp32_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-
-  switch (msg)
-  {
+uint8_t u8g_com_esp32_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+  switch (msg) {
     case U8G_COM_MSG_INIT:
       Wire.setClock(400000);
       Wire.begin();
@@ -42,8 +38,7 @@ uint8_t u8g_com_esp32_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void 
       Wire.endTransmission();
       break;
 
-    case U8G_COM_MSG_WRITE_SEQ:
-    {
+    case U8G_COM_MSG_WRITE_SEQ: {
       #ifdef I2C_MAX_LENGTH
         while (arg_val > 0) {
           Wire.beginTransmission(0x3c);
