@@ -62,6 +62,14 @@ Usage:
 
 #include "u8g.h"
 
+#if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32)
+  #if ARDUINO < 100
+    #include <WProgram.h>
+  #else
+    #include <Arduino.h>
+  #endif
+#endif
+
 #define WIDTH 24
 #define HEIGHT 16
 #define PAGE_HEIGHT 16
@@ -94,12 +102,6 @@ Usage:
 #define HT1632_ADDR_LEN         7               // Address are 7 bits
 
 #if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32)
-
-#if ARDUINO < 100
-#include <WProgram.h>
-#else
-#include <Arduino.h>
-#endif
 
 //#define WR_PIN 3
 //#define DATA_PIN 2
