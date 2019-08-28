@@ -16,9 +16,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
-#ifndef Printable_h
-#define Printable_h
+#pragma once
 
 #include <stdlib.h>
 #include <inttypes.h>
@@ -36,6 +34,3 @@ class U8glibPrintable
   public:
     virtual size_t printTo(U8glibPrint& p) const = 0;
 };
-
-#endif
-

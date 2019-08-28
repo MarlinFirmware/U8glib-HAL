@@ -16,26 +16,20 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
-#ifndef Print_h
-#define Print_h
-
+#pragma once
 
 #include <inttypes.h>
 #include <stdio.h> // for size_t
 #include <string.h>
 
-
 #include "U8glibPrintable.h"
-
 
 #define DEC 10
 #define HEX 16
 #define OCT 8
 #define BIN 2
 
-class U8glibPrint
-{
+class U8glibPrint {
   private:
     int write_error;
     size_t printNumber(unsigned long, uint8_t);
@@ -81,5 +75,3 @@ class U8glibPrint
     size_t println(void);
     size_t printf(const char *argList, ...);
 };
-
-#endif

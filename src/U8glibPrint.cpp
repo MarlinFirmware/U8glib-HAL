@@ -351,5 +351,4 @@ size_t U8glibPrint::printf(const char *argList, ...)
     va_end(argp);
 }
 
-
 #endif

@@ -23,9 +23,7 @@
 // adapted from  I2C/master/master.c example
 //   https://www-users.cs.york.ac.uk/~pcc/MCP/HAPR-Course-web/CMSIS/examples/html/master_8c_source.html
 
-
-
-#if defined(TARGET_LPC1768)
+#ifdef TARGET_LPC1768
 
   #ifdef __cplusplus
     extern "C" {
@@ -40,8 +38,7 @@
   // These two routines are exact copies of the lpc17xx_i2c.c routines.  Couldn't link to
   // to the lpc17xx_i2c.c routines so had to copy them into this file & rename them.
 
-  static uint32_t _I2C_Start (LPC_I2C_TypeDef *I2Cx)
-  {
+  static uint32_t _I2C_Start (LPC_I2C_TypeDef *I2Cx) {
     // Reset STA, STO, SI
     I2Cx->I2CONCLR = I2C_I2CONCLR_SIC|I2C_I2CONCLR_STOC|I2C_I2CONCLR_STAC;
 
@@ -54,20 +51,15 @@
     return (I2Cx->I2STAT & I2C_STAT_CODE_BITMASK);
   }
 
-  static void _I2C_Stop (LPC_I2C_TypeDef *I2Cx)
-  {
-
+  static void _I2C_Stop (LPC_I2C_TypeDef *I2Cx) {
     /* Make sure start bit is not active */
     if (I2Cx->I2CONSET & I2C_I2CONSET_STA)
-    {
       I2Cx->I2CONCLR = I2C_I2CONCLR_STAC;
-    }
 
     I2Cx->I2CONSET = I2C_I2CONSET_STO|I2C_I2CONSET_AA;
 
     I2Cx->I2CONCLR = I2C_I2CONCLR_SIC;
   }
-
 
   //////////////////////////////////////////////////////////////////////////////////////
 
@@ -89,12 +81,10 @@
     #error "Master I2C device not defined!"
   #endif
 
-
   PINSEL_CFG_Type PinCfg;
   I2C_M_SETUP_Type transferMCfg;
 
   #define I2C_status (LPC_I2C1->I2STAT & I2C_STAT_CODE_BITMASK)
-
 
   uint8_t u8g_i2c_start(uint8_t sla) {  // send slave address and write bit
     // Sometimes TX data ACK or NAK status is returned.  That mean the start state didn't
@@ -120,15 +110,14 @@
     return 1;
   }
 
-
   void u8g_i2c_init(uint8_t clock_option) {
 
     /*
-      * Init I2C pin connect
-    */
+     * Init I2C pin connect
+     */
     PinCfg.OpenDrain = 0;
     PinCfg.Pinmode = 0;
-    #if ((USEDI2CDEV_M == 0))
+    #if USEDI2CDEV_M == 0
       PinCfg.Funcnum = 1;
       PinCfg.Pinnum = 27;
       PinCfg.Portnum = 0;
@@ -136,7 +125,7 @@
       PinCfg.Pinnum = 28;
       PINSEL_ConfigPin(&PinCfg); // SCL0 / D58  AUX-1
     #endif
-    #if ((USEDI2CDEV_M == 1))
+    #if USEDI2CDEV_M == 1
       PinCfg.Funcnum = 3;
       PinCfg.Pinnum = 0;
       PinCfg.Portnum = 0;
@@ -144,7 +133,7 @@
       PinCfg.Pinnum = 1;
       PINSEL_ConfigPin(&PinCfg);  // SCL1 / D21 SCL
     #endif
-    #if ((USEDI2CDEV_M == 2))
+    #if USEDI2CDEV_M == 2
       PinCfg.Funcnum = 2;
       PinCfg.Pinnum = 10;
       PinCfg.Portnum = 0;
@@ -173,11 +162,10 @@
     return 1;
   }
 
-  void u8g_i2c_stop(void) {
-  }
-
+  void u8g_i2c_stop(void) { }
 
   #ifdef __cplusplus
     }
   #endif
+
 #endif
