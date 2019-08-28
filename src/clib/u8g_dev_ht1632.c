@@ -62,8 +62,8 @@ Usage:
 
 #include "u8g.h"
 
-#define WIDTH 24
-#define HEIGHT 16
+#define U8G_WIDTH 24
+#define U8G_HEIGHT 16
 #define PAGE_HEIGHT 16
 
 /* http://forum.arduino.cc/index.php?topic=168537.0 */
@@ -264,7 +264,7 @@ uint8_t u8g_dev_ht1632_24x16_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *a
 
         /* current page: pb->p.page */
         /* ptr to the buffer: pb->buf */
-        ht1632_transfer_data(u8g, pb->p.page, WIDTH, pb->buf);
+        ht1632_transfer_data(u8g, pb->p.page, U8G_WIDTH, pb->buf);
       }
       break;
     case U8G_DEV_MSG_CONTRAST:
@@ -275,6 +275,6 @@ uint8_t u8g_dev_ht1632_24x16_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *a
   return u8g_dev_pb16v1_base_fn(u8g, dev, msg, arg);
 }
 
-uint8_t u8g_dev_ht1632_24x16_buf[WIDTH*2] U8G_NOCOMMON ;
-u8g_pb_t u8g_dev_ht1632_24x16_pb = { {16, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_ht1632_24x16_buf};
+uint8_t u8g_dev_ht1632_24x16_buf[U8G_WIDTH*2] U8G_NOCOMMON ;
+u8g_pb_t u8g_dev_ht1632_24x16_pb = { {16, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_ht1632_24x16_buf};
 u8g_dev_t u8g_dev_ht1632_24x16 = { u8g_dev_ht1632_24x16_fn, &u8g_dev_ht1632_24x16_pb, u8g_com_null_fn };

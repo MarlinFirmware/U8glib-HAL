@@ -38,8 +38,8 @@
 
 #include "u8g.h"
 
-#define WIDTH 28
-#define HEIGHT 14
+#define U8G_WIDTH 28
+#define U8G_HEIGHT 14
 #define PAGE_HEIGHT 14
 
 /*
@@ -47,8 +47,8 @@
   This procedure must be implemented by the user.
   Arguments:
     id:	Id for the matrix. Currently always 0.
-    page: 	A page has a height of 14 pixel. For a matrix with HEIGHT == 14 this will be always 0
-    width: 	The width of the flip disc matrix. Always equal to WIDTH
+    page: 	A page has a height of 14 pixel. For a matrix with U8G_HEIGHT == 14 this will be always 0
+    width: 	The width of the flip disc matrix. Always equal to U8G_WIDTH
     row1: 	first data line (7 pixel per byte)
     row2: 	first data line (7 pixel per byte)
 */
@@ -78,7 +78,7 @@ uint8_t u8g_dev_flipdisc_2x7_bw_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void
 	/* current page: pb->p.page */
 	/* ptr to the buffer: pb->buf */
 
-	(*u8g_write_flip_disc_matrix)(0, pb->p.page, WIDTH, pb->buf, (uint8_t *)(pb->buf)+WIDTH);
+	(*u8g_write_flip_disc_matrix)(0, pb->p.page, U8G_WIDTH, pb->buf, (uint8_t *)(pb->buf)+U8G_WIDTH);
       }
       break;
     case U8G_DEV_MSG_CONTRAST:
@@ -87,6 +87,6 @@ uint8_t u8g_dev_flipdisc_2x7_bw_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void
   return u8g_dev_pb14v1_base_fn(u8g, dev, msg, arg);
 }
 
-uint8_t u8g_dev_flipdisc_2x7_bw_buf[WIDTH*2] U8G_NOCOMMON ;
-u8g_pb_t u8g_dev_flipdisc_2x7_bw_pb = { {16, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_flipdisc_2x7_bw_buf};
+uint8_t u8g_dev_flipdisc_2x7_bw_buf[U8G_WIDTH*2] U8G_NOCOMMON ;
+u8g_pb_t u8g_dev_flipdisc_2x7_bw_pb = { {16, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_flipdisc_2x7_bw_buf};
 u8g_dev_t u8g_dev_flipdisc_2x7 = { u8g_dev_flipdisc_2x7_bw_fn, &u8g_dev_flipdisc_2x7_bw_pb, u8g_com_null_fn };

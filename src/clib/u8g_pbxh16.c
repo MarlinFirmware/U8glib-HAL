@@ -43,8 +43,8 @@ struct _u8g_pb_t
 typedef struct _u8g_pb_t u8g_pb_t;
 
 
-uint8_t u8g_index_color_xh16_buf[2*WIDTH*PAGE_HEIGHT] U8G_NOCOMMON ;
-u8g_pb_t u8g_index_color_xh16_pb = { {PAGE_HEIGHT, HEIGHT, 0, 0, 0},  WIDTH, u8g_index_color_xh16_buf};
+uint8_t u8g_index_color_xh16_buf[2*U8G_WIDTH*PAGE_HEIGHT] U8G_NOCOMMON ;
+u8g_pb_t u8g_index_color_xh16_pb = { {PAGE_HEIGHT, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_index_color_xh16_buf};
 u8g_dev_t name = { dev_fn, &u8g_index_color_xh16_pb , com_fn }
 
 */
@@ -53,7 +53,7 @@ u8g_dev_t name = { dev_fn, &u8g_index_color_xh16_pb , com_fn }
 
 /*
 #define WIDTH_BITS 7
-#define WIDTH (1<<WIDTH_BITS)
+#define U8G_WIDTH (1<<WIDTH_BITS)
 #define PAGE_HEIGHT_BITS 3
 #define PAGE_HEIGHT (1<<PAGE_HEIGHT_BITS)
 */

@@ -39,8 +39,8 @@
 
 #include "u8g.h"
 
-#define WIDTH 122
-#define HEIGHT 32
+#define U8G_WIDTH 122
+#define U8G_HEIGHT 32
 #define PAGE_HEIGHT 8
 
 
@@ -84,14 +84,14 @@ uint8_t u8g_dev_sbn1661_122x32_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void 
         u8g_WriteByte(u8g, dev, 0x0b8 | pb->p.page); /* select current page (SBN1661/SED1520) */
         u8g_WriteByte(u8g, dev, 0x000 ); /* set X address */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
-        u8g_WriteSequence(u8g, dev, WIDTH/2, pb->buf);
+        u8g_WriteSequence(u8g, dev, U8G_WIDTH/2, pb->buf);
 
         u8g_SetAddress(u8g, dev, 0);           /* command mode */
         u8g_SetChipSelect(u8g, dev, 2);
         u8g_WriteByte(u8g, dev, 0x0b8 | pb->p.page); /* select current page (SBN1661/SED1520) */
         u8g_WriteByte(u8g, dev, 0x000 ); /* set X address */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
-        u8g_WriteSequence(u8g, dev, WIDTH/2, WIDTH/2+(uint8_t *)pb->buf);
+        u8g_WriteSequence(u8g, dev, U8G_WIDTH/2, U8G_WIDTH/2+(uint8_t *)pb->buf);
 
         u8g_SetChipSelect(u8g, dev, 0);
 
@@ -104,4 +104,4 @@ uint8_t u8g_dev_sbn1661_122x32_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void 
 }
 
 /* u8g_com_arduino_sw_spi_fn does not work, too fast??? */
-U8G_PB_DEV(u8g_dev_sbn1661_122x32 , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_sbn1661_122x32_fn, u8g_com_arduino_no_en_parallel_fn);
+U8G_PB_DEV(u8g_dev_sbn1661_122x32 , U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_sbn1661_122x32_fn, u8g_com_arduino_no_en_parallel_fn);

@@ -37,8 +37,8 @@
 #include "u8g.h"
 
 
-#define WIDTH 240
-#define HEIGHT 128
+#define U8G_WIDTH 240
+#define U8G_HEIGHT 128
 #define PAGE_HEIGHT 8
 
 
@@ -111,8 +111,8 @@ static uint8_t u8g_dev_uc1611_dogxl240_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t ms
   return u8g_dev_pb8v1_base_fn(u8g, dev, msg, arg);
 }
 
-U8G_PB_DEV(u8g_dev_uc1611_dogxl240_i2c , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogxl240_fn, U8G_COM_UC_I2C);
-U8G_PB_DEV(u8g_dev_uc1611_dogxl240_sw_spi , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogxl240_fn, U8G_COM_SW_SPI);
-U8G_PB_DEV(u8g_dev_uc1611_dogxl240_hw_spi , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogxl240_fn, U8G_COM_HW_SPI);
-U8G_PB_DEV(u8g_dev_uc1611_dogxl240_8bit , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogxl240_fn, U8G_COM_FAST_PARALLEL);
+U8G_PB_DEV(u8g_dev_uc1611_dogxl240_i2c , U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogxl240_fn, U8G_COM_UC_I2C);
+U8G_PB_DEV(u8g_dev_uc1611_dogxl240_sw_spi , U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogxl240_fn, U8G_COM_SW_SPI);
+U8G_PB_DEV(u8g_dev_uc1611_dogxl240_hw_spi , U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogxl240_fn, U8G_COM_HW_SPI);
+U8G_PB_DEV(u8g_dev_uc1611_dogxl240_8bit , U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogxl240_fn, U8G_COM_FAST_PARALLEL);
 

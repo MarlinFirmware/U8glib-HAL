@@ -48,8 +48,8 @@
 
 #include "u8g.h"
 
-#define WIDTH 128
-#define HEIGHT 128
+#define U8G_WIDTH 128
+#define U8G_HEIGHT 128
 #define PAGE_HEIGHT 16
 
 
@@ -85,7 +85,7 @@ static const uint8_t u8g_dev_t6963_128x128_init_seq[] PROGMEM = {
   0x040,				     /* text home */
 
   U8G_ESC_ADR(0),               /* data mode */
-  WIDTH/8,                      	    /* low byte */
+  U8G_WIDTH/8,                      	    /* low byte */
   0x000,                                /* height byte */
   U8G_ESC_ADR(1),               /* instruction mode */
   0x041,				     /* text columns */
@@ -97,7 +97,7 @@ static const uint8_t u8g_dev_t6963_128x128_init_seq[] PROGMEM = {
   0x042,				     /* graphics home */
 
   U8G_ESC_ADR(0),               /* data mode */
-  WIDTH/8,                            /* low byte */
+  U8G_WIDTH/8,                            /* low byte */
   0x000,                                /* height byte */
   U8G_ESC_ADR(1),               /* instruction mode */
   0x043,				     /* graphics columns */
@@ -161,7 +161,7 @@ uint8_t u8g_dev_t6963_128x128_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *
         u8g_SetChipSelect(u8g, dev, 1);
         y = pb->p.page_y0;
         ptr = pb->buf;
-        disp_ram_adr = WIDTH/8;
+        disp_ram_adr = U8G_WIDTH/8;
         disp_ram_adr *= y;
         for( i = 0; i < PAGE_HEIGHT; i ++ )
         {
@@ -171,10 +171,10 @@ uint8_t u8g_dev_t6963_128x128_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *
           u8g_SetAddress(u8g, dev, 1);           /* cmd mode */
           u8g_WriteByte(u8g, dev, 0x024 );      /* set adr ptr */
 
-          u8g_WriteSequence(u8g, dev, WIDTH/8, ptr);
+          u8g_WriteSequence(u8g, dev, U8G_WIDTH/8, ptr);
 
-          ptr += WIDTH/8;
-          disp_ram_adr += WIDTH/8;
+          ptr += U8G_WIDTH/8;
+          disp_ram_adr += U8G_WIDTH/8;
         }
 	u8g_SetAddress(u8g, dev, 0);           /* data mode */
         u8g_SetChipSelect(u8g, dev, 0);
@@ -184,10 +184,10 @@ uint8_t u8g_dev_t6963_128x128_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *
   return u8g_dev_pb16h1_base_fn(u8g, dev, msg, arg);
 }
 
-// U8G_PB_DEV(u8g_dev_t6963_128x128_8bit, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_t6963_128x128_fn, U8G_COM_T6963);
+// U8G_PB_DEV(u8g_dev_t6963_128x128_8bit, U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_t6963_128x128_fn, U8G_COM_T6963);
 
-uint8_t u8g_dev_t6963_128x128_2x_bw_buf[WIDTH/8*PAGE_HEIGHT] U8G_NOCOMMON ;
-u8g_pb_t u8g_dev_t6963_128x128_2x_bw_pb = { {PAGE_HEIGHT, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_t6963_128x128_2x_bw_buf};
+uint8_t u8g_dev_t6963_128x128_2x_bw_buf[U8G_WIDTH/8*PAGE_HEIGHT] U8G_NOCOMMON ;
+u8g_pb_t u8g_dev_t6963_128x128_2x_bw_pb = { {PAGE_HEIGHT, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_t6963_128x128_2x_bw_buf};
 u8g_dev_t u8g_dev_t6963_128x128_8bit = { u8g_dev_t6963_128x128_fn, &u8g_dev_t6963_128x128_2x_bw_pb, U8G_COM_T6963 };
 
 

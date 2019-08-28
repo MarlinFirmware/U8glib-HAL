@@ -41,13 +41,13 @@
 
 #include "u8g.h"
 
-#define WIDTH 240
+#define U8G_WIDTH 240
 
 #ifdef U8G_16BIT
-#define HEIGHT 320
+#define U8G_HEIGHT 320
 #else
 /* if the user tries to compile the 8Bit version of the lib, then restrict the height to something which fits to 8Bit */
-#define HEIGHT 240
+#define U8G_HEIGHT 240
 #endif
 #define PAGE_HEIGHT 4
 
@@ -316,11 +316,11 @@ uint8_t u8g_dev_ili9325d_320x240_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, voi
   return u8g_dev_pb8h8_base_fn(u8g, dev, msg, arg);
 }
 
-uint8_t u8g_ili9325d_320x240_8h8_buf[WIDTH*PAGE_HEIGHT] U8G_NOCOMMON ;
-u8g_pb_t u8g_ili9325d_320x240_8h8_pb U8G_NOCOMMON = { {PAGE_HEIGHT, HEIGHT, 0, 0, 0},  WIDTH, u8g_ili9325d_320x240_8h8_buf};
+uint8_t u8g_ili9325d_320x240_8h8_buf[U8G_WIDTH*PAGE_HEIGHT] U8G_NOCOMMON ;
+u8g_pb_t u8g_ili9325d_320x240_8h8_pb U8G_NOCOMMON = { {PAGE_HEIGHT, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_ili9325d_320x240_8h8_buf};
 u8g_dev_t u8g_dev_ili9325d_320x240_8bit U8G_NOCOMMON = { u8g_dev_ili9325d_320x240_fn, &u8g_ili9325d_320x240_8h8_pb, u8g_com_arduino_port_d_wr_fn };
 //u8g_dev_t u8g_dev_ili9325d_320x240_8bit = { u8g_dev_ili9325d_320x240_fn, &u8g_ili9325d_320x240_8h8_pb, u8g_com_arduino_parallel_fn };
 
-//U8G_PB_DEV(u8g_dev_ili9325d_320x240_8bit, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ili9325d_320x240_fn, U8G_COM_PARALLEL);
+//U8G_PB_DEV(u8g_dev_ili9325d_320x240_8bit, U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_ili9325d_320x240_fn, U8G_COM_PARALLEL);
 
 

@@ -42,8 +42,8 @@
 
 #include "u8g.h"
 
-#define WIDTH 84
-#define HEIGHT 48
+#define U8G_WIDTH 84
+#define U8G_HEIGHT 48
 #define PAGE_HEIGHT 8
 
 
@@ -111,5 +111,5 @@ uint8_t u8g_dev_tls8204_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg)
 }
 
 
-U8G_PB_DEV(u8g_dev_tls8204_84x48_sw_spi , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_tls8204_fn, U8G_COM_SW_SPI);
+U8G_PB_DEV(u8g_dev_tls8204_84x48_sw_spi , U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_tls8204_fn, U8G_COM_SW_SPI);
 

@@ -45,8 +45,8 @@
 
 #include "u8g.h"
 
-#define WIDTH 128
-#define HEIGHT 64
+#define U8G_WIDTH 128
+#define U8G_HEIGHT 64
 
 /* http://www.newhavendisplay.com/app_notes/OLED_2_7_12864.txt */
 static const uint8_t u8g_dev_ssd1325_2bit_nhd_27_12864ucy3_init_seq[] PROGMEM = {
@@ -243,11 +243,11 @@ static uint8_t u8g_dev_ssd1325_nhd27oled_2x_gr_fn(u8g_t *u8g, u8g_dev_t *dev, ui
   return u8g_dev_pb16v2_base_fn(u8g, dev, msg, arg);
 }
 
-//U8G_PB_DEV(u8g_dev_ssd1325_nhd27oled_gr_sw_spi , WIDTH, HEIGHT, 4, u8g_dev_ssd1325_nhd27oled_gr_fn, U8G_COM_SW_SPI);
-//U8G_PB_DEV(u8g_dev_ssd1325_nhd27oled_gr_hw_spi , WIDTH, HEIGHT, 4, u8g_dev_ssd1325_nhd27oled_gr_fn, U8G_COM_HW_SPI);
+//U8G_PB_DEV(u8g_dev_ssd1325_nhd27oled_gr_sw_spi , U8G_WIDTH, U8G_HEIGHT, 4, u8g_dev_ssd1325_nhd27oled_gr_fn, U8G_COM_SW_SPI);
+//U8G_PB_DEV(u8g_dev_ssd1325_nhd27oled_gr_hw_spi , U8G_WIDTH, U8G_HEIGHT, 4, u8g_dev_ssd1325_nhd27oled_gr_fn, U8G_COM_HW_SPI);
 
-//uint8_t u8g_dev_ssd1325_nhd27oled_2x_buf[WIDTH*2] U8G_NOCOMMON ;
-//u8g_pb_t u8g_dev_ssd1325_nhd27oled_2x_pb = { {8, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_ssd1325_nhd27oled_2x_buf};
+//uint8_t u8g_dev_ssd1325_nhd27oled_2x_buf[U8G_WIDTH*2] U8G_NOCOMMON ;
+//u8g_pb_t u8g_dev_ssd1325_nhd27oled_2x_pb = { {8, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_ssd1325_nhd27oled_2x_buf};
 //u8g_dev_t u8g_dev_ssd1325_nhd27oled_2x_gr_sw_spi = { u8g_dev_ssd1325_nhd27oled_2x_gr_fn, &u8g_dev_ssd1325_nhd27oled_2x_pb, U8G_COM_SW_SPI };
 //u8g_dev_t u8g_dev_ssd1325_nhd27oled_2x_gr_hw_spi = { u8g_dev_ssd1325_nhd27oled_2x_gr_fn, &u8g_dev_ssd1325_nhd27oled_2x_pb, U8G_COM_HW_SPI };
 

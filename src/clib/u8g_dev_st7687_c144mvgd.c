@@ -38,8 +38,8 @@
 
 #include "u8g.h"
 
-#define WIDTH 128
-#define HEIGHT 128
+#define U8G_WIDTH 128
+#define U8G_HEIGHT 128
 #define PAGE_HEIGHT 8
 
 
@@ -383,7 +383,7 @@ uint8_t u8g_dev_st7687_c144mvgd_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void
         u8g_WriteByte(u8g, dev, 0x02a );      /* Column address set 8.1.20 */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
         u8g_WriteByte(u8g, dev, 0x000 );      /* x0 */
-        u8g_WriteByte(u8g, dev, WIDTH-1 );      /* x1 */
+        u8g_WriteByte(u8g, dev, U8G_WIDTH-1 );      /* x1 */
         u8g_SetAddress(u8g, dev, 0);           /* cmd mode */
         u8g_WriteByte(u8g, dev, 0x02b );      /* Row address set 8.1.21 */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
@@ -396,7 +396,7 @@ uint8_t u8g_dev_st7687_c144mvgd_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void
         for( i = 0; i < PAGE_HEIGHT; i ++ )
         {
 
-          for( j = 0; j < WIDTH; j ++ )
+          for( j = 0; j < U8G_WIDTH; j ++ )
           {
             u8g_WriteByte(u8g, dev, get_byte_1(*ptr) );
             u8g_WriteByte(u8g, dev, get_byte_2(*ptr) );
@@ -412,8 +412,8 @@ uint8_t u8g_dev_st7687_c144mvgd_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void
 }
 
 
-uint8_t u8g_st7687_c144mvgd_8h8_buf[WIDTH*8] U8G_NOCOMMON ;
-u8g_pb_t u8g_st7687_c144mvgd_8h8_pb = { {8, HEIGHT, 0, 0, 0},  WIDTH, u8g_st7687_c144mvgd_8h8_buf};
+uint8_t u8g_st7687_c144mvgd_8h8_buf[U8G_WIDTH*8] U8G_NOCOMMON ;
+u8g_pb_t u8g_st7687_c144mvgd_8h8_pb = { {8, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_st7687_c144mvgd_8h8_buf};
 
 u8g_dev_t u8g_dev_st7687_c144mvgd_sw_spi = { u8g_dev_st7687_c144mvgd_fn, &u8g_st7687_c144mvgd_8h8_pb, u8g_com_arduino_sw_spi_fn };
 

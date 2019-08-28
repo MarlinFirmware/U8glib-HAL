@@ -36,8 +36,8 @@
 
 #include "u8g.h"
 
-#define WIDTH 160
-#define HEIGHT 104
+#define U8G_WIDTH 160
+#define U8G_HEIGHT 104
 
 static const uint8_t u8g_dev_uc1610_dogxl160_init_seq[] PROGMEM = {
   U8G_ESC_CS(0),             /* disable chip */
@@ -113,7 +113,7 @@ uint8_t u8g_dev_uc1610_dogxl160_bw_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, v
         u8g_WriteEscSeqP(u8g, dev, u8g_dev_uc1610_dogxl160_data_start);
         u8g_WriteByte(u8g, dev, 0x060 | (pb->p.page*2) ); /* select current page 1/2 (UC1610) */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
-        for( i = 0; i < WIDTH; i++ )
+        for( i = 0; i < U8G_WIDTH; i++ )
         {
           u8g_WriteByte(u8g, dev, u8g_dev_1to2( ((uint8_t *)(pb->buf))[i] ) );
         }
@@ -121,7 +121,7 @@ uint8_t u8g_dev_uc1610_dogxl160_bw_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, v
         u8g_WriteEscSeqP(u8g, dev, u8g_dev_uc1610_dogxl160_data_start);
         u8g_WriteByte(u8g, dev, 0x060 | (pb->p.page*2+1) ); /* select current page 2/2 (UC1610) */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
-        for( i = 0; i < WIDTH; i++ )
+        for( i = 0; i < U8G_WIDTH; i++ )
         {
           u8g_WriteByte(u8g, dev, u8g_dev_1to2( ((uint8_t *)(pb->buf))[i] >> 4 ) );
         }
@@ -190,7 +190,7 @@ uint8_t u8g_dev_uc1610_dogxl160_2x_bw_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg
         u8g_WriteEscSeqP(u8g, dev, u8g_dev_uc1610_dogxl160_data_start);
         u8g_WriteByte(u8g, dev, 0x060 | (pb->p.page*4) ); /* select current page 1/2 (UC1610) */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
-        for( i = 0; i < WIDTH; i++ )
+        for( i = 0; i < U8G_WIDTH; i++ )
         {
           u8g_WriteByte(u8g, dev, u8g_dev_1to2( ((uint8_t *)(pb->buf))[i] ) );
         }
@@ -198,7 +198,7 @@ uint8_t u8g_dev_uc1610_dogxl160_2x_bw_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg
         u8g_WriteEscSeqP(u8g, dev, u8g_dev_uc1610_dogxl160_data_start);
         u8g_WriteByte(u8g, dev, 0x060 | (pb->p.page*4+1) ); /* select current page 2/2 (UC1610) */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
-        for( i = 0; i < WIDTH; i++ )
+        for( i = 0; i < U8G_WIDTH; i++ )
         {
           u8g_WriteByte(u8g, dev, u8g_dev_1to2( ((uint8_t *)(pb->buf))[i] >> 4 ) );
         }
@@ -206,17 +206,17 @@ uint8_t u8g_dev_uc1610_dogxl160_2x_bw_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg
         u8g_WriteEscSeqP(u8g, dev, u8g_dev_uc1610_dogxl160_data_start);
         u8g_WriteByte(u8g, dev, 0x060 | (pb->p.page*4+2) ); /* select current page 1/2 (UC1610) */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
-        for( i = 0; i < WIDTH; i++ )
+        for( i = 0; i < U8G_WIDTH; i++ )
         {
-          u8g_WriteByte(u8g, dev, u8g_dev_1to2( ((uint8_t *)((uint8_t *)(pb->buf)+WIDTH))[i] ) );
+          u8g_WriteByte(u8g, dev, u8g_dev_1to2( ((uint8_t *)((uint8_t *)(pb->buf)+U8G_WIDTH))[i] ) );
         }
 
         u8g_WriteEscSeqP(u8g, dev, u8g_dev_uc1610_dogxl160_data_start);
         u8g_WriteByte(u8g, dev, 0x060 | (pb->p.page*4+3) ); /* select current page 2/2 (UC1610) */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
-        for( i = 0; i < WIDTH; i++ )
+        for( i = 0; i < U8G_WIDTH; i++ )
         {
-          u8g_WriteByte(u8g, dev, u8g_dev_1to2( ((uint8_t *)((uint8_t *)(pb->buf)+WIDTH))[i] >> 4 ) );
+          u8g_WriteByte(u8g, dev, u8g_dev_1to2( ((uint8_t *)((uint8_t *)(pb->buf)+U8G_WIDTH))[i] >> 4 ) );
         }
 
         u8g_SetChipSelect(u8g, dev, 0);
@@ -250,13 +250,13 @@ uint8_t u8g_dev_uc1610_dogxl160_2x_gr_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg
         u8g_WriteEscSeqP(u8g, dev, u8g_dev_uc1610_dogxl160_data_start);
         u8g_WriteByte(u8g, dev, 0x060 | (pb->p.page*2) ); /* select current page (UC1610) */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
-        if ( u8g_WriteSequence(u8g, dev, WIDTH, pb->buf) == 0 )
+        if ( u8g_WriteSequence(u8g, dev, U8G_WIDTH, pb->buf) == 0 )
           return 0;
 
         u8g_WriteEscSeqP(u8g, dev, u8g_dev_uc1610_dogxl160_data_start);
         u8g_WriteByte(u8g, dev, 0x060 | (pb->p.page*2+1) ); /* select current page (UC1610) */
         u8g_SetAddress(u8g, dev, 1);           /* data mode */
-        if ( u8g_WriteSequence(u8g, dev, WIDTH, (uint8_t *)(pb->buf)+WIDTH) == 0 )
+        if ( u8g_WriteSequence(u8g, dev, U8G_WIDTH, (uint8_t *)(pb->buf)+U8G_WIDTH) == 0 )
           return 0;
 
         u8g_SetChipSelect(u8g, dev, 0);
@@ -273,18 +273,18 @@ uint8_t u8g_dev_uc1610_dogxl160_2x_gr_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg
   return u8g_dev_pb16v2_base_fn(u8g, dev, msg, arg);
 }
 
-U8G_PB_DEV(u8g_dev_uc1610_dogxl160_bw_sw_spi, WIDTH, HEIGHT, 8, u8g_dev_uc1610_dogxl160_bw_fn, U8G_COM_SW_SPI);
-U8G_PB_DEV(u8g_dev_uc1610_dogxl160_bw_hw_spi, WIDTH, HEIGHT, 8, u8g_dev_uc1610_dogxl160_bw_fn, U8G_COM_HW_SPI);
+U8G_PB_DEV(u8g_dev_uc1610_dogxl160_bw_sw_spi, U8G_WIDTH, U8G_HEIGHT, 8, u8g_dev_uc1610_dogxl160_bw_fn, U8G_COM_SW_SPI);
+U8G_PB_DEV(u8g_dev_uc1610_dogxl160_bw_hw_spi, U8G_WIDTH, U8G_HEIGHT, 8, u8g_dev_uc1610_dogxl160_bw_fn, U8G_COM_HW_SPI);
 
-U8G_PB_DEV(u8g_dev_uc1610_dogxl160_gr_sw_spi, WIDTH, HEIGHT, 4, u8g_dev_uc1610_dogxl160_gr_fn, U8G_COM_SW_SPI);
-U8G_PB_DEV(u8g_dev_uc1610_dogxl160_gr_hw_spi, WIDTH, HEIGHT, 4, u8g_dev_uc1610_dogxl160_gr_fn, U8G_COM_HW_SPI);
+U8G_PB_DEV(u8g_dev_uc1610_dogxl160_gr_sw_spi, U8G_WIDTH, U8G_HEIGHT, 4, u8g_dev_uc1610_dogxl160_gr_fn, U8G_COM_SW_SPI);
+U8G_PB_DEV(u8g_dev_uc1610_dogxl160_gr_hw_spi, U8G_WIDTH, U8G_HEIGHT, 4, u8g_dev_uc1610_dogxl160_gr_fn, U8G_COM_HW_SPI);
 
-uint8_t u8g_dev_uc1610_dogxl160_2x_bw_buf[WIDTH*2] U8G_NOCOMMON ;
-u8g_pb_t u8g_dev_uc1610_dogxl160_2x_bw_pb = { {16, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_uc1610_dogxl160_2x_bw_buf};
+uint8_t u8g_dev_uc1610_dogxl160_2x_bw_buf[U8G_WIDTH*2] U8G_NOCOMMON ;
+u8g_pb_t u8g_dev_uc1610_dogxl160_2x_bw_pb = { {16, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_uc1610_dogxl160_2x_bw_buf};
 u8g_dev_t u8g_dev_uc1610_dogxl160_2x_bw_sw_spi = { u8g_dev_uc1610_dogxl160_2x_bw_fn, &u8g_dev_uc1610_dogxl160_2x_bw_pb, U8G_COM_SW_SPI };
 u8g_dev_t u8g_dev_uc1610_dogxl160_2x_bw_hw_spi = { u8g_dev_uc1610_dogxl160_2x_bw_fn, &u8g_dev_uc1610_dogxl160_2x_bw_pb, U8G_COM_HW_SPI };
 
-uint8_t u8g_dev_uc1610_dogxl160_2x_gr_buf[WIDTH*2] U8G_NOCOMMON ;
-u8g_pb_t u8g_dev_uc1610_dogxl160_2x_gr_pb = { {8, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_uc1610_dogxl160_2x_gr_buf};
+uint8_t u8g_dev_uc1610_dogxl160_2x_gr_buf[U8G_WIDTH*2] U8G_NOCOMMON ;
+u8g_pb_t u8g_dev_uc1610_dogxl160_2x_gr_pb = { {8, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_uc1610_dogxl160_2x_gr_buf};
 u8g_dev_t u8g_dev_uc1610_dogxl160_2x_gr_sw_spi = { u8g_dev_uc1610_dogxl160_2x_gr_fn, &u8g_dev_uc1610_dogxl160_2x_gr_pb, U8G_COM_SW_SPI };
 u8g_dev_t u8g_dev_uc1610_dogxl160_2x_gr_hw_spi = { u8g_dev_uc1610_dogxl160_2x_gr_fn, &u8g_dev_uc1610_dogxl160_2x_gr_pb, U8G_COM_HW_SPI };

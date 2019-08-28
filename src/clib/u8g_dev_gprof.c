@@ -41,14 +41,14 @@
 #include "u8g.h"
 
 
-#define WIDTH 128
-#define HEIGHT 64
+#define U8G_WIDTH 128
+#define U8G_HEIGHT 64
 #define PAGE_HEIGHT 8
 
 uint8_t u8g_dev_gprof_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg);
 
-uint8_t u8g_pb_dev_gprof_buf[WIDTH];
-u8g_pb_t u8g_pb_dev_gprof = { {PAGE_HEIGHT, HEIGHT, 0, 0, 0},  WIDTH, u8g_pb_dev_gprof_buf };
+uint8_t u8g_pb_dev_gprof_buf[U8G_WIDTH];
+u8g_pb_t u8g_pb_dev_gprof = { {PAGE_HEIGHT, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_pb_dev_gprof_buf };
 
 u8g_dev_t u8g_dev_gprof = { u8g_dev_gprof_fn, &u8g_pb_dev_gprof, NULL };
 
@@ -77,7 +77,7 @@ uint8_t u8g_dev_gprof_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg)
         for( j = 0; j < page_height; j++ )
         {
           printf("%02d ", j);
-          for( i = 0; i < WIDTH; i++ )
+          for( i = 0; i < U8G_WIDTH; i++ )
           {
             if ( (u8g_pb_dev_stdout_buf[i] & (1<<j)) != 0 )
               printf("#");

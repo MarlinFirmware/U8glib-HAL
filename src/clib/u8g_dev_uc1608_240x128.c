@@ -68,8 +68,8 @@ Adjust contrast if necessary. Default: 0x072.
 
 #include "u8g.h"
 
-#define WIDTH 240
-#define HEIGHT 128
+#define U8G_WIDTH 240
+#define U8G_HEIGHT 128
 #define PAGE_HEIGHT 8
 
 /* see also ERC24064-1 for init sequence example */
@@ -190,11 +190,11 @@ uint8_t u8g_dev_uc1608_240x128_2x_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, vo
   return u8g_dev_pb16v1_base_fn(u8g, dev, msg, arg);
 }
 
-U8G_PB_DEV(u8g_dev_uc1608_240x128_sw_spi , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1608_240x128_fn, U8G_COM_SW_SPI);
-U8G_PB_DEV(u8g_dev_uc1608_240x128_hw_spi , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1608_240x128_fn, U8G_COM_HW_SPI);
+U8G_PB_DEV(u8g_dev_uc1608_240x128_sw_spi , U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_uc1608_240x128_fn, U8G_COM_SW_SPI);
+U8G_PB_DEV(u8g_dev_uc1608_240x128_hw_spi , U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_uc1608_240x128_fn, U8G_COM_HW_SPI);
 
-uint8_t u8g_dev_uc1608_240x128_2x_buf[WIDTH*2] U8G_NOCOMMON ;
-u8g_pb_t u8g_dev_uc1608_240x128_2x_pb = { {16, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_uc1608_240x128_2x_buf};
+uint8_t u8g_dev_uc1608_240x128_2x_buf[U8G_WIDTH*2] U8G_NOCOMMON ;
+u8g_pb_t u8g_dev_uc1608_240x128_2x_pb = { {16, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_uc1608_240x128_2x_buf};
 u8g_dev_t u8g_dev_uc1608_240x128_2x_sw_spi = { u8g_dev_uc1608_240x128_2x_fn, &u8g_dev_uc1608_240x128_2x_pb, U8G_COM_SW_SPI };
 u8g_dev_t u8g_dev_uc1608_240x128_2x_hw_spi = { u8g_dev_uc1608_240x128_2x_fn, &u8g_dev_uc1608_240x128_2x_pb, U8G_COM_HW_SPI };
 

@@ -40,8 +40,8 @@
 
 #include "u8g.h"
 
-#define WIDTH		128
-#define HEIGHT		128
+#define U8G_WIDTH		128
+#define U8G_HEIGHT		128
 #define PAGE_HEIGHT	8
 
 static const uint8_t u8g_dev_ssd1351_128x128_init_seq[] PROGMEM = {
@@ -742,9 +742,9 @@ uint8_t u8g_dev_ssd1351_128x128gh_hicolor_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t
 }
 
 
-uint8_t u8g_dev_ssd1351_128x128_byte_buf[WIDTH*PAGE_HEIGHT] U8G_NOCOMMON ;
+uint8_t u8g_dev_ssd1351_128x128_byte_buf[U8G_WIDTH*PAGE_HEIGHT] U8G_NOCOMMON ;
 
-u8g_pb_t u8g_dev_ssd1351_128x128_byte_pb = { {PAGE_HEIGHT, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_ssd1351_128x128_byte_buf};
+u8g_pb_t u8g_dev_ssd1351_128x128_byte_pb = { {PAGE_HEIGHT, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_ssd1351_128x128_byte_buf};
 u8g_dev_t u8g_dev_ssd1351_128x128_332_sw_spi = { u8g_dev_ssd1351_128x128_332_fn, &u8g_dev_ssd1351_128x128_byte_pb, U8G_COM_SW_SPI };
 u8g_dev_t u8g_dev_ssd1351_128x128_332_hw_spi = { u8g_dev_ssd1351_128x128_332_fn, &u8g_dev_ssd1351_128x128_byte_pb, U8G_COM_HW_SPI };
 u8g_dev_t u8g_dev_ssd1351_128x128gh_332_sw_spi = { u8g_dev_ssd1351_128x128gh_332_fn, &u8g_dev_ssd1351_128x128_byte_pb, U8G_COM_SW_SPI };
@@ -755,22 +755,22 @@ u8g_dev_t u8g_dev_ssd1351_128x128gh_332_hw_spi = { u8g_dev_ssd1351_128x128gh_332
 
 
 /* only half of the height, because two bytes are needed for one pixel */
-u8g_pb_t u8g_dev_ssd1351_128x128_hicolor_byte_pb = { {PAGE_HEIGHT/2, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_ssd1351_128x128_byte_buf};
+u8g_pb_t u8g_dev_ssd1351_128x128_hicolor_byte_pb = { {PAGE_HEIGHT/2, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_ssd1351_128x128_byte_buf};
 u8g_dev_t u8g_dev_ssd1351_128x128_hicolor_sw_spi = { u8g_dev_ssd1351_128x128_hicolor_fn, &u8g_dev_ssd1351_128x128_hicolor_byte_pb, U8G_COM_SW_SPI };
 u8g_dev_t u8g_dev_ssd1351_128x128_hicolor_hw_spi = { u8g_dev_ssd1351_128x128_hicolor_fn, &u8g_dev_ssd1351_128x128_hicolor_byte_pb, U8G_COM_HW_SPI };
 u8g_dev_t u8g_dev_ssd1351_128x128gh_hicolor_sw_spi = { u8g_dev_ssd1351_128x128gh_hicolor_fn, &u8g_dev_ssd1351_128x128_hicolor_byte_pb, U8G_COM_SW_SPI };
 u8g_dev_t u8g_dev_ssd1351_128x128gh_hicolor_hw_spi = { u8g_dev_ssd1351_128x128gh_hicolor_fn, &u8g_dev_ssd1351_128x128_hicolor_byte_pb, U8G_COM_HW_SPI };
 
 
-uint8_t u8g_dev_ssd1351_128x128_4x_byte_buf[WIDTH*PAGE_HEIGHT*4] U8G_NOCOMMON ;
+uint8_t u8g_dev_ssd1351_128x128_4x_byte_buf[U8G_WIDTH*PAGE_HEIGHT*4] U8G_NOCOMMON ;
 
-u8g_pb_t u8g_dev_ssd1351_128x128_4x_332_byte_pb = { {PAGE_HEIGHT*4, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_ssd1351_128x128_4x_byte_buf};
+u8g_pb_t u8g_dev_ssd1351_128x128_4x_332_byte_pb = { {PAGE_HEIGHT*4, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_ssd1351_128x128_4x_byte_buf};
 u8g_dev_t u8g_dev_ssd1351_128x128_4x_332_sw_spi = { u8g_dev_ssd1351_128x128_332_fn, &u8g_dev_ssd1351_128x128_4x_332_byte_pb, U8G_COM_SW_SPI };
 u8g_dev_t u8g_dev_ssd1351_128x128_4x_332_hw_spi = { u8g_dev_ssd1351_128x128_332_fn, &u8g_dev_ssd1351_128x128_4x_332_byte_pb, U8G_COM_HW_SPI };
 u8g_dev_t u8g_dev_ssd1351_128x128gh_4x_332_sw_spi = { u8g_dev_ssd1351_128x128gh_332_fn, &u8g_dev_ssd1351_128x128_4x_332_byte_pb, U8G_COM_SW_SPI };
 u8g_dev_t u8g_dev_ssd1351_128x128gh_4x_332_hw_spi = { u8g_dev_ssd1351_128x128gh_332_fn, &u8g_dev_ssd1351_128x128_4x_332_byte_pb, U8G_COM_HW_SPI };
 
-u8g_pb_t u8g_dev_ssd1351_128x128_4x_hicolor_byte_pb = { {PAGE_HEIGHT/2*4, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_ssd1351_128x128_4x_byte_buf};
+u8g_pb_t u8g_dev_ssd1351_128x128_4x_hicolor_byte_pb = { {PAGE_HEIGHT/2*4, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_ssd1351_128x128_4x_byte_buf};
 u8g_dev_t u8g_dev_ssd1351_128x128_4x_hicolor_sw_spi = { u8g_dev_ssd1351_128x128_hicolor_fn, &u8g_dev_ssd1351_128x128_4x_hicolor_byte_pb, U8G_COM_SW_SPI };
 u8g_dev_t u8g_dev_ssd1351_128x128_4x_hicolor_hw_spi = { u8g_dev_ssd1351_128x128_hicolor_fn, &u8g_dev_ssd1351_128x128_4x_hicolor_byte_pb, U8G_COM_HW_SPI };
 u8g_dev_t u8g_dev_ssd1351_128x128gh_4x_hicolor_sw_spi = { u8g_dev_ssd1351_128x128gh_hicolor_fn, &u8g_dev_ssd1351_128x128_4x_hicolor_byte_pb, U8G_COM_SW_SPI };
@@ -778,10 +778,10 @@ u8g_dev_t u8g_dev_ssd1351_128x128gh_4x_hicolor_hw_spi = { u8g_dev_ssd1351_128x12
 
 
 /*
-U8G_PB_DEV(u8g_dev_ssd1351_128x128_332_sw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1351_128x128_332_fn, U8G_COM_SW_SPI);
-U8G_PB_DEV(u8g_dev_ssd1351_128x128_332_hw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1351_128x128_332_fn, U8G_COM_HW_SPI);
+U8G_PB_DEV(u8g_dev_ssd1351_128x128_332_sw_spi, U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1351_128x128_332_fn, U8G_COM_SW_SPI);
+U8G_PB_DEV(u8g_dev_ssd1351_128x128_332_hw_spi, U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1351_128x128_332_fn, U8G_COM_HW_SPI);
 
-U8G_PB_DEV(u8g_dev_ssd1351_128x128_idx_sw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1351_128x128_idx_fn, U8G_COM_SW_SPI);
-U8G_PB_DEV(u8g_dev_ssd1351_128x128_idx_hw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1351_128x128_idx_fn, U8G_COM_HW_SPI);
+U8G_PB_DEV(u8g_dev_ssd1351_128x128_idx_sw_spi, U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1351_128x128_idx_fn, U8G_COM_SW_SPI);
+U8G_PB_DEV(u8g_dev_ssd1351_128x128_idx_hw_spi, U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1351_128x128_idx_fn, U8G_COM_HW_SPI);
 */
 

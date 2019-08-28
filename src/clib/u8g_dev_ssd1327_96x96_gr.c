@@ -44,8 +44,8 @@
 
 #include "u8g.h"
 
-#define WIDTH 96
-#define HEIGHT 96
+#define U8G_WIDTH 96
+#define U8G_HEIGHT 96
 #define XOFFSET 8
 
 /*
@@ -286,13 +286,13 @@ uint8_t u8g_dev_ssd1327_96x96_2x_gr_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, 
   return u8g_dev_pb16v2_base_fn(u8g, dev, msg, arg);
 }
 
-U8G_PB_DEV(u8g_dev_ssd1327_96x96_gr_sw_spi , WIDTH, HEIGHT, 4, u8g_dev_ssd1327_96x96_gr_fn, U8G_COM_SW_SPI);
-U8G_PB_DEV(u8g_dev_ssd1327_96x96_gr_hw_spi , WIDTH, HEIGHT, 4, u8g_dev_ssd1327_96x96_gr_fn, U8G_COM_HW_SPI);
-U8G_PB_DEV(u8g_dev_ssd1327_96x96_gr_i2c , WIDTH, HEIGHT, 4, u8g_dev_ssd1327_96x96_gr_fn, U8G_COM_SSD_I2C);
+U8G_PB_DEV(u8g_dev_ssd1327_96x96_gr_sw_spi , U8G_WIDTH, U8G_HEIGHT, 4, u8g_dev_ssd1327_96x96_gr_fn, U8G_COM_SW_SPI);
+U8G_PB_DEV(u8g_dev_ssd1327_96x96_gr_hw_spi , U8G_WIDTH, U8G_HEIGHT, 4, u8g_dev_ssd1327_96x96_gr_fn, U8G_COM_HW_SPI);
+U8G_PB_DEV(u8g_dev_ssd1327_96x96_gr_i2c , U8G_WIDTH, U8G_HEIGHT, 4, u8g_dev_ssd1327_96x96_gr_fn, U8G_COM_SSD_I2C);
 
-#define DWIDTH (2*WIDTH)
+#define DWIDTH (2*U8G_WIDTH)
 uint8_t u8g_dev_ssd1327_96x96_2x_buf[DWIDTH] U8G_NOCOMMON ;
-u8g_pb_t u8g_dev_ssd1327_96x96_2x_pb = { {8, HEIGHT, 0, 0, 0},  WIDTH, u8g_dev_ssd1327_96x96_2x_buf};
+u8g_pb_t u8g_dev_ssd1327_96x96_2x_pb = { {8, U8G_HEIGHT, 0, 0, 0},  U8G_WIDTH, u8g_dev_ssd1327_96x96_2x_buf};
 u8g_dev_t u8g_dev_ssd1327_96x96_2x_gr_sw_spi = { u8g_dev_ssd1327_96x96_2x_gr_fn, &u8g_dev_ssd1327_96x96_2x_pb, U8G_COM_SW_SPI };
 u8g_dev_t u8g_dev_ssd1327_96x96_2x_gr_hw_spi = { u8g_dev_ssd1327_96x96_2x_gr_fn, &u8g_dev_ssd1327_96x96_2x_pb, U8G_COM_HW_SPI };
 u8g_dev_t u8g_dev_ssd1327_96x96_2x_gr_i2c = { u8g_dev_ssd1327_96x96_2x_gr_fn, &u8g_dev_ssd1327_96x96_2x_pb, U8G_COM_SSD_I2C };

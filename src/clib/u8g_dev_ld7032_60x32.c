@@ -39,8 +39,8 @@
 #include "u8g.h"
 
 /* define width as 64, so that it is a multiple of 8 */
-#define WIDTH 64
-#define HEIGHT 32
+#define U8G_WIDTH 64
+#define U8G_HEIGHT 32
 #define PAGE_HEIGHT 8
 
 static const uint8_t u8g_dev_ld7032_60x32_init_seq[] PROGMEM = {
@@ -225,8 +225,8 @@ uint8_t u8g_dev_ld7032_60x32_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *a
   return u8g_dev_pb8h1_base_fn(u8g, dev, msg, arg);
 }
 
-U8G_PB_DEV(u8g_dev_ld7032_60x32_sw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ld7032_60x32_fn, U8G_COM_SW_SPI);
-U8G_PB_DEV(u8g_dev_ld7032_60x32_hw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ld7032_60x32_fn, U8G_COM_HW_SPI);
-U8G_PB_DEV(u8g_dev_ld7032_60x32_parallel, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ld7032_60x32_fn, U8G_COM_PARALLEL);
-U8G_PB_DEV(u8g_dev_ld7032_60x32_hw_usart_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ld7032_60x32_fn, U8G_COM_HW_USART_SPI);
+U8G_PB_DEV(u8g_dev_ld7032_60x32_sw_spi, U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_ld7032_60x32_fn, U8G_COM_SW_SPI);
+U8G_PB_DEV(u8g_dev_ld7032_60x32_hw_spi, U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_ld7032_60x32_fn, U8G_COM_HW_SPI);
+U8G_PB_DEV(u8g_dev_ld7032_60x32_parallel, U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_ld7032_60x32_fn, U8G_COM_PARALLEL);
+U8G_PB_DEV(u8g_dev_ld7032_60x32_hw_usart_spi, U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_ld7032_60x32_fn, U8G_COM_HW_USART_SPI);
 

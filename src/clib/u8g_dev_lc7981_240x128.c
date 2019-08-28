@@ -38,8 +38,8 @@
 
 #include "u8g.h"
 
-#define WIDTH 240
-#define HEIGHT 128
+#define U8G_WIDTH 240
+#define U8G_HEIGHT 128
 #define PAGE_HEIGHT 8
 
 
@@ -68,7 +68,7 @@ static const uint8_t u8g_dev_lc7981_240x128_init_seq[] PROGMEM = {
   U8G_ESC_ADR(1),               /* instruction mode */
   0x002,                                /* number of chars/byte width of the screen */
   U8G_ESC_ADR(0),               /* data mode */
-  WIDTH/8-1,                         /* 8 bits per pixel */
+  U8G_WIDTH/8-1,                         /* 8 bits per pixel */
 
   U8G_ESC_ADR(1),               /* instruction mode */
   0x003,                                /* time division */
@@ -112,7 +112,7 @@ uint8_t u8g_dev_lc7981_240x128_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void 
         u8g_SetChipSelect(u8g, dev, 1);
         y = pb->p.page_y0;
         ptr = pb->buf;
-        disp_ram_adr = WIDTH/8;
+        disp_ram_adr = U8G_WIDTH/8;
         disp_ram_adr *= y;
         for( i = 0; i < 8; i ++ )
         {
@@ -129,9 +129,9 @@ uint8_t u8g_dev_lc7981_240x128_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void 
           u8g_SetAddress(u8g, dev, 1);           /* cmd mode */
           u8g_WriteByte(u8g, dev, 0x00c );      /* write data */
           u8g_SetAddress(u8g, dev, 0);           /* data mode */
-          u8g_WriteSequence(u8g, dev, WIDTH/8, ptr);
-          ptr += WIDTH/8;
-          disp_ram_adr += WIDTH/8;
+          u8g_WriteSequence(u8g, dev, U8G_WIDTH/8, ptr);
+          ptr += U8G_WIDTH/8;
+          disp_ram_adr += U8G_WIDTH/8;
         }
         u8g_SetChipSelect(u8g, dev, 0);
       }
@@ -140,6 +140,6 @@ uint8_t u8g_dev_lc7981_240x128_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void 
   return u8g_dev_pb8h1f_base_fn(u8g, dev, msg, arg);
 }
 
-U8G_PB_DEV(u8g_dev_lc7981_240x128_8bit, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_lc7981_240x128_fn, U8G_COM_FAST_PARALLEL);
+U8G_PB_DEV(u8g_dev_lc7981_240x128_8bit, U8G_WIDTH, U8G_HEIGHT, PAGE_HEIGHT, u8g_dev_lc7981_240x128_fn, U8G_COM_FAST_PARALLEL);
 
 
