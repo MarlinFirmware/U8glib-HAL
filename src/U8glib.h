@@ -34,23 +34,19 @@
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
-
-#ifndef _CPP_U8GLIB
-#define _CPP_U8GLIB
+#pragma once
 
 #ifdef U8G_HAL_LINKS
-
   #include "U8glibPrint.h"
-  #include "clib/u8g.h"
-  class U8GLIB : public U8glibPrint
+  #define U8GLIB_PRINT_CLASS U8glibPrint
 #else
   #include <Print.h>
-  #include "clib/u8g.h"
-
-  class U8GLIB : public Print
+  #define U8GLIB_PRINT_CLASS Print
 #endif
 
-{
+#include "clib/u8g.h"
+
+class U8GLIB : public U8GLIB_PRINT_CLASS {
   private:
     u8g_t u8g;
     u8g_uint_t tx, ty;          // current position for the Print base class procedures
@@ -1313,6 +1309,3 @@ class U8GLIB_VS : public U8GLIB
     U8GLIB_VS(void) : U8GLIB(&u8g_dev_vs)
       {  }
 };
-
-
-#endif /* _CPP_U8GLIB */

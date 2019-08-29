@@ -32,9 +32,7 @@
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
-
-#ifndef _U8G_H
-#define _U8G_H
+#pragma once
 
 /* uncomment the following line to support displays larger than 240x240 */
 //#define U8G_16BIT 1
@@ -2054,6 +2052,3 @@ extern const u8g_fntpgm_uint8_t u8g_font_profont29r[] U8G_FONT_SECTION("u8g_font
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* _U8G_H */
-

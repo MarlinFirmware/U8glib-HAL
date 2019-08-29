@@ -44,10 +44,7 @@
  * are always buried inside other qualifiers so the ARM/HAL and the Teensy items are independent
  * of each other.
  */
-
-
-#ifndef HAL_LCD_DEFINES_H_
-#define HAL_LCD_DEFINES_H_
+#pragma once
 
 #ifdef ARDUINO_ARCH_SAM
 //  #include "HAL_DUE/HAL_DUE_LCD_defines.h"
@@ -64,5 +61,3 @@
 #else
   #error "Unsupported Platform!"
 #endif
-
-#endif // HAL_LCD_DEFINES_H_
