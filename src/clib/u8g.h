@@ -655,7 +655,7 @@ struct _u8g_dev_arg_irgb_t
 /* com driver */
 
 #ifdef U8G_HAL_LINKS
-  #include <HAL_LCD_defines.h>
+  #include <LCD_defines.h>
 #endif
 
 uint8_t u8g_com_null_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);               /* u8g_com_null.c */
