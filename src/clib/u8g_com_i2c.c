@@ -622,6 +622,7 @@ uint8_t u8g_i2c_wait(uint8_t mask, uint8_t pos)
 
 void u8g_i2c_init(uint8_t options)
 {
+  u8g_i2c_opt = options;
   u8g_i2c_clear_error();
 }
 
