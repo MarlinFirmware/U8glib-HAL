@@ -322,7 +322,7 @@
 
 #elif defined(U8G_HAL_LINKS)
 
-  #include "HAL_LCD_pin_routines.h"
+  #include <LCD_pin_routines.h>
 
 #else
 

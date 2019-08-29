@@ -36,33 +36,28 @@
  *          file gets pulled in.  Here we define the pointers to the code needed by supporting
  *          files and here is were we define any custom communication and/or device drivers
  *          and where we define what drivers will be used.
- *  u8g_com_io.c - pulls in the "HAL_LCD_pin_manipulation" file which contains the low level
+ *  u8g_com_io.c - pulls in the "LCD_pin_routines.h" file which contains the low level
  *                 pin setup and pin write routines.
- *  u8g_delay.c - pulls in the "HAL_LCD_delay" file which provides the delay funtions.
+ *  u8g_delay.c - pulls in the "LCD_delay.h" file which provides the delay functions.
  *
  * You will also find "defined(__arm__)" is used by Teensy to pull in their custom code.  These
  * are always buried inside other qualifiers so the ARM/HAL and the Teensy items are independent
  * of each other.
-*/
-
-
-#ifndef HAL_LCD_DEFINES_H_
-#define HAL_LCD_DEFINES_H_
+ */
+#pragma once
 
 #ifdef ARDUINO_ARCH_SAM
-//  #include "HAL_DUE/HAL_DUE_LCD_defines.h"
+  //#include <LCD_defines.h>
 
 #elif defined(IS_32BIT_TEENSY)
-//  #include "HAL_TEENSY35_36/HAL_TEENSY_LCD_defines.h"
+  //#include <LCD_defines.h>
 
 #elif defined(ARDUINO_ARCH_AVR)
-//  #include "HAL_AVR/HAL_ARDUINO_LCD_defines.h"
+  //#include <LCD_defines.h>
 
 #elif defined(TARGET_LPC1768)
-  #include "HAL_LPC1768_LCD_defines.h"
+  #include <LCD_defines.h>
 
 #else
   #error "Unsupported Platform!"
 #endif
-
-#endif // HAL_LCD_DEFINES_H_

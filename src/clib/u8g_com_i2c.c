@@ -614,7 +614,7 @@ uint8_t u8g_i2c_wait(uint8_t mask, uint8_t pos)
 
 #elif defined(U8G_HAL_LINKS)
 
-  #include "HAL_LCD_I2C_routines.h"
+  #include <LCD_I2C_routines.h>
 
 #else
 
