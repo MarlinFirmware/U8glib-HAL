@@ -38,7 +38,7 @@
 #include "U8glib.h"
 
 
-#if defined(U8G_WITH_PINLIST)
+#ifdef U8G_WITH_PINLIST
 uint8_t U8GLIB::initSPI(u8g_dev_t *dev, uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset)
 {
   prepare();

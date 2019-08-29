@@ -51,7 +51,7 @@
 
 
 
-#if defined(U8G_RASPBERRY_PI)
+#ifdef U8G_RASPBERRY_PI
 
 #include <wiringPiSPI.h>
 #include <wiringPi.h>

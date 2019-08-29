@@ -88,7 +88,7 @@
 //#define PIN_RESET
 
 
-#if defined(__PIC32MX)
+#ifdef __PIC32MX
 /* CHIPKIT PIC32 */
 static volatile uint32_t *u8g_data_port[8];
 static uint32_t u8g_data_mask[8];

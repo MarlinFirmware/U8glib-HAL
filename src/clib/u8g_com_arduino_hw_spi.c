@@ -128,9 +128,9 @@ typedef struct {
 
 #include "u8g.h"
 
-#if defined(ARDUINO)
+#ifdef ARDUINO
 
-#if defined(__AVR__)
+#ifdef __AVR__
 #define U8G_ARDUINO_ATMEGA_HW_SPI
 /* remove the definition for attiny */
 #if __AVR_ARCH__ == 2
@@ -141,7 +141,7 @@ typedef struct {
 #endif
 #endif
 
-#if defined(U8G_ARDUINO_ATMEGA_HW_SPI)
+#ifdef U8G_ARDUINO_ATMEGA_HW_SPI
 
 #include <avr/interrupt.h>
 #include <avr/io.h>

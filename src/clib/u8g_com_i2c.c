@@ -68,7 +68,7 @@ uint8_t u8g_i2c_get_err_pos(void)
 
 
 
-#if defined(__AVR__)
+#ifdef __AVR__
 
 static void u8g_i2c_set_error(uint8_t code, uint8_t pos)
 {
@@ -89,7 +89,7 @@ static void u8g_i2c_set_error(uint8_t code, uint8_t pos)
 #endif
 #endif
 
-#if defined(U8G_ATMEGA_HW_TWI)
+#ifdef U8G_ATMEGA_HW_TWI
 
 #include <avr/io.h>
 #include <util/twi.h>

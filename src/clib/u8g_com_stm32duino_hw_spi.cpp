@@ -4,7 +4,7 @@
   communication interface for SPI protocol
 */
 
-#if defined(ARDUINO_ARCH_STM32)
+#ifdef ARDUINO_ARCH_STM32
 
 #include "u8g.h"
 #include "SPI.h"

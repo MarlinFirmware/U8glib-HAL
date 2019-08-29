@@ -54,7 +54,7 @@
 
 #include "u8g.h"
 
-#if defined(U8G_WITH_PINLIST)
+#ifdef U8G_WITH_PINLIST
 
 
 #define I2C_SLA         (0x3c*2)

@@ -43,7 +43,7 @@
 
 #define WIDTH 240
 
-#if defined(U8G_16BIT)
+#ifdef U8G_16BIT
 #define HEIGHT 320
 #else
 /* if the user tries to compile the 8Bit version of the lib, then restrict the height to something which fits to 8Bit */

@@ -49,7 +49,7 @@
 #include "wiring_private.h"
 #endif
 
-#if defined(__AVR__)
+#ifdef __AVR__
 #define U8G_ARDUINO_ATMEGA_HW_SPI
 
 /* remove the definition for attiny */
@@ -63,7 +63,7 @@
 #endif
 
 
-#if defined(U8G_ARDUINO_ATMEGA_HW_SPI)
+#ifdef U8G_ARDUINO_ATMEGA_HW_SPI
 
 #include <avr/interrupt.h>
 #include <avr/io.h>

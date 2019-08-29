@@ -72,7 +72,7 @@
 #endif
 
 
-#if defined(__PIC32MX)
+#ifdef __PIC32MX
 /* CHIPKIT PIC32 */
 static volatile uint32_t *u8g_output_data_port[8];
 static volatile uint32_t *u8g_input_data_port[8];
@@ -146,7 +146,7 @@ static void u8g_com_arduino_t6963_set_port_output(void)
   U8G_ATOMIC_START();
   for( i = 0; i < 8; i++ )
   {
-#if defined(__PIC32MX)
+#ifdef __PIC32MX
 /* CHIPKIT PIC32 */
       *u8g_mode_port[i] |= u8g_data_mask[i];
 #elif defined(__AVR__)
@@ -166,7 +166,7 @@ static void u8g_com_arduino_t6963_set_port_input(void)
   U8G_ATOMIC_START();
   for( i = 0; i < 8; i++ )
   {
-#if defined(__PIC32MX)
+#ifdef __PIC32MX
 /* CHIPKIT PIC32 */
       *u8g_mode_port[i] &= ~u8g_data_mask[i];
 #elif defined(__AVR__)

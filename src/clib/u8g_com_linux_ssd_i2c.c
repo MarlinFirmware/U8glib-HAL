@@ -40,7 +40,7 @@
 
 #include "u8g.h"
 
-#if defined(U8G_LINUX)
+#ifdef U8G_LINUX
 
 #include <errno.h>
 #include <stdbool.h>

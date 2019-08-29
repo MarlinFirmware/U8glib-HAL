@@ -35,11 +35,11 @@
 
 #include "u8g.h"
 
-#if defined(__MSP430__)
+#ifdef __MSP430__
 #define U8G_MSP430_HW_SPI
 #endif
 
-#if defined(U8G_MSP430_HW_SPI)
+#ifdef U8G_MSP430_HW_SPI
 
 #include <msp430.h>
 

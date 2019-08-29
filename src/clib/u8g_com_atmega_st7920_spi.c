@@ -37,7 +37,7 @@
 
 #include "u8g.h"
 
-#if defined(__AVR__)
+#ifdef __AVR__
 
 static void u8g_atmega_st7920_sw_spi_shift_out(u8g_t *u8g, uint8_t val) U8G_NOINLINE;
 static void u8g_atmega_st7920_sw_spi_shift_out(u8g_t *u8g, uint8_t val)

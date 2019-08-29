@@ -54,7 +54,7 @@ typedef signed short int16_t;
 #include <stdint.h>
 #endif
 
-#if defined(__AVR__)
+#ifdef __AVR__
 #include <avr/pgmspace.h>
 #endif
 
@@ -113,7 +113,7 @@ extern "C" {
 /*===============================================================*/
 /* flash memory access */
 
-#if defined(__AVR__)
+#ifdef __AVR__
 /* U8G_PROGMEM is used by the XBM example */
 #define U8G_PROGMEM U8G_SECTION(".progmem.data")
 typedef uint8_t PROGMEM u8g_pgm_uint8_t;
@@ -134,7 +134,7 @@ typedef uint8_t u8g_fntpgm_uint8_t;
 
 /*===============================================================*/
 /* interrupt safe code */
-#if defined(U8G_INTERRUPT_SAFE)
+#ifdef U8G_INTERRUPT_SAFE
 #  if defined(__AVR__)
 extern uint8_t global_SREG_backup;  /* u8g_state.c */
 #    define U8G_ATOMIC_START()    do { global_SREG_backup = SREG; cli(); } while(0)
@@ -168,7 +168,7 @@ typedef struct _u8g_dev_arg_irgb_t u8g_dev_arg_irgb_t;
 
 /*===============================================================*/
 /* generic */
-#if defined(U8G_16BIT)
+#ifdef U8G_16BIT
 typedef uint16_t u8g_uint_t;
 typedef int16_t u8g_int_t;
 #else
@@ -656,7 +656,7 @@ struct _u8g_dev_arg_irgb_t
 
 /* com driver */
 
-#if defined(U8G_HAL_LINKS)
+#ifdef U8G_HAL_LINKS
   #include <HAL_LCD_defines.h>
 #endif
 
@@ -715,13 +715,13 @@ defined(__18CXX) || defined(__PIC32MX)
 */
 
 /* ==== HW SPI, msp430  ====*/
-#if defined(__MSP430__)
+#ifdef __MSP430__
 #define U8G_COM_HW_SPI u8g_com_msp430_hw_spi_fn
 #define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
 #endif
 
 /* ==== HW SPI, Raspberry PI ====*/
-#if defined(U8G_RASPBERRY_PI)
+#ifdef U8G_RASPBERRY_PI
 #define U8G_COM_HW_SPI u8g_com_raspberrypi_hw_spi_fn
 #define U8G_COM_SW_SPI u8g_com_null_fn
 
@@ -731,16 +731,16 @@ defined(__18CXX) || defined(__PIC32MX)
 #endif
 
 /* ==== HW SPI, Arduino ====*/
-#if defined(ARDUINO)
-#if defined(__AVR__)
+#ifdef ARDUINO
+#ifdef __AVR__
 
-#if defined(__AVR_ATtiny85__)
+#ifdef __AVR_ATtiny85__
 #define U8G_COM_HW_SPI u8g_com_arduino_ATtiny85_std_hw_spi_fn
 #define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
 #else
 
 #define U8G_COM_HW_SPI u8g_com_arduino_hw_spi_fn
-#if defined(__AVR_ATmega32U4__)
+#ifdef __AVR_ATmega32U4__
 #define U8G_COM_HW_USART_SPI u8g_com_arduino_hw_usart_spi_fn
 #endif /* __AVR_ATmega32U4__ */
 #define U8G_COM_ST7920_HW_SPI u8g_com_arduino_st7920_hw_spi_fn
@@ -756,14 +756,14 @@ defined(__18CXX) || defined(__PIC32MX)
 #endif
 /* ==== HW SPI, not Arduino ====*/
 #ifndef U8G_COM_HW_SPI
-#if defined(__AVR__)
+#ifdef __AVR__
 #define U8G_COM_HW_SPI u8g_com_atmega_hw_spi_fn
 #define U8G_COM_ST7920_HW_SPI u8g_com_atmega_st7920_hw_spi_fn
 #endif
 #endif
 
 #ifndef U8G_COM_HW_SPI
-#if defined(ARDUINO_ARCH_STM32)
+#ifdef ARDUINO_ARCH_STM32
 #define U8G_COM_HW_SPI u8g_com_stm32duino_hw_spi_fn
 #define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
 #endif
@@ -779,8 +779,8 @@ defined(__18CXX) || defined(__PIC32MX)
 
 
 /* ==== SW SPI, Arduino ====*/
-#if defined(ARDUINO)
-#if defined(__AVR__)
+#ifdef ARDUINO
+#ifdef __AVR__
 #define U8G_COM_SW_SPI u8g_com_arduino_sw_spi_fn
 #define U8G_COM_ST7920_SW_SPI u8g_com_arduino_st7920_spi_fn
 #elif defined(__18CXX) || defined(__PIC32MX)
@@ -800,12 +800,12 @@ defined(__18CXX) || defined(__PIC32MX)
 /* ==== SW SPI, not Arduino ====*/
 
 /* ==== SW SPI, msp430  ====*/
-#if defined(__MSP430__)
+#ifdef __MSP430__
 #define U8G_COM_SW_SPI u8g_com_std_sw_spi_fn
 #define U8G_COM_ST7920_SW_SPI u8g_com_null_fn
 #endif
 
-#if defined(__AVR__)
+#ifdef __AVR__
 #define U8G_COM_SW_SPI u8g_com_atmega_sw_spi_fn
 #define U8G_COM_ST7920_SW_SPI u8g_com_atmega_st7920_sw_spi_fn
 #endif
@@ -816,8 +816,8 @@ defined(__18CXX) || defined(__PIC32MX)
 #endif
 
 /* ==== Parallel interface, Arduino ====*/
-#if defined(ARDUINO)
-#if defined(__AVR__)
+#ifdef ARDUINO
+#ifdef __AVR__
 #define U8G_COM_PARALLEL u8g_com_arduino_parallel_fn
 #define U8G_COM_FAST_PARALLEL u8g_com_arduino_fast_parallel_fn
 #define U8G_COM_T6963  u8g_com_arduino_t6963_fn
@@ -828,7 +828,7 @@ defined(__18CXX) || defined(__PIC32MX)
 #endif
 #endif
 #ifndef U8G_COM_PARALLEL
-#if defined(__AVR__)
+#ifdef __AVR__
 #define U8G_COM_PARALLEL u8g_com_atmega_parallel_fn
 #define U8G_COM_FAST_PARALLEL u8g_com_atmega_parallel_fn
 #define U8G_COM_T6963  u8g_com_null_fn
@@ -840,8 +840,8 @@ defined(__18CXX) || defined(__PIC32MX)
 #define U8G_COM_T6963  u8g_com_null_fn
 #endif
 
-#if defined(ARDUINO)
-#if defined(__AVR__)
+#ifdef ARDUINO
+#ifdef __AVR__
 #define U8G_COM_SSD_I2C u8g_com_arduino_ssd_i2c_fn
 #define U8G_COM_UC_I2C u8g_com_arduino_uc_i2c_fn
 #endif
@@ -855,19 +855,19 @@ defined(__18CXX) || defined(__PIC32MX)
 #endif
 
 #ifndef U8G_COM_SSD_I2C
-#if defined(U8G_RASPBERRY_PI)
+#ifdef U8G_RASPBERRY_PI
 #define U8G_COM_SSD_I2C u8g_com_raspberrypi_ssd_i2c_fn
 #endif
 #endif
 
 #ifndef U8G_COM_SSD_I2C
-#if defined(ARDUINO_ARCH_STM32)
+#ifdef ARDUINO_ARCH_STM32
 #define U8G_COM_SSD_I2C u8g_com_stm32duino_ssd_i2c_fn
 #endif
 #endif
 
 #ifndef U8G_COM_SSD_I2C
-#if defined(ARDUINO_ARCH_ESP32)
+#ifdef ARDUINO_ARCH_ESP32
 #define U8G_COM_SSD_I2C u8g_com_esp32_ssd_i2c_fn
 #endif
 #endif
@@ -877,7 +877,7 @@ defined(__18CXX) || defined(__PIC32MX)
 #endif
 
 #ifndef U8G_COM_UC_I2C
-#if defined(__AVR__)
+#ifdef __AVR__
 /* AVR variant can use the arduino version at the moment */
 #define U8G_COM_UC_I2C u8g_com_arduino_uc_i2c_fn
 #endif
@@ -1189,7 +1189,7 @@ uint8_t u8g_Begin(u8g_t *u8g);        /* reset device, put it into default state
 uint8_t u8g_Init(u8g_t *u8g, u8g_dev_t *dev);   /* only usefull if the device only as hardcoded ports */
 uint8_t u8g_InitComFn(u8g_t *u8g, u8g_dev_t *dev, u8g_com_fnptr com_fn);  /* Init procedure for anything which is not Arduino or AVR (e.g. ARM, but not Due, which is Arduino) */
 
-#if defined(U8G_WITH_PINLIST)
+#ifdef U8G_WITH_PINLIST
 uint8_t u8g_InitSPI(u8g_t *u8g, u8g_dev_t *dev, uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset);
 uint8_t u8g_InitHWSPI(u8g_t *u8g, u8g_dev_t *dev, uint8_t cs, uint8_t a0, uint8_t reset);
 uint8_t u8g_InitI2C(u8g_t *u8g, u8g_dev_t *dev, uint8_t options); /* use U8G_I2C_OPT_NONE as options */

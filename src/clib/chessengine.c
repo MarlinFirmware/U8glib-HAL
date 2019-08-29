@@ -2011,7 +2011,7 @@ const uint8_t chess_black_pieces_bm[] PROGMEM =
 };
 
 
-#if defined(DOGXL160_HW_GR)
+#ifdef DOGXL160_HW_GR
 #define BOXSIZE 13
 #define BOXOFFSET 3
 #else

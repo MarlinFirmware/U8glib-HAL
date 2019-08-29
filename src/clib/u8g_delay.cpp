@@ -44,7 +44,7 @@
 
 /*==== Part 1: Derive suitable delay procedure ====*/
 
-#if defined(ARDUINO)
+#ifdef ARDUINO
 
 #  if ARDUINO < 100
 #    include <WProgram.h>
@@ -101,7 +101,7 @@ void u8g_10MicroDelay(void)
 }
 #endif
 
-#if defined(USE_LINUX_DELAY)
+#ifdef USE_LINUX_DELAY
 void u8g_Delay(uint16_t val) {
    //delay(val);
    usleep((uint32_t)val*(uint32_t)1000);
@@ -120,7 +120,7 @@ void u8g_10MicroDelay(void)
 
 /*== AVR Delay ==*/
 
-#if defined(USE_AVR_DELAY)
+#ifdef USE_AVR_DELAY
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <util/delay.h>
@@ -174,7 +174,7 @@ void u8g_10MicroDelay(void)
 
 /*== Delay for PIC18 (not tested) ==*/
 
-#if defined(USE_PIC18_DELAY)
+#ifdef USE_PIC18_DELAY
 #include <delays.h>
 #define GetSystemClock()    (64000000ul)      // Hz
 #define GetInstructionClock() (GetSystemClock()/4)
@@ -198,10 +198,10 @@ void u8g_10MicroDelay(void)
 
 
 /*== Arduino Delay ==*/
-#if defined(USE_ARDUINO_DELAY)
+#ifdef USE_ARDUINO_DELAY
 void u8g_Delay(uint16_t val)
 {
-#if defined(__arm__)
+#ifdef __arm__
   delayMicroseconds((uint32_t)val*(uint32_t)1000);
 #else
   delay(val);
@@ -217,7 +217,7 @@ void u8g_10MicroDelay(void)
 }
 #endif
 
-#if defined(USE_PIC32_DELAY)
+#ifdef USE_PIC32_DELAY
 /*
   Assume chipkit here with F_CPU correctly defined
   The problem was, that u8g_Delay() is called within the constructor.
@@ -261,7 +261,7 @@ void u8g_10MicroDelay(void)
 
 #endif
 
-#if defined(USE_MSP430_DELAY)
+#ifdef USE_MSP430_DELAY
 #include <msp430.h>
 
 #ifndef F_CPU
@@ -297,7 +297,7 @@ void u8g_10MicroDelay(void)
 
 
 /*== Any other systems: Dummy Delay ==*/
-#if defined(USE_DUMMY_DELAY)
+#ifdef USE_DUMMY_DELAY
 void u8g_Delay(uint16_t val)
 {
   /* do not know how to delay... */
