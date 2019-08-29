@@ -51,8 +51,8 @@ mapping
 #define DATA_PIN --> U8G_PI_MOSI
 #define WR_PIN    --> U8G_PI_SCK
 #define CS_PIN      --> U8G_PI_CS
-				    U8G_PI_A0 --> not used
-				    U8G_PI_RESET --> not used
+                                    U8G_PI_A0 --> not used
+                                    U8G_PI_RESET --> not used
 
 Usage:
 
@@ -260,11 +260,11 @@ uint8_t u8g_dev_ht1632_24x16_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *a
       break;
     case U8G_DEV_MSG_PAGE_NEXT:
       {
-	u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
+        u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
 
-	/* current page: pb->p.page */
-	/* ptr to the buffer: pb->buf */
-	ht1632_transfer_data(u8g, pb->p.page, WIDTH, pb->buf);
+        /* current page: pb->p.page */
+        /* ptr to the buffer: pb->buf */
+        ht1632_transfer_data(u8g, pb->p.page, WIDTH, pb->buf);
       }
       break;
     case U8G_DEV_MSG_CONTRAST:

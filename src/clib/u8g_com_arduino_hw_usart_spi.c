@@ -33,12 +33,12 @@
 
   SPI Clock Cycle Type
 
-  SSD1351	  50ns		20 MHz
-  SSD1322	300ns		  3.3 MHz
-  SSD1327	300ns
-  SSD1306	300ns
-  ST7565		400ns 		  2.5 MHz
-  ST7920		400ns
+  SSD1351    50ns   20   MHz
+  SSD1322   300ns    3.3 MHz
+  SSD1327   300ns
+  SSD1306   300ns
+  ST7565    400ns    2.5 MHz
+  ST7920    400ns
 
 */
 
@@ -80,11 +80,11 @@ uint8_t u8g_com_arduino_hw_usart_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val
     case U8G_COM_MSG_INIT:
       /* SCK is already an output as we overwrite TXLED */
       u8g_com_arduino_assign_pin_output_high(u8g);
-	  u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
+          u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
 
-	  // Init interface at 2MHz
-	  UBRR1 = 0x00;
-	  UCSR1C = (1 << UMSEL11) | (1 << UMSEL10);
+          // Init interface at 2MHz
+          UBRR1 = 0x00;
+          UCSR1C = (1 << UMSEL11) | (1 << UMSEL10);
       UCSR1B = (1 << TXEN1);
       UBRR1 = 3;
 
@@ -142,7 +142,7 @@ uint8_t u8g_com_arduino_hw_usart_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val
 }
 
 /* #elif defined(__18CXX) || defined(__PIC32MX) */
-/* #elif defined(__arm__)		// Arduino Due, maybe we should better check for __SAM3X8E__ */
+/* #elif defined(__arm__)               // Arduino Due, maybe we should better check for __SAM3X8E__ */
 
 #else /* __AVR_ATmega32U4__ */
 

@@ -86,34 +86,34 @@ void u8g_DrawEmpCirc(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t rad, u
 
   switch (option)
   {
-	case U8G_CIRC_UPPER_RIGHT:
-		u8g_DrawPixel(u8g, x0, y0 - rad);
-		u8g_DrawPixel(u8g, x0 + rad, y0);
-		circ_util = circ_upperRight;
-		break;
-	case U8G_CIRC_UPPER_LEFT:
-		u8g_DrawPixel(u8g, x0, y0 - rad);
-		u8g_DrawPixel(u8g, x0 - rad, y0);
-		circ_util = circ_upperLeft;
-		break;
-	case U8G_CIRC_LOWER_RIGHT:
-		u8g_DrawPixel(u8g, x0, y0 + rad);
-		u8g_DrawPixel(u8g, x0 + rad, y0);
-		circ_util = circ_lowerRight;
-		break;
-	case U8G_CIRC_LOWER_LEFT:
-		u8g_DrawPixel(u8g, x0, y0 + rad);
-		u8g_DrawPixel(u8g, x0 - rad, y0);
-		circ_util = circ_lowerLeft;
-		break;
-        default:
-	case U8G_CIRC_ALL:
-		u8g_DrawPixel(u8g, x0, y0 + rad);
-		u8g_DrawPixel(u8g, x0, y0 - rad);
-		u8g_DrawPixel(u8g, x0 + rad, y0);
-		u8g_DrawPixel(u8g, x0 - rad, y0);
-		circ_util = circ_all;
-		break;
+    case U8G_CIRC_UPPER_RIGHT:
+      u8g_DrawPixel(u8g, x0, y0 - rad);
+      u8g_DrawPixel(u8g, x0 + rad, y0);
+      circ_util = circ_upperRight;
+      break;
+    case U8G_CIRC_UPPER_LEFT:
+      u8g_DrawPixel(u8g, x0, y0 - rad);
+      u8g_DrawPixel(u8g, x0 - rad, y0);
+      circ_util = circ_upperLeft;
+      break;
+    case U8G_CIRC_LOWER_RIGHT:
+      u8g_DrawPixel(u8g, x0, y0 + rad);
+      u8g_DrawPixel(u8g, x0 + rad, y0);
+      circ_util = circ_lowerRight;
+      break;
+    case U8G_CIRC_LOWER_LEFT:
+      u8g_DrawPixel(u8g, x0, y0 + rad);
+      u8g_DrawPixel(u8g, x0 - rad, y0);
+      circ_util = circ_lowerLeft;
+      break;
+          default:
+    case U8G_CIRC_ALL:
+      u8g_DrawPixel(u8g, x0, y0 + rad);
+      u8g_DrawPixel(u8g, x0, y0 - rad);
+      u8g_DrawPixel(u8g, x0 + rad, y0);
+      u8g_DrawPixel(u8g, x0 - rad, y0);
+      circ_util = circ_all;
+      break;
   }
 
   while( x < y )
@@ -148,13 +148,13 @@ void u8g_DrawFillCirc(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t rad, 
   // u8g_DrawVLine(u8g, x0, y0 - rad, 2*rad+1);
 
   if (option == U8G_CIRC_UPPER_LEFT || option == U8G_CIRC_UPPER_RIGHT) {
-	u8g_DrawVLine(u8g, x0, y0 - rad, rad+1);
+  u8g_DrawVLine(u8g, x0, y0 - rad, rad+1);
   }
   else if (option == U8G_CIRC_LOWER_LEFT || option == U8G_CIRC_LOWER_RIGHT) {
-	u8g_DrawVLine(u8g, x0, y0, rad+1);
+  u8g_DrawVLine(u8g, x0, y0, rad+1);
   }
   else {
-	u8g_DrawVLine(u8g, x0, y0 - rad, 2*rad+1);
+  u8g_DrawVLine(u8g, x0, y0 - rad, 2*rad+1);
   }
 
   while( x < y )
@@ -169,33 +169,33 @@ void u8g_DrawFillCirc(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t rad, 
     ddF_x += 2;
     f += ddF_x;
 
-	//Draw vertical lines from one point to another
+  //Draw vertical lines from one point to another
 
-	switch (option)
-	{
-		case U8G_CIRC_UPPER_RIGHT:
-			u8g_DrawVLine(u8g, x0+x, y0-y, y+1);
-			u8g_DrawVLine(u8g, x0+y, y0-x, x+1);
-			break;
-		case U8G_CIRC_UPPER_LEFT:
-			u8g_DrawVLine(u8g, x0-x, y0-y, y+1);
-			u8g_DrawVLine(u8g, x0-y, y0-x, x+1);
-			break;
-		case U8G_CIRC_LOWER_RIGHT:
-			u8g_DrawVLine(u8g, x0+x, y0, y+1);
-			u8g_DrawVLine(u8g, x0+y, y0, x+1);
-			break;
-		case U8G_CIRC_LOWER_LEFT:
-			u8g_DrawVLine(u8g, x0-x, y0, y+1);
-			u8g_DrawVLine(u8g, x0-y, y0, x+1);
-			break;
-		case U8G_CIRC_ALL:
-			u8g_DrawVLine(u8g, x0+x, y0-y, 2*y+1);
-			u8g_DrawVLine(u8g, x0-x, y0-y, 2*y+1);
-			u8g_DrawVLine(u8g, x0+y, y0-x, 2*x+1);
-			u8g_DrawVLine(u8g, x0-y, y0-x, 2*x+1);
-			break;
-	}
+  switch (option)
+  {
+    case U8G_CIRC_UPPER_RIGHT:
+      u8g_DrawVLine(u8g, x0+x, y0-y, y+1);
+      u8g_DrawVLine(u8g, x0+y, y0-x, x+1);
+      break;
+    case U8G_CIRC_UPPER_LEFT:
+      u8g_DrawVLine(u8g, x0-x, y0-y, y+1);
+      u8g_DrawVLine(u8g, x0-y, y0-x, x+1);
+      break;
+    case U8G_CIRC_LOWER_RIGHT:
+      u8g_DrawVLine(u8g, x0+x, y0, y+1);
+      u8g_DrawVLine(u8g, x0+y, y0, x+1);
+      break;
+    case U8G_CIRC_LOWER_LEFT:
+      u8g_DrawVLine(u8g, x0-x, y0, y+1);
+      u8g_DrawVLine(u8g, x0-y, y0, x+1);
+      break;
+    case U8G_CIRC_ALL:
+      u8g_DrawVLine(u8g, x0+x, y0-y, 2*y+1);
+      u8g_DrawVLine(u8g, x0-x, y0-y, 2*y+1);
+      u8g_DrawVLine(u8g, x0+y, y0-x, 2*x+1);
+      u8g_DrawVLine(u8g, x0-y, y0-x, 2*x+1);
+      break;
+  }
   }
 }
 

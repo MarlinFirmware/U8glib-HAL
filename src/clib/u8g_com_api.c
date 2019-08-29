@@ -157,7 +157,7 @@ uint8_t u8g_WriteEscSeqP(u8g_t *u8g, u8g_dev_t *dev, const uint8_t *esc_seq)
       }
       else if ( value >= 0xbe )
       {
-	/* not yet implemented */
+        /* not yet implemented */
         /* u8g_SetVCC(u8g, dev, value & 0x01); */
       }
       else if ( value <= 127 )
@@ -170,4 +170,3 @@ uint8_t u8g_WriteEscSeqP(u8g_t *u8g, u8g_dev_t *dev, const uint8_t *esc_seq)
   }
   return 1;
 }
-
