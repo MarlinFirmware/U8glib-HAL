@@ -33,18 +33,18 @@
 
   SPI Clock Cycle Type
 
-  SSD1351	  50ns		20 MHz
-  SSD1322	300ns		  3.3 MHz
-  SSD1327	300ns
-  SSD1306	300ns
-  ST7565		400ns 		  2.5 MHz
-  ST7920		400ns
+  SSD1351        50ns          20   MHz
+  SSD1322       300ns           3.3 MHz
+  SSD1327       300ns
+  SSD1306       300ns
+  ST7565        400ns           2.5 MHz
+  ST7920        400ns
 
   Arduino DUE
 
-  PA25	MISO
-  PA26	MOSI	75
-  PA27	SCLK	76
+  PA25  MISO
+  PA26  MOSI    75
+  PA27  SCLK    76
 
 
 typedef struct {
@@ -78,8 +78,8 @@ typedef struct {
   Parallel Input/Output Controller (PIO)
   arduino-1.5.2/hardware/arduino/sam/system/CMSIS/Device/ATMEL/sam3xa/include/instance/instance_pioa.h
     - enable special function of the pin: disable PIO on A26 and A27:
-	REG_PIOA_PDR = 0x0c000000
-	PIOA->PIO_PDR = 0x0c000000
+        REG_PIOA_PDR = 0x0c000000
+        PIOA->PIO_PDR = 0x0c000000
 
   SPI
     SPI0->SPI_CR = SPI_CR_SPIDIS
@@ -100,12 +100,12 @@ typedef struct {
     Bit 1: Clock Phase = 0
     Bit 4-7: Bits = 0 (8 Bit)
     Bit 8-15: SCBR = 1
-    SPI0->SPI_CSR[0] = SPI_CSR_SCBR(x)	Serial Baud Rate
-	SCBR / 84000000 > 50 / 1000000000
-	SCBR / 84 > 5 / 100
-	SCBR  > 50 *84 / 1000 --> SCBR=5
-	SCBR  > 300*84 / 1000 --> SCBR=26
-	SCBR  > 400*84 / 1000 --> SCBR=34
+    SPI0->SPI_CSR[0] = SPI_CSR_SCBR(x)  Serial Baud Rate
+        SCBR / 84000000 > 50 / 1000000000
+        SCBR / 84 > 5 / 100
+        SCBR  > 50 *84 / 1000 --> SCBR=5
+        SCBR  > 300*84 / 1000 --> SCBR=26
+        SCBR  > 400*84 / 1000 --> SCBR=34
 
   Arduino Due test code:
     REG_PMC_PCER0 = (1UL << ID_PIOA) | (1UL << ID_SPI0);
@@ -120,7 +120,7 @@ typedef struct {
     for(;;)
     {
       while( (SPI0->SPI_SR & SPI_SR_TDRE) == 0 )
-	;
+        ;
       SPI0->SPI_TDR = 0x050;
     }
 
@@ -205,17 +205,17 @@ uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void
       digitalWrite(PIN_MOSI, LOW);
       /* pinMode(PIN_MISO, INPUT); */
 
-      pinMode(PIN_CS, OUTPUT);			/* system chip select for the atmega board */
+      pinMode(PIN_CS, OUTPUT);                  /* system chip select for the atmega board */
       digitalWrite(PIN_CS, HIGH);
 
 
 
       /*
         SPR1 SPR0
-            0	0		fclk/4
-            0	1		fclk/16
-            1	0		fclk/64
-            1	1		fclk/128
+            0   0               fclk/4
+            0   1               fclk/16
+            1   0               fclk/64
+            1   1               fclk/128
       */
       SPCR = 0;
       SPCR =  (1<<SPE) | (1<<MSTR)|(0<<SPR1)|(0<<SPR0)|(0<<CPOL)|(0<<CPHA);
@@ -224,7 +224,7 @@ uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void
 #else
       if ( arg_val  <= U8G_SPI_CLK_CYCLE_50NS )
       {
-	SPSR = (1 << SPI2X);  /* double speed, issue 89 */
+        SPSR = (1 << SPI2X);  /* double speed, issue 89 */
       }
 #endif
 
@@ -285,7 +285,7 @@ uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void
 
 /* #elif defined(__18CXX) || defined(__PIC32MX) */
 
-#elif defined(__SAM3X8E__)		// Arduino Due, maybe we should better check for __SAM3X8E__
+#elif defined(__SAM3X8E__)              // Arduino Due, maybe we should better check for __SAM3X8E__
 
 #include <Arduino.h>
 
@@ -339,26 +339,26 @@ uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void
       /* Polarity, Phase, 8 Bit data transfer, baud rate */
       /* x * 1000 / 84 --> clock cycle in ns
         5 * 1000 / 84 = 58 ns
-	SCBR  > 50 *84 / 1000 --> SCBR=5
-	SCBR  > 300*84 / 1000 --> SCBR=26
-	SCBR  > 400*84 / 1000 --> SCBR=34
+        SCBR  > 50 *84 / 1000 --> SCBR=5
+        SCBR  > 300*84 / 1000 --> SCBR=26
+        SCBR  > 400*84 / 1000 --> SCBR=34
       */
 
       if ( arg_val <= U8G_SPI_CLK_CYCLE_50NS )
       {
-	SPI0->SPI_CSR[0] = SPI_CSR_SCBR(5) | 1;
+        SPI0->SPI_CSR[0] = SPI_CSR_SCBR(5) | 1;
       }
       else if ( arg_val <= U8G_SPI_CLK_CYCLE_300NS )
       {
-	SPI0->SPI_CSR[0] = SPI_CSR_SCBR(26) | 1;
+        SPI0->SPI_CSR[0] = SPI_CSR_SCBR(26) | 1;
       }
       else if ( arg_val <= U8G_SPI_CLK_CYCLE_400NS )
       {
-	SPI0->SPI_CSR[0] = SPI_CSR_SCBR(34) | 1;
+        SPI0->SPI_CSR[0] = SPI_CSR_SCBR(34) | 1;
       }
       else
       {
-	SPI0->SPI_CSR[0] = SPI_CSR_SCBR(84) | 1;
+        SPI0->SPI_CSR[0] = SPI_CSR_SCBR(84) | 1;
       }
 
       u8g_MicroDelay();
@@ -373,16 +373,16 @@ uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void
       if ( arg_val == 0 )
       {
         /* disable */
-	u8g_MicroDelay();		/* this delay is required to avoid that the display is switched off too early --> DOGS102 with DUE */
+        u8g_MicroDelay();               /* this delay is required to avoid that the display is switched off too early --> DOGS102 with DUE */
         u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
-	u8g_MicroDelay();
+        u8g_MicroDelay();
       }
       else
       {
         /* enable */
         //u8g_com_arduino_digital_write(u8g, U8G_PI_SCK, LOW);
         u8g_com_arduino_digital_write(u8g, U8G_PI_CS, LOW);
-	u8g_MicroDelay();
+        u8g_MicroDelay();
       }
       break;
 
@@ -435,4 +435,3 @@ uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void
 }
 
 #endif /* ARDUINO */
-

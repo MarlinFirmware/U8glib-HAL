@@ -109,11 +109,11 @@ static uint8_t U8G_ALWAYS_INLINE u8g_is_intersection_decision_tree(u8g_uint_t a0
     {
       if ( v0 > v1 )
       {
-	return 1;
+        return 1;
       }
       else
       {
-	return 0;
+        return 0;
       }
     }
   }
@@ -123,11 +123,11 @@ static uint8_t U8G_ALWAYS_INLINE u8g_is_intersection_decision_tree(u8g_uint_t a0
     {
       if ( v0 > v1 )
       {
-	return 1;
+        return 1;
       }
       else
       {
-	return 0;
+        return 0;
       }
     }
     else

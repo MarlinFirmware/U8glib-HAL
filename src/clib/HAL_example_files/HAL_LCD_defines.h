@@ -43,7 +43,7 @@
  * You will also find "defined(__arm__)" is used by Teensy to pull in their custom code.  These
  * are always buried inside other qualifiers so the ARM/HAL and the Teensy items are independent
  * of each other.
-*/
+ */
 
 
 #ifndef HAL_LCD_DEFINES_H_
