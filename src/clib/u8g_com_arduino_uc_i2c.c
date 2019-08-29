@@ -54,7 +54,7 @@
 
 #include "u8g.h"
 
-#if defined(U8G_WITH_PINLIST)
+#ifdef U8G_WITH_PINLIST
 
 #define DOGM240_SLA_CMD  (0x38*2)
 #define DOGM240_SLA_DATA (0x39*2)

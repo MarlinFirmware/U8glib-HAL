@@ -57,7 +57,7 @@
 /*=========================================================*/
 /* Arduino, AVR */
 
-#if defined(__AVR__)
+#ifdef __AVR__
 
 uint8_t u8g_bitData, u8g_bitNotData;
 uint8_t u8g_bitClock, u8g_bitNotClock;

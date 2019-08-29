@@ -23,9 +23,7 @@
 // adapted from  I2C/master/master.c example
 //   https://www-users.cs.york.ac.uk/~pcc/MCP/HAPR-Course-web/CMSIS/examples/html/master_8c_source.html
 
-
-
-#if defined(TARGET_LPC1768)
+#ifdef TARGET_LPC1768
 
   #ifdef __cplusplus
     extern "C" {

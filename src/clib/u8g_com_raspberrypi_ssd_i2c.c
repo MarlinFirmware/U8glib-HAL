@@ -17,7 +17,7 @@
 
 #include "u8g.h"
 
-#if defined(U8G_RASPBERRY_PI)
+#ifdef U8G_RASPBERRY_PI
 
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
@@ -29,7 +29,7 @@
 #define I2C_CMD_MODE	0x000
 #define I2C_DATA_MODE	0x040
 
-#if defined(U8G_WITH_PINLIST)
+#ifdef U8G_WITH_PINLIST
 
 uint8_t u8g_com_raspberrypi_ssd_start_sequence(u8g_t *u8g)
 {

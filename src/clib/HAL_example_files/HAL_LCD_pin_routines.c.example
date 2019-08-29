@@ -30,7 +30,7 @@
  * resulted in using about about 25% of the CPU's time.
  */
 
-#if defined(TARGET_LPC1768)
+#ifdef TARGET_LPC1768
 
   #include <LPC17xx.h>
   #include <lpc17xx_pinsel.h>

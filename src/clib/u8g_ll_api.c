@@ -163,7 +163,7 @@ static void u8g_init_data(u8g_t *u8g)
   u8g->cursor_encoding = 34;
   u8g->cursor_fn = (u8g_draw_cursor_fn)0;
 
-#if defined(U8G_WITH_PINLIST)
+#ifdef U8G_WITH_PINLIST
   {
     uint8_t i;
     for( i = 0; i < U8G_PIN_LIST_LEN; i++ )
@@ -212,7 +212,7 @@ uint8_t u8g_InitComFn(u8g_t *u8g, u8g_dev_t *dev, u8g_com_fnptr com_fn)
 {
   u8g_init_data(u8g);
 
-#if defined(U8G_WITH_PINLIST)
+#ifdef U8G_WITH_PINLIST
   {
     uint8_t i;
     for( i = 0; i < U8G_PIN_LIST_LEN; i++ )
@@ -233,7 +233,7 @@ uint8_t u8g_InitComFn(u8g_t *u8g, u8g_dev_t *dev, u8g_com_fnptr com_fn)
 }
 
 
-#if defined(U8G_WITH_PINLIST)
+#ifdef U8G_WITH_PINLIST
 uint8_t u8g_InitSPI(u8g_t *u8g, u8g_dev_t *dev, uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset)
 {
 

@@ -44,7 +44,7 @@
 #include "u8g.h"
 
 /* width must be multiple of 8, largest value is 248 unless u8g 16 bit mode is enabled */
-#if defined(U8G_16BIT)
+#ifdef U8G_16BIT
 #define WIDTH 256
 #else
 #define WIDTH 248
@@ -234,12 +234,12 @@ uint8_t u8g_dev_ssd1322_nhd31oled_gr_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg,
 	for( i = 0; i < pb->p.page_height; i++ )
 	{
 	  u8g_dev_ssd1322_2bit_prepare_row(u8g, dev, i);  /* this will also enable chip select */
-#if !defined(U8G_16BIT)
+#ifndef U8G_16BIT
 	  u8g_WriteByte(u8g, dev, 0x00);
 	  u8g_WriteByte(u8g, dev, 0x00);
 #endif
 	  u8g_WriteSequence4LTo16GrDevice(u8g, dev, cnt, p);
-#if !defined(U8G_16BIT)
+#ifndef U8G_16BIT
 	  u8g_WriteByte(u8g, dev, 0x00);
 	  u8g_WriteByte(u8g, dev, 0x00);
 #endif
@@ -291,12 +291,12 @@ uint8_t u8g_dev_ssd1322_nhd31oled_2x_gr_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t m
 	for( i = 0; i < pb->p.page_height; i++ )
 	{
 	  u8g_dev_ssd1322_2bit_prepare_row(u8g, dev, i);		/* this will also enable chip select */
-#if !defined(U8G_16BIT)
+#ifndef U8G_16BIT
 	  u8g_WriteByte(u8g, dev, 0x00);
 	  u8g_WriteByte(u8g, dev, 0x00);
 #endif
 	  u8g_WriteSequence4LTo16GrDevice(u8g, dev, cnt, p);
-#if !defined(U8G_16BIT)
+#ifndef U8G_16BIT
 	  u8g_WriteByte(u8g, dev, 0x00);
 	  u8g_WriteByte(u8g, dev, 0x00);
 #endif

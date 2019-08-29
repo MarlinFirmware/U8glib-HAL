@@ -50,12 +50,12 @@
 
 #include "u8g.h"
 
-#if defined(__AVR_XMEGA__)
+#ifdef __AVR_XMEGA__
 #define U8G_ATXMEGA_HW_SPI
 #endif
 
 
-#if defined(U8G_ATXMEGA_HW_SPI)
+#ifdef U8G_ATXMEGA_HW_SPI
 
 #include <avr/interrupt.h>
 #include <avr/io.h>

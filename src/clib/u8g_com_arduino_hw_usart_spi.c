@@ -44,9 +44,9 @@
 
 #include "u8g.h"
 
-#if defined(ARDUINO)
+#ifdef ARDUINO
 
-#if defined(__AVR_ATmega32U4__ )
+#ifdef __AVR_ATmega32U4__ 
 
 #include <avr/interrupt.h>
 #include <avr/io.h>

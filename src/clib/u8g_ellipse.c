@@ -98,7 +98,7 @@ void u8g_DrawEllipse(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t xr, u8
 
 #endif
 
-#if defined(U8G_16BIT)
+#ifdef U8G_16BIT
 typedef  int32_t u8g_long_t;
 #else
 typedef  int16_t u8g_long_t;

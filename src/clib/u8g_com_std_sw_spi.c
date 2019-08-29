@@ -35,7 +35,7 @@
 
 #include "u8g.h"
 
-#if defined(U8G_WITH_PINLIST)
+#ifdef U8G_WITH_PINLIST
 
 static void u8g_sw_spi_shift_out(uint8_t dataPin, uint8_t clockPin, uint8_t val)
 {

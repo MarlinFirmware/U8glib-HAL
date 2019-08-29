@@ -39,7 +39,7 @@
 
 #include "u8g.h"
 
-#if defined(U8G_CYPRESS_PSOC5)
+#ifdef U8G_CYPRESS_PSOC5
 
 #include <project.h>
 
