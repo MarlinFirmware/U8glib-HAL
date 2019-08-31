@@ -1,110 +1,107 @@
-/*
-
-  u8g.h
-
-  Universal 8bit Graphics Library
-
-  Copyright (c) 2011, olikraus@gmail.com
-  All rights reserved.
-
-  Redistribution and use in source and binary forms, with or without modification,
-  are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this list
-    of conditions and the following disclaimer.
-
-  * Redistributions in binary form must reproduce the above copyright notice, this
-    list of conditions and the following disclaimer in the documentation and/or other
-    materials provided with the distribution.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-  CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
+/**
+ * u8g.h
+ *
+ * Universal 8bit Graphics Library
+ *
+ * Copyright (c) 2011, olikraus@gmail.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * - Redistributions of source code must retain the above copyright notice, this list
+ *   of conditions and the following disclaimer.
+ *
+ * - Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or other
+ *   materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+ * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 #pragma once
 
 /* uncomment the following line to support displays larger than 240x240 */
 //#define U8G_16BIT 1
 
 /* comment the following line to generate more compact but interrupt unsafe code */
-#define U8G_INTERRUPT_SAFE 1
-
+#define U8G_INTERRUPT_SAFE  1
 
 #include <stddef.h>
 
 #ifdef __18CXX
-typedef unsigned char uint8_t;
-typedef signed char int8_t;
-typedef unsigned short uint16_t;
-typedef signed short int16_t;
+  typedef unsigned char uint8_t;
+  typedef signed char int8_t;
+  typedef unsigned short uint16_t;
+  typedef signed short int16_t;
 #else
-#include <stdint.h>
+  #include <stdint.h>
 #endif
 
 #ifdef __AVR__
-#include <avr/pgmspace.h>
+  #include <avr/pgmspace.h>
 #endif
 
 /*
   use the com interface directly on any systems which are not AVR or ARDUINO
 */
 #if defined(__AVR__) || defined(ARDUINO) || defined(__MSP430__) || defined(U8G_HAL_LINKS)
-#define U8G_WITH_PINLIST
+  #define U8G_WITH_PINLIST
 #endif
 
 
 #ifdef __cplusplus
-extern "C" {
+  extern "C" {
 #endif
 
 
 /*===============================================================*/
 #ifdef __GNUC__
-#  define U8G_NOINLINE __attribute__((noinline))
-#  define U8G_PURE  __attribute__ ((pure))
-#  define U8G_NOCOMMON __attribute__ ((nocommon))
-#  define U8G_SECTION(name) __attribute__ ((section (name)))
-#  if defined(__MSPGCC__)
-/* mspgcc does not have .progmem sections. Use -fdata-sections. */
-#    define U8G_FONT_SECTION(name)
-#  endif
-#  if defined(__AVR__)
-#    define U8G_FONT_SECTION(name) U8G_SECTION(".progmem." name)
-#  endif
+  #define U8G_NOINLINE        __attribute__((noinline))
+  #define U8G_PURE            __attribute__ ((pure))
+  #define U8G_NOCOMMON        __attribute__ ((nocommon))
+  #define U8G_SECTION(name)   __attribute__ ((section (name)))
+  #ifdef __MSPGCC__
+    // mspgcc does not have .progmem sections. Use -fdata-sections.
+    #define U8G_FONT_SECTION(name)
+  #endif
+  #ifdef __AVR__
+    #define U8G_FONT_SECTION(name) U8G_SECTION(".progmem." name)
+  #endif
 #else
-#  define U8G_NOINLINE
-#  define U8G_PURE
-#  define U8G_NOCOMMON
-#  define U8G_SECTION(name)
-#  define U8G_FONT_SECTION(name)
+  #define U8G_NOINLINE
+  #define U8G_PURE
+  #define U8G_NOCOMMON
+  #define U8G_SECTION(name)
+  #define U8G_FONT_SECTION(name)
 #endif
 
 #ifdef __MSP430__
-/*
-  Specifying a section will cause the MSP-GCC to put even const data to RAM
-  at least for the fonts. But as the fonts are consts we don't need to specify
-  it manually - the MSP-GCC seems to be smart enough to put it into the
-  flash memory.
-*/
-# undef U8G_SECTION
-# define U8G_SECTION(name)
+  /**
+   * Specifying a section will cause the MSP-GCC to put even const data to RAM
+   * at least for the fonts. But as the fonts are consts we don't need to specify
+   * it manually - the MSP-GCC seems to be smart enough to put it into the
+   * flash memory.
+   */
+  #undef U8G_SECTION
+  #define U8G_SECTION(name)
 #endif
 
 /*===============================================================*/
 
 #ifndef U8G_FONT_SECTION
-#  define U8G_FONT_SECTION(name)
+  #define U8G_FONT_SECTION(name)
 #endif
 
 
@@ -112,45 +109,42 @@ extern "C" {
 /* flash memory access */
 
 #ifdef __AVR__
-/* U8G_PROGMEM is used by the XBM example */
-#define U8G_PROGMEM U8G_SECTION(".progmem.data")
-typedef uint8_t PROGMEM u8g_pgm_uint8_t;
-typedef uint8_t u8g_fntpgm_uint8_t;
-#define u8g_pgm_read(adr) pgm_read_byte_near(adr)
-#define U8G_PSTR(s) ((u8g_pgm_uint8_t *)PSTR(s))
-
+  // U8G_PROGMEM is used by the XBM example
+  #define U8G_PROGMEM         U8G_SECTION(".progmem.data")
+  typedef uint8_t PROGMEM u8g_pgm_uint8_t;
+  typedef uint8_t u8g_fntpgm_uint8_t;
+  #define u8g_pgm_read(adr)   pgm_read_byte_near(adr)
+  #define U8G_PSTR(s)         ((u8g_pgm_uint8_t *)PSTR(s))
 #else
-
-#define U8G_PROGMEM
-#define PROGMEM
-typedef uint8_t u8g_pgm_uint8_t;
-typedef uint8_t u8g_fntpgm_uint8_t;
-#define u8g_pgm_read(adr) (*(const u8g_pgm_uint8_t *)(adr))
-#define U8G_PSTR(s) ((u8g_pgm_uint8_t *)(s))
-
+  #define U8G_PROGMEM
+  #define PROGMEM
+  typedef uint8_t u8g_pgm_uint8_t;
+  typedef uint8_t u8g_fntpgm_uint8_t;
+  #define u8g_pgm_read(adr)   (*(const u8g_pgm_uint8_t *)(adr))
+  #define U8G_PSTR(s)         ((u8g_pgm_uint8_t *)(s))
 #endif
 
 /*===============================================================*/
 /* interrupt safe code */
 #ifdef U8G_INTERRUPT_SAFE
-#  if defined(__AVR__)
-extern uint8_t global_SREG_backup;  /* u8g_state.c */
-#    define U8G_ATOMIC_START()    do { global_SREG_backup = SREG; cli(); } while(0)
-#    define U8G_ATOMIC_END()      SREG = global_SREG_backup
-#    define U8G_ATOMIC_OR(ptr, val)   do { uint8_t tmpSREG = SREG; cli(); (*(ptr) |= (val)); SREG = tmpSREG; } while(0)
-#    define U8G_ATOMIC_AND(ptr, val)  do { uint8_t tmpSREG = SREG; cli(); (*(ptr) &= (val)); SREG = tmpSREG; } while(0)
-#  else
-#    define U8G_ATOMIC_OR(ptr, val) (*(ptr) |= (val))
-#    define U8G_ATOMIC_AND(ptr, val) (*(ptr) &= (val))
-#    define U8G_ATOMIC_START()
-#    define U8G_ATOMIC_END()
-#  endif /* __AVR__ */
+  #if defined(__AVR__)
+    extern uint8_t global_SREG_backup;  // u8g_state.c
+    #define U8G_ATOMIC_START()        do { global_SREG_backup = SREG; cli(); } while(0)
+    #define U8G_ATOMIC_END()          SREG = global_SREG_backup
+    #define U8G_ATOMIC_OR(ptr, val)   do { uint8_t tmpSREG = SREG; cli(); (*(ptr) |= (val)); SREG = tmpSREG; } while(0)
+    #define U8G_ATOMIC_AND(ptr, val)  do { uint8_t tmpSREG = SREG; cli(); (*(ptr) &= (val)); SREG = tmpSREG; } while(0)
+  #else
+    #define U8G_ATOMIC_START()
+    #define U8G_ATOMIC_END()
+    #define U8G_ATOMIC_OR(ptr, val)   (*(ptr) |= (val))
+    #define U8G_ATOMIC_AND(ptr, val)  (*(ptr) &= (val))
+  #endif  // __AVR__
 #else
-#  define U8G_ATOMIC_OR(ptr, val) (*(ptr) |= (val))
-#  define U8G_ATOMIC_AND(ptr, val) (*(ptr) &= (val))
-#  define U8G_ATOMIC_START()
-#  define U8G_ATOMIC_END()
-#endif /* U8G_INTERRUPT_SAFE */
+  #define U8G_ATOMIC_OR(ptr, val) (*(ptr) |= (val))
+  #define U8G_ATOMIC_AND(ptr, val) (*(ptr) &= (val))
+  #define U8G_ATOMIC_START()
+  #define U8G_ATOMIC_END()
+#endif  // U8G_INTERRUPT_SAFE
 
 
 /*===============================================================*/
@@ -167,46 +161,42 @@ typedef struct _u8g_dev_arg_irgb_t u8g_dev_arg_irgb_t;
 /*===============================================================*/
 /* generic */
 #ifdef U8G_16BIT
-typedef uint16_t u8g_uint_t;
-typedef int16_t u8g_int_t;
+  typedef uint16_t u8g_uint_t;
+  typedef int16_t u8g_int_t;
 #else
-typedef uint8_t u8g_uint_t;
-typedef int8_t u8g_int_t;
+  typedef uint8_t u8g_uint_t;
+  typedef int8_t u8g_int_t;
 #endif
 
 #ifdef OBSOLETE
-struct _u8g_box_t
-{
-  u8g_uint_t x0, y0, x1, y1;
-};
-typedef struct _u8g_box_t u8g_box_t;
-#endif /* OBSOLETE */
+  struct _u8g_box_t {
+    u8g_uint_t x0, y0, x1, y1;
+  };
+  typedef struct _u8g_box_t u8g_box_t;
+#endif  // OBSOLETE
 
 
 /*===============================================================*/
 /* device structure */
 
 #ifdef __XC8
-/* device prototype */
-typedef uint8_t (*u8g_dev_fnptr)(void *u8g, void *dev, uint8_t msg, void *arg);
+  // device prototype
+  typedef uint8_t (*u8g_dev_fnptr)(void *u8g, void *dev, uint8_t msg, void *arg);
 
-/* com prototype */
-typedef uint8_t (*u8g_com_fnptr)(void *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);
+  // com prototype
+  typedef uint8_t (*u8g_com_fnptr)(void *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);
 #else
-/* device prototype */
-typedef uint8_t (*u8g_dev_fnptr)(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg);
+  // device prototype
+  typedef uint8_t (*u8g_dev_fnptr)(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg);
 
-/* com prototype */
-typedef uint8_t (*u8g_com_fnptr)(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);
+  // com prototype
+  typedef uint8_t (*u8g_com_fnptr)(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);
 #endif
 
-
-
-struct _u8g_dev_t
-{
-  u8g_dev_fnptr dev_fn;         /* device procedure */
-  void *dev_mem;                /* device memory */
-  u8g_com_fnptr com_fn;         /* communication procedure */
+struct _u8g_dev_t {
+  u8g_dev_fnptr dev_fn;   // device procedure
+  void *dev_mem;          // device memory
+  u8g_com_fnptr com_fn;   // communication procedure
 };
 
 
@@ -381,8 +371,8 @@ extern u8g_dev_t u8g_dev_uc1610_dogxl160_2x_gr_sw_spi;
 extern u8g_dev_t u8g_dev_uc1610_dogxl160_2x_gr_hw_spi;
 
 /* Display: Generic KS0108b, Size: 128x64 monochrom */
-extern u8g_dev_t u8g_dev_ks0108_128x64;         /* official Arduino Library interface */
-extern u8g_dev_t u8g_dev_ks0108_128x64_fast;    /* faster, but uses private tables from the Arduino Library */
+extern u8g_dev_t u8g_dev_ks0108_128x64;         // official Arduino Library interface
+extern u8g_dev_t u8g_dev_ks0108_128x64_fast;    // faster, but uses private tables from the Arduino Library
 
 /* Nokia 84x48 Display with PCD8544 */
 extern u8g_dev_t u8g_dev_pcd8544_84x48_sw_spi;
@@ -492,7 +482,6 @@ void u8g_SetFlipDiscCallback(u8g_t *u8g, void (*cb)(uint8_t id, uint8_t page, ui
 /* ILI9325D based TFT */
 extern u8g_dev_t u8g_dev_ili9325d_320x240_8bit;
 
-
 /* SSD1351 OLED (breakout board from http://www.kickstarter.com/projects/ilsoftltd/colour-oled-breakout-board) */
 extern u8g_dev_t u8g_dev_ssd1351_128x128_332_sw_spi;
 extern u8g_dev_t u8g_dev_ssd1351_128x128_332_hw_spi;
@@ -515,7 +504,6 @@ extern u8g_dev_t u8g_dev_ssd1351_128x128gh_hicolor_hw_spi;
 extern u8g_dev_t u8g_dev_ssd1351_128x128gh_4x_hicolor_sw_spi;
 extern u8g_dev_t u8g_dev_ssd1351_128x128gh_4x_hicolor_hw_spi;
 
-
 /* SSD1353 OLED Palmtronics */
 extern u8g_dev_t u8g_dev_ssd1353_160x128_332_hw_spi;
 extern u8g_dev_t u8g_dev_ssd1353_160x128_hicolor_hw_spi;
@@ -536,97 +524,88 @@ extern u8g_dev_t u8g_dev_vs;
 /*===============================================================*/
 /* device messages */
 
-struct _u8g_dev_arg_pixel_t
-{
-  u8g_uint_t x, y;              /* will be modified */
-  uint8_t pixel;                  /* will be modified, pixel sequence or transparency value */
+struct _u8g_dev_arg_pixel_t {
+  u8g_uint_t x, y;    // will be modified
+  uint8_t pixel;      // will be modified, pixel sequence or transparency value
   uint8_t dir;
-  uint8_t color;      /* color or index value, red value for true color mode */
-  uint8_t hi_color;   /* high byte for 64K color mode, low byte is in "color", green value for true color mode */
-  uint8_t blue;     /* blue value in true color mode */
+  uint8_t color;      // color or index value, red value for true color mode
+  uint8_t hi_color;   // high byte for 64K color mode, low byte is in "color", green value for true color mode
+  uint8_t blue;       // blue value in true color mode
 };
-/* typedef struct _u8g_dev_arg_pixel_t u8g_dev_arg_pixel_t; */ /* forward decl */
 
 /* range for r,g,b: 0..255 */
 #define U8G_GET_HICOLOR_BY_RGB(r,g,b) (((uint16_t)((r)&0x0f8))<<8)|(((uint16_t)((g)&0x0fc))<<3)|(((uint16_t)((b)>>3)))
 
-struct _u8g_dev_arg_bbx_t
-{
+struct _u8g_dev_arg_bbx_t {
   u8g_uint_t x, y, w, h;
 };
-/* typedef struct _u8g_dev_arg_bbx_t u8g_dev_arg_bbx_t; */ /* forward decl */
 
-struct _u8g_box_t
-{
+struct _u8g_box_t {
   u8g_uint_t x0, y0, x1, y1;
 };
-/* typedef struct _u8g_box_t u8g_box_t; */ /* forward decl */
 
-struct _u8g_dev_arg_irgb_t
-{
+struct _u8g_dev_arg_irgb_t {
   u8g_uint_t idx, r, g, b;    /* index with rgb value */
 };
-/* typedef struct _u8g_dev_arg_irgb_t u8g_dev_arg_irgb_t; */ /* forward decl */
 
 
-
-#define U8G_DEV_MSG_INIT                10
-#define U8G_DEV_MSG_STOP                  11
+#define U8G_DEV_MSG_INIT                    10
+#define U8G_DEV_MSG_STOP                    11
 
 /* arg: pointer to uint8_t, contranst value between 0 and 255 */
-#define U8G_DEV_MSG_CONTRAST            15
+#define U8G_DEV_MSG_CONTRAST                15
 
-#define U8G_DEV_MSG_SLEEP_ON            16
-#define U8G_DEV_MSG_SLEEP_OFF            17
+#define U8G_DEV_MSG_SLEEP_ON                16
+#define U8G_DEV_MSG_SLEEP_OFF               17
 
-#define U8G_DEV_MSG_PAGE_FIRST                  20
-#define U8G_DEV_MSG_PAGE_NEXT                    21
+#define U8G_DEV_MSG_PAGE_FIRST              20
+#define U8G_DEV_MSG_PAGE_NEXT               21
 
-/* arg: u8g_dev_arg_bbx_t * */
-/* new algorithm with U8G_DEV_MSG_GET_PAGE_BOX makes this msg obsolete */
-/* #define U8G_DEV_MSG_IS_BBX_INTERSECTION 22 */
+/**
+ * arg: u8g_dev_arg_bbx_t *
+ * new algorithm with U8G_DEV_MSG_GET_PAGE_BOX makes this msg obsolete
+ */
+//#define U8G_DEV_MSG_IS_BBX_INTERSECTION     22
 
 /* arg: u8g_box_t *, fill structure with current page properties */
 #define U8G_DEV_MSG_GET_PAGE_BOX 23
 
-/*
-#define U8G_DEV_MSG_PRIMITIVE_START             30
-#define U8G_DEV_MSG_PRIMITIVE_END               31
-*/
+//#define U8G_DEV_MSG_PRIMITIVE_START         30
+//#define U8G_DEV_MSG_PRIMITIVE_END           31
 
 /* arg: u8g_dev_arg_pixel_t * */
-#define U8G_DEV_MSG_SET_TPIXEL        44
-#define U8G_DEV_MSG_SET_4TPIXEL     45
+#define U8G_DEV_MSG_SET_TPIXEL              44
+#define U8G_DEV_MSG_SET_4TPIXEL             45
 
-#define U8G_DEV_MSG_SET_PIXEL                           50
-#define U8G_DEV_MSG_SET_8PIXEL                          59
+#define U8G_DEV_MSG_SET_PIXEL               50
+#define U8G_DEV_MSG_SET_8PIXEL              59
 
-#define U8G_DEV_MSG_SET_COLOR_ENTRY                60
+#define U8G_DEV_MSG_SET_COLOR_ENTRY         60
 
-#define U8G_DEV_MSG_SET_XY_CB                           61
+#define U8G_DEV_MSG_SET_XY_CB               61
 
-#define U8G_DEV_MSG_GET_WIDTH                           70
-#define U8G_DEV_MSG_GET_HEIGHT                           71
-#define U8G_DEV_MSG_GET_MODE                  72
+#define U8G_DEV_MSG_GET_WIDTH               70
+#define U8G_DEV_MSG_GET_HEIGHT              71
+#define U8G_DEV_MSG_GET_MODE                72
 
 /*===============================================================*/
 /* device modes */
 #define U8G_MODE(is_index_mode, is_color, bits_per_pixel) (((is_index_mode)<<6) | ((is_color)<<5)|(bits_per_pixel))
 
-#define U8G_MODE_UNKNOWN     0
-#define U8G_MODE_BW     U8G_MODE(0, 0, 1)
-#define U8G_MODE_GRAY2BIT     U8G_MODE(0, 0, 2)
-#define U8G_MODE_R3G3B2  U8G_MODE(0, 1, 8)
-#define U8G_MODE_INDEX  U8G_MODE(1, 1, 8)
+#define U8G_MODE_UNKNOWN    0
+#define U8G_MODE_BW         U8G_MODE(0, 0, 1)
+#define U8G_MODE_GRAY2BIT   U8G_MODE(0, 0, 2)
+#define U8G_MODE_R3G3B2     U8G_MODE(0, 1, 8)
+#define U8G_MODE_INDEX      U8G_MODE(1, 1, 8)
 /* hicolor is R5G6B5 */
-#define U8G_MODE_HICOLOR  U8G_MODE(0, 1, 16)
+#define U8G_MODE_HICOLOR    U8G_MODE(0, 1, 16)
 /* truecolor  */
 #define U8G_MODE_TRUECOLOR  U8G_MODE(0, 1, 24)
 
 
-#define U8G_MODE_GET_BITS_PER_PIXEL(mode) ((mode)&31)
-#define U8G_MODE_IS_COLOR(mode) (((mode)&32)==0?0:1)
-#define U8G_MODE_IS_INDEX_MODE(mode) (((mode)&64)==0?0:1)
+#define U8G_MODE_GET_BITS_PER_PIXEL(mode)   ((mode)&31)
+#define U8G_MODE_IS_COLOR(mode)             (((mode)&32)==0?0:1)
+#define U8G_MODE_IS_INDEX_MODE(mode)        (((mode)&64)==0?0:1)
 
 
 /*===============================================================*/
@@ -637,19 +616,19 @@ struct _u8g_dev_arg_irgb_t
 
 /* com messages */
 
-#define U8G_COM_MSG_STOP        0
-#define U8G_COM_MSG_INIT        1
+#define U8G_COM_MSG_STOP          0
+#define U8G_COM_MSG_INIT          1
 
-#define U8G_COM_MSG_ADDRESS 2
+#define U8G_COM_MSG_ADDRESS       2
 
 /* CHIP_SELECT argument: number of the chip which needs to be activated, so this is more like high active */
-#define U8G_COM_MSG_CHIP_SELECT 3
+#define U8G_COM_MSG_CHIP_SELECT   3
 
-#define U8G_COM_MSG_RESET 4
+#define U8G_COM_MSG_RESET         4
 
-#define U8G_COM_MSG_WRITE_BYTE 5
-#define U8G_COM_MSG_WRITE_SEQ 6
-#define U8G_COM_MSG_WRITE_SEQ_P 7
+#define U8G_COM_MSG_WRITE_BYTE    5
+#define U8G_COM_MSG_WRITE_SEQ     6
+#define U8G_COM_MSG_WRITE_SEQ_P   7
 
 
 /* com driver */
@@ -658,245 +637,213 @@ struct _u8g_dev_arg_irgb_t
   #include <HAL_LCD_defines.h>
 #endif
 
-uint8_t u8g_com_null_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);               /* u8g_com_null.c */
+uint8_t u8g_com_null_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);                         // u8g_com_null.c
 
-uint8_t u8g_com_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr); /* requires U8G_WITH_PINLIST */
+uint8_t u8g_com_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);                   // requires U8G_WITH_PINLIST
 
-
-uint8_t u8g_com_arduino_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);        /* u8g_com_arduino_std_sw_spi.c */
-uint8_t u8g_com_arduino_hw_usart_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);      /* u8g_com_atmega_hw_usart_spi.c */
-uint8_t u8g_com_arduino_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);        /* u8g_com_arduino_sw_spi.c */
-uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);          /* u8g_com_arduino_hw_spi.c */
-uint8_t u8g_com_arduino_ATtiny85_std_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);          /* u8g_arduino_ATTiny85_std_hw_spi.c */
-uint8_t u8g_com_arduino_st7920_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);  /* u8g_com_arduino_st7920_spi.c */
-uint8_t u8g_com_arduino_st7920_custom_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr); /* u8g_com_arduino_st7920_custom.c */
-uint8_t u8g_com_arduino_st7920_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);  /* u8g_com_arduino_st7920_hw_spi.c */
-uint8_t u8g_com_arduino_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);           /* u8g_com_arduino_parallel.c */
-uint8_t u8g_com_arduino_fast_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);      /* u8g_com_arduino_fast_parallel.c */
-uint8_t u8g_com_arduino_port_d_wr_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);       /* u8g_com_arduino_port_d_wr.c */
-uint8_t u8g_com_arduino_no_en_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr); /* u8g_com_arduino_no_en_parallel.c */
-uint8_t u8g_com_arduino_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);    /* u8g_com_arduino_ssd_i2c.c */
+uint8_t u8g_com_arduino_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);           // u8g_com_arduino_std_sw_spi.c
+uint8_t u8g_com_arduino_hw_usart_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);         // u8g_com_atmega_hw_usart_spi.c
+uint8_t u8g_com_arduino_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);               // u8g_com_arduino_sw_spi.c
+uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);               // u8g_com_arduino_hw_spi.c
+uint8_t u8g_com_arduino_ATtiny85_std_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);  // u8g_arduino_ATTiny85_std_hw_spi.c
+uint8_t u8g_com_arduino_st7920_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);           // u8g_com_arduino_st7920_spi.c
+uint8_t u8g_com_arduino_st7920_custom_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);        // u8g_com_arduino_st7920_custom.c
+uint8_t u8g_com_arduino_st7920_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);        // u8g_com_arduino_st7920_hw_spi.c
+uint8_t u8g_com_arduino_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);             // u8g_com_arduino_parallel.c
+uint8_t u8g_com_arduino_fast_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);        // u8g_com_arduino_fast_parallel.c
+uint8_t u8g_com_arduino_port_d_wr_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);            // u8g_com_arduino_port_d_wr.c
+uint8_t u8g_com_arduino_no_en_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);       // u8g_com_arduino_no_en_parallel.c
+uint8_t u8g_com_arduino_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);              // u8g_com_arduino_ssd_i2c.c
 uint8_t u8g_com_arduino_uc_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);
-uint8_t u8g_com_arduino_t6963_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);      /* u8g_com_arduino_t6963.c */
+uint8_t u8g_com_arduino_t6963_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);                // u8g_com_arduino_t6963.c
 
-
-uint8_t u8g_com_atmega_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);      /* u8g_com_atmega_hw_spi.c */
-uint8_t u8g_com_atmega_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);      /* u8g_com_atmega_sw_spi.c */
-uint8_t u8g_com_atmega_st7920_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr); /* u8g_com_atmega_st7920_spi.c */
+uint8_t u8g_com_atmega_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);                // u8g_com_atmega_hw_spi.c
+uint8_t u8g_com_atmega_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);                // u8g_com_atmega_sw_spi.c
+uint8_t u8g_com_atmega_st7920_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);         // u8g_com_atmega_st7920_spi.c
 uint8_t u8g_com_atmega_st7920_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);
-uint8_t u8g_com_atmega_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);    /* u8g_com_atmega_parallel.c */
+uint8_t u8g_com_atmega_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);              // u8g_com_atmega_parallel.c
 
-uint8_t u8g_com_msp430_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);      /* u8g_com_msp430_hw_spi.c */
+uint8_t u8g_com_msp430_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);                // u8g_com_msp430_hw_spi.c
 
-uint8_t u8g_com_raspberrypi_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);                /* u8g_com_rasperrypi_hw_spi.c */
-uint8_t u8g_com_raspberrypi_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);    /* u8g_com_raspberrypi_ssd_i2c.c */
+uint8_t u8g_com_raspberrypi_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);           // u8g_com_rasperrypi_hw_spi.c
+uint8_t u8g_com_raspberrypi_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);          // u8g_com_raspberrypi_ssd_i2c.c
 
+uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);            // u8g_com_stm32duino_hw_spi.cpp
+uint8_t u8g_com_stm32duino_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);           // u8g_com_stm32duino_ssd_i2c.cpp
 
-uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);     /* u8g_com_stm32duino_hw_spi.cpp */
-uint8_t u8g_com_stm32duino_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);    /* u8g_com_stm32duino_ssd_i2c.cpp */
+uint8_t u8g_com_esp32_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);                // u8g_com_esp32_ssd_i2c.cpp
 
-uint8_t u8g_com_esp32_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);    /* u8g_com_esp32_ssd_i2c.cpp */
+uint8_t u8g_com_samd51_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);                // u8g_com_samd51_hw_spi.cpp
+uint8_t u8g_com_samd51_st7920_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);         // u8g_com_samd51_st7920_hw_spi.cpp
 
 /*
-  Translation of system specific com drives to generic com names
-  At the moment, the following generic com drives are available
-  U8G_COM_HW_SPI
-  U8G_COM_SW_SPI
-  U8G_COM_PARALLEL
-  U8G_COM_T6963
-  U8G_COM_FAST_PARALLEL
-  U8G_COM_SSD_I2C
-  U8G_COM_UC_I2C
+ * Translation of system specific com drives to generic com names
+ * At the moment, the following generic com drives are available
+ * U8G_COM_HW_SPI
+ * U8G_COM_SW_SPI
+ * U8G_COM_PARALLEL
+ * U8G_COM_T6963
+ * U8G_COM_FAST_PARALLEL
+ * U8G_COM_SSD_I2C
+ * U8G_COM_UC_I2C
 
-defined(__18CXX) || defined(__PIC32MX)
+ * defined(__18CXX) || defined(__PIC32MX)
+ */
 
-*/
-
-/* ==== HW SPI, msp430  ====*/
 #ifdef __MSP430__
-#define U8G_COM_HW_SPI u8g_com_msp430_hw_spi_fn
-#define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
-#endif
+  /* ==== HW SPI, msp430  ====*/
+  #define U8G_COM_HW_SPI        u8g_com_msp430_hw_spi_fn
+  #define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
+#elif defined(U8G_RASPBERRY_PI)
+  /* ==== HW SPI, Raspberry PI ====*/
+  #define U8G_COM_HW_SPI  u8g_com_raspberrypi_hw_spi_fn
+  #define U8G_COM_SW_SPI  u8g_com_null_fn
 
-/* ==== HW SPI, Raspberry PI ====*/
-#ifdef U8G_RASPBERRY_PI
-#define U8G_COM_HW_SPI u8g_com_raspberrypi_hw_spi_fn
-#define U8G_COM_SW_SPI u8g_com_null_fn
-
-/* I'm sure there must be some mad reason for needing this */
-#define U8G_COM_ST7920_SW_SPI u8g_com_null_fn
-#define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
+  // I'm sure there must be some mad reason for needing this
+  #define U8G_COM_ST7920_SW_SPI   u8g_com_null_fn
+  #define U8G_COM_ST7920_HW_SPI   u8g_com_null_fn
 #endif
 
 /* ==== HW SPI, Arduino ====*/
 #ifdef ARDUINO
-#ifdef __AVR__
-
-#ifdef __AVR_ATtiny85__
-#define U8G_COM_HW_SPI u8g_com_arduino_ATtiny85_std_hw_spi_fn
-#define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
-#else
-
-#define U8G_COM_HW_SPI u8g_com_arduino_hw_spi_fn
-#ifdef __AVR_ATmega32U4__
-#define U8G_COM_HW_USART_SPI u8g_com_arduino_hw_usart_spi_fn
-#endif /* __AVR_ATmega32U4__ */
-#define U8G_COM_ST7920_HW_SPI u8g_com_arduino_st7920_hw_spi_fn
-#endif /* __AVR_ATtiny85__ */
-
-#elif defined(__18CXX) || defined(__PIC32MX)
-#define U8G_COM_HW_SPI u8g_com_null_fn
-#define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
-#elif defined(__SAM3X8E__)   /* Arduino Due */
-#define U8G_COM_HW_SPI u8g_com_arduino_hw_spi_fn
-#define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
+  #ifdef __AVR__
+    #ifdef __AVR_ATtiny85__
+      #define U8G_COM_HW_SPI          u8g_com_arduino_ATtiny85_std_hw_spi_fn
+      #define U8G_COM_ST7920_HW_SPI   u8g_com_null_fn
+    #else
+      #define U8G_COM_HW_SPI          u8g_com_arduino_hw_spi_fn
+      #ifdef __AVR_ATmega32U4__
+        #define U8G_COM_HW_USART_SPI  u8g_com_arduino_hw_usart_spi_fn
+      #endif  // __AVR_ATmega32U4__
+      #define U8G_COM_ST7920_HW_SPI   u8g_com_arduino_st7920_hw_spi_fn
+    #endif  // __AVR_ATtiny85__
+  #elif defined(__18CXX) || defined(__PIC32MX)
+    #define U8G_COM_HW_SPI            u8g_com_null_fn
+    #define U8G_COM_ST7920_HW_SPI     u8g_com_null_fn
+  #elif defined(__SAM3X8E__)   // Arduino Due
+    #define U8G_COM_HW_SPI            u8g_com_arduino_hw_spi_fn
+    #define U8G_COM_ST7920_HW_SPI     u8g_com_null_fn
+  #endif
 #endif
-#endif
+
 /* ==== HW SPI, not Arduino ====*/
 #ifndef U8G_COM_HW_SPI
-#ifdef __AVR__
-#define U8G_COM_HW_SPI u8g_com_atmega_hw_spi_fn
-#define U8G_COM_ST7920_HW_SPI u8g_com_atmega_st7920_hw_spi_fn
-#endif
+  #ifdef __AVR__
+    #define U8G_COM_HW_SPI            u8g_com_atmega_hw_spi_fn
+    #define U8G_COM_ST7920_HW_SPI     u8g_com_atmega_st7920_hw_spi_fn
+  #elif defined(ARDUINO_ARCH_STM32)
+    #define U8G_COM_HW_SPI            u8g_com_stm32duino_hw_spi_fn
+    #define U8G_COM_ST7920_HW_SPI     u8g_com_null_fn
+  #elif defined(__SAMD51__)
+    #define U8G_COM_HW_SPI            u8g_com_samd51_hw_spi_fn
+    #define U8G_COM_ST7920_HW_SPI     u8g_com_samd51_st7920_hw_spi_fn
+  #endif
 #endif
 
 #ifndef U8G_COM_HW_SPI
-#ifdef ARDUINO_ARCH_STM32
-#define U8G_COM_HW_SPI u8g_com_stm32duino_hw_spi_fn
-#define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
-#endif
-#endif
-
-#ifndef U8G_COM_HW_SPI
-#define U8G_COM_HW_SPI u8g_com_null_fn
-#define U8G_COM_ST7920_HW_SPI u8g_com_null_fn
+  #define U8G_COM_HW_SPI              u8g_com_null_fn
+  #define U8G_COM_ST7920_HW_SPI       u8g_com_null_fn
 #endif
 #ifndef U8G_COM_HW_USART_SPI
-#define U8G_COM_HW_USART_SPI u8g_com_null_fn
+  #define U8G_COM_HW_USART_SPI        u8g_com_null_fn
 #endif
 
 
 /* ==== SW SPI, Arduino ====*/
 #ifdef ARDUINO
-#ifdef __AVR__
-#define U8G_COM_SW_SPI u8g_com_arduino_sw_spi_fn
-#define U8G_COM_ST7920_SW_SPI u8g_com_arduino_st7920_spi_fn
-#elif defined(__18CXX) || defined(__PIC32MX)
-#define U8G_COM_SW_SPI u8g_com_arduino_sw_spi_fn
-#define U8G_COM_ST7920_SW_SPI u8g_com_arduino_st7920_spi_fn
-#elif defined(__SAM3X8E__)   /* Arduino Due */
-//#define U8G_COM_SW_SPI u8g_com_arduino_std_sw_spi_fn
-#define U8G_COM_SW_SPI u8g_com_arduino_sw_spi_fn
-#define U8G_COM_ST7920_SW_SPI u8g_com_arduino_st7920_spi_fn
-#elif defined(__arm__)   /* Teensy */
-#define U8G_COM_SW_SPI u8g_com_arduino_std_sw_spi_fn
-#define U8G_COM_ST7920_SW_SPI u8g_com_arduino_st7920_spi_fn
-#endif
-#endif
+  #if defined(__AVR__) || defined(__18CXX) || defined(__PIC32MX) || defined(__SAM3X8E__)
+    #define U8G_COM_SW_SPI            u8g_com_arduino_sw_spi_fn
+    #define U8G_COM_ST7920_SW_SPI     u8g_com_arduino_st7920_spi_fn
+  #elif defined(__arm__)
+    #define U8G_COM_SW_SPI            u8g_com_arduino_std_sw_spi_fn
+    #define U8G_COM_ST7920_SW_SPI     u8g_com_arduino_st7920_spi_fn
+    #endif
+  #endif
 
 #ifndef U8G_COM_SW_SPI
-/* ==== SW SPI, not Arduino ====*/
+  /* ==== SW SPI, not Arduino ====*/
 
-/* ==== SW SPI, msp430  ====*/
-#ifdef __MSP430__
-#define U8G_COM_SW_SPI u8g_com_std_sw_spi_fn
-#define U8G_COM_ST7920_SW_SPI u8g_com_null_fn
-#endif
-
-#ifdef __AVR__
-#define U8G_COM_SW_SPI u8g_com_atmega_sw_spi_fn
-#define U8G_COM_ST7920_SW_SPI u8g_com_atmega_st7920_sw_spi_fn
-#endif
-#endif
-#ifndef U8G_COM_SW_SPI
-#define U8G_COM_SW_SPI u8g_com_null_fn
-#define U8G_COM_ST7920_SW_SPI u8g_com_null_fn
+  #ifdef __MSP430__
+    #define U8G_COM_SW_SPI          u8g_com_std_sw_spi_fn
+    #define U8G_COM_ST7920_SW_SPI   u8g_com_null_fn
+  #elif defined(__AVR__)
+    #define U8G_COM_SW_SPI          u8g_com_atmega_sw_spi_fn
+    #define U8G_COM_ST7920_SW_SPI   u8g_com_atmega_st7920_sw_spi_fn
+  #else
+    #define U8G_COM_SW_SPI          u8g_com_null_fn
+    #define U8G_COM_ST7920_SW_SPI   u8g_com_null_fn
+  #endif
 #endif
 
 /* ==== Parallel interface, Arduino ====*/
 #ifdef ARDUINO
-#ifdef __AVR__
-#define U8G_COM_PARALLEL u8g_com_arduino_parallel_fn
-#define U8G_COM_FAST_PARALLEL u8g_com_arduino_fast_parallel_fn
-#define U8G_COM_T6963  u8g_com_arduino_t6963_fn
-#else /* Arduino Due, Chipkit PIC32 */
-#define U8G_COM_PARALLEL u8g_com_arduino_parallel_fn
-#define U8G_COM_FAST_PARALLEL u8g_com_arduino_parallel_fn
-#define U8G_COM_T6963  u8g_com_null_fn
+  #ifdef __AVR__
+    #define U8G_COM_PARALLEL        u8g_com_arduino_parallel_fn
+    #define U8G_COM_FAST_PARALLEL   u8g_com_arduino_fast_parallel_fn
+    #define U8G_COM_T6963           u8g_com_arduino_t6963_fn
+  #else   // Arduino Due, Chipkit PIC32
+    #define U8G_COM_PARALLEL        u8g_com_arduino_parallel_fn
+    #define U8G_COM_FAST_PARALLEL   u8g_com_arduino_parallel_fn
+    #define U8G_COM_T6963           u8g_com_null_fn
+  #endif
 #endif
-#endif
+
 #ifndef U8G_COM_PARALLEL
-#ifdef __AVR__
-#define U8G_COM_PARALLEL u8g_com_atmega_parallel_fn
-#define U8G_COM_FAST_PARALLEL u8g_com_atmega_parallel_fn
-#define U8G_COM_T6963  u8g_com_null_fn
-#endif
-#endif
-#ifndef U8G_COM_PARALLEL
-#define U8G_COM_PARALLEL u8g_com_null_fn
-#define U8G_COM_FAST_PARALLEL u8g_com_null_fn
-#define U8G_COM_T6963  u8g_com_null_fn
+  #ifdef __AVR__
+    #define U8G_COM_PARALLEL        u8g_com_atmega_parallel_fn
+    #define U8G_COM_FAST_PARALLEL   u8g_com_atmega_parallel_fn
+    #define U8G_COM_T6963           u8g_com_null_fn
+  #else
+    #define U8G_COM_PARALLEL        u8g_com_null_fn
+    #define U8G_COM_FAST_PARALLEL   u8g_com_null_fn
+    #define U8G_COM_T6963           u8g_com_null_fn
+  #endif
 #endif
 
 #ifdef ARDUINO
-#ifdef __AVR__
-#define U8G_COM_SSD_I2C u8g_com_arduino_ssd_i2c_fn
-#define U8G_COM_UC_I2C u8g_com_arduino_uc_i2c_fn
-#endif
-#endif
-
-#ifndef U8G_COM_SSD_I2C
-#if defined(__AVR__) || defined(__SAM3X8E__)
-/* AVR variant and also DUE can use the arduino version at the moment */
-#define U8G_COM_SSD_I2C u8g_com_arduino_ssd_i2c_fn
-#endif
+  #ifdef __AVR__
+    #define U8G_COM_SSD_I2C   u8g_com_arduino_ssd_i2c_fn
+    #define U8G_COM_UC_I2C    u8g_com_arduino_uc_i2c_fn
+  #endif
 #endif
 
 #ifndef U8G_COM_SSD_I2C
-#ifdef U8G_RASPBERRY_PI
-#define U8G_COM_SSD_I2C u8g_com_raspberrypi_ssd_i2c_fn
-#endif
-#endif
-
-#ifndef U8G_COM_SSD_I2C
-#ifdef ARDUINO_ARCH_STM32
-#define U8G_COM_SSD_I2C u8g_com_stm32duino_ssd_i2c_fn
-#endif
-#endif
-
-#ifndef U8G_COM_SSD_I2C
-#ifdef ARDUINO_ARCH_ESP32
-#define U8G_COM_SSD_I2C u8g_com_esp32_ssd_i2c_fn
-#endif
-#endif
-
-#ifndef U8G_COM_SSD_I2C
-#define U8G_COM_SSD_I2C u8g_com_null_fn
+  #if defined(__AVR__) || defined(__SAM3X8E__)
+    // AVR variant and also DUE can use the arduino version at the moment
+    #define U8G_COM_SSD_I2C   u8g_com_arduino_ssd_i2c_fn
+  #elif defined(U8G_RASPBERRY_PI)
+    #define U8G_COM_SSD_I2C   u8g_com_raspberrypi_ssd_i2c_fn
+  #elif defined(ARDUINO_ARCH_STM32)
+    #define U8G_COM_SSD_I2C   u8g_com_stm32duino_ssd_i2c_fn
+  #elif defined(ARDUINO_ARCH_ESP32)
+    #define U8G_COM_SSD_I2C   u8g_com_esp32_ssd_i2c_fn
+  #else
+    #define U8G_COM_SSD_I2C   u8g_com_null_fn
+  #endif
 #endif
 
 #ifndef U8G_COM_UC_I2C
-#ifdef __AVR__
-/* AVR variant can use the arduino version at the moment */
-#define U8G_COM_UC_I2C u8g_com_arduino_uc_i2c_fn
-#endif
-#endif
-#ifndef U8G_COM_UC_I2C
-#define U8G_COM_UC_I2C u8g_com_null_fn
+  #ifdef __AVR__
+    // AVR variant can use the arduino version at the moment
+    #define U8G_COM_UC_I2C  u8g_com_arduino_uc_i2c_fn
+  #else
+    #define U8G_COM_UC_I2C  u8g_com_null_fn
+  #endif
 #endif
 
 
 /*===============================================================*/
 /* com api */
 
-#define U8G_SPI_CLK_CYCLE_50NS 1
-#define U8G_SPI_CLK_CYCLE_300NS 2
-#define U8G_SPI_CLK_CYCLE_400NS 3
-#define U8G_SPI_CLK_CYCLE_NONE 255
+#define U8G_SPI_CLK_CYCLE_50NS    1
+#define U8G_SPI_CLK_CYCLE_300NS   2
+#define U8G_SPI_CLK_CYCLE_400NS   3
+#define U8G_SPI_CLK_CYCLE_NONE    255
 
 uint8_t u8g_InitCom(u8g_t *u8g, u8g_dev_t *dev, uint8_t clk_cycle_time);
 void u8g_StopCom(u8g_t *u8g, u8g_dev_t *dev);
-void u8g_EnableCom(u8g_t *u8g, u8g_dev_t *dev);         /* obsolete */
-void u8g_DisableCom(u8g_t *u8g, u8g_dev_t *dev);        /* obsolete */
+void u8g_EnableCom(u8g_t *u8g, u8g_dev_t *dev);         // obsolete
+void u8g_DisableCom(u8g_t *u8g, u8g_dev_t *dev);        // obsolete
 void u8g_SetChipSelect(u8g_t *u8g, u8g_dev_t *dev, uint8_t cs);
 void u8g_SetResetLow(u8g_t *u8g, u8g_dev_t *dev);
 void u8g_SetResetHigh(u8g_t *u8g, u8g_dev_t *dev);
@@ -907,14 +854,13 @@ uint8_t u8g_WriteSequenceP(u8g_t *u8g, u8g_dev_t *dev, uint8_t cnt, const uint8_
 
 
 
-#define U8G_ESC_DLY(x) 255, ((x) & 0x7f)
-#define U8G_ESC_CS(x) 255, (0xd0 | ((x)&0x0f))
-#define U8G_ESC_ADR(x) 255, (0xe0 | ((x)&0x0f))
-#define U8G_ESC_RST(x) 255, (0xc0 | ((x)&0x0f))
-#define U8G_ESC_VCC(x) 255, (0xbe | ((x)&0x01))
-#define U8G_ESC_END 255, 254
-#define U8G_ESC_255 255, 255
-//uint8_t u8g_WriteEscSeqP(u8g_t *u8g, u8g_dev_t *dev, u8g_pgm_uint8_t *esc_seq);
+#define U8G_ESC_DLY(x)  255, ((x) & 0x7f)
+#define U8G_ESC_CS(x)   255, (0xd0 | ((x)&0x0f))
+#define U8G_ESC_ADR(x)  255, (0xe0 | ((x)&0x0f))
+#define U8G_ESC_RST(x)  255, (0xc0 | ((x)&0x0f))
+#define U8G_ESC_VCC(x)  255, (0xbe | ((x)&0x01))
+#define U8G_ESC_END     255, 254
+#define U8G_ESC_255     255, 255
 uint8_t u8g_WriteEscSeqP(u8g_t *u8g, u8g_dev_t *dev, const uint8_t *esc_seq);
 
 
@@ -935,7 +881,7 @@ void u8g_com_arduino_assign_pin_output_high(u8g_t *u8g);
 
 /* create internal number from port and pin */
 uint8_t u8g_Pin(uint8_t port, uint8_t bitpos);
-#define PN(port,bitpos) u8g_Pin(port,bitpos)
+#define PN(port,bitpos)   u8g_Pin(port,bitpos)
 
 /* low level procedures */
 void u8g_SetPinOutput(uint8_t internal_pin_number);
@@ -950,8 +896,7 @@ void u8g_SetPILevel(u8g_t *u8g, uint8_t pi, uint8_t level);
 
 /*===============================================================*/
 /* page */
-struct _u8g_page_t
-{
+struct _u8g_page_t {
   u8g_uint_t page_height;
   u8g_uint_t total_height;
   u8g_uint_t page_y0;
@@ -961,14 +906,13 @@ struct _u8g_page_t
 typedef struct _u8g_page_t u8g_page_t;
 
 void u8g_page_First(u8g_page_t *p) U8G_NOINLINE;                                                                                        /* u8g_page.c */
-void u8g_page_Init(u8g_page_t *p, u8g_uint_t page_height, u8g_uint_t total_height ) U8G_NOINLINE;            /* u8g_page.c */
+void u8g_page_Init(u8g_page_t *p, u8g_uint_t page_height, u8g_uint_t total_height ) U8G_NOINLINE;       // u8g_page.c
 uint8_t u8g_page_Next(u8g_page_t *p) U8G_NOINLINE;                                                                                   /* u8g_page.c */
 
 /*===============================================================*/
 /* page buffer (pb) */
 
-struct _u8g_pb_t
-{
+struct _u8g_pb_t {
   u8g_page_t p;
   u8g_uint_t width;   /* pixel width */
   void *buf;
@@ -985,26 +929,26 @@ void u8g_pb_GetPageBox(u8g_pb_t *pb, u8g_box_t *box);
 uint8_t u8g_pb_Is8PixelVisible(u8g_pb_t *b, u8g_dev_arg_pixel_t *arg_pixel);
 uint8_t u8g_pb_WriteBuffer(u8g_pb_t *b, u8g_t *u8g, u8g_dev_t *dev);
 
-/*
-  note on __attribute__ ((nocommon))
-    AVR scripts often use  --gc-sections on the linker to remove unused section.
-    This works fine for initialed data and text sections. In principle .bss is also
-    handled, but the name##_pb definition is not removed. Reason is, that
-    array definitions are placed in the COMMON section, by default
-    The attribute "nocommon" removes this automatic assignment to the
-    COMMON section and directly puts it into .bss. As a result, if more
-    than one buffer is defined in one file, then it will be removed with --gc-sections
-
-    .. not sure if Arduino IDE uses -fno-common... if yes, then the attribute is
-    redundant.
-*/
+/**
+ * note on __attribute__ ((nocommon))
+ *   AVR scripts often use  --gc-sections on the linker to remove unused section.
+ *   This works fine for initialed data and text sections. In principle .bss is also
+ *   handled, but the name##_pb definition is not removed. Reason is, that
+ *   array definitions are placed in the COMMON section, by default
+ *   The attribute "nocommon" removes this automatic assignment to the
+ *   COMMON section and directly puts it into .bss. As a result, if more
+ *   than one buffer is defined in one file, then it will be removed with --gc-sections
+ *
+ *   .. not sure if Arduino IDE uses -fno-common... if yes, then the attribute is
+ *   redundant.
+ */
 #define U8G_PB_DEV(name, width, height, page_height, dev_fn, com_fn) \
-uint8_t name##_buf[width] U8G_NOCOMMON ; \
-u8g_pb_t name##_pb = { {page_height, height, 0, 0, 0},  width, name##_buf}; \
-u8g_dev_t name = { dev_fn, &name##_pb, com_fn }
+  uint8_t name##_buf[width] U8G_NOCOMMON ; \
+  u8g_pb_t name##_pb = { {page_height, height, 0, 0, 0}, width, name##_buf}; \
+  u8g_dev_t name = { dev_fn, &name##_pb, com_fn }
 
 
-void u8g_pb8v1_Init(u8g_pb_t *b, void *buf, u8g_uint_t width)   U8G_NOINLINE;
+void u8g_pb8v1_Init(u8g_pb_t *b, void *buf, u8g_uint_t width) U8G_NOINLINE;
 void u8g_pb8v1_Clear(u8g_pb_t *b) U8G_NOINLINE;
 
 uint8_t u8g_pb8v1_IsYIntersection(u8g_pb_t *b, u8g_uint_t v0, u8g_uint_t v1);
@@ -1043,7 +987,6 @@ uint8_t u8g_dev_pb8h2_base_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg
 uint8_t u8g_dev_pb16h2_base_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg);
 
 
-
 /* u8g_pb8h1f.c */
 uint8_t u8g_dev_pb8h1f_base_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg);
 
@@ -1073,68 +1016,65 @@ typedef void (*u8g_state_cb)(uint8_t msg);
 /* PI = Pin Index */
 
 /* reset pin, usually optional */
-#define U8G_PI_RESET 0
+#define U8G_PI_RESET        0
 
 /* address / data or instruction */
-#define U8G_PI_A0 1
-#define U8G_PI_DI 1
+#define U8G_PI_A0           1
+#define U8G_PI_DI           1
 
 /* chip select line */
-#define U8G_PI_CS 2
-#define U8G_PI_CS1 2
-#define U8G_PI_CS2 3
+#define U8G_PI_CS           2
+#define U8G_PI_CS1          2
+#define U8G_PI_CS2          3
 /* Feb 2013: A0 state moved from 7 to 3 for t6963 controller*/
-#define U8G_PI_A0_STATE 3
+#define U8G_PI_A0_STATE     3
 
 /* enable / clock signal */
-#define U8G_PI_EN 4
-#define U8G_PI_CS_STATE 4
-#define U8G_PI_SCK 4
-#define U8G_PI_SCL 4
-#define U8G_PI_RD 4
+#define U8G_PI_EN           4
+#define U8G_PI_CS_STATE     4
+#define U8G_PI_SCK          4
+#define U8G_PI_SCL          4
+#define U8G_PI_RD           4
 
 
 /* data pins, shared with SPI and I2C pins */
-#define U8G_PI_D0 5
-#define U8G_PI_MOSI 5
-#define U8G_PI_SDA 5
-#define U8G_PI_D1 6
-#define U8G_PI_MISO 6
-#define U8G_PI_D2 7
-#define U8G_PI_D3 8
-#define U8G_PI_SET_A0 8
-#define U8G_PI_D4 9
-#define U8G_PI_D5 10
-#define U8G_PI_I2C_OPTION 11
-#define U8G_PI_D6 11
-#define U8G_PI_D7 12
+#define U8G_PI_D0           5
+#define U8G_PI_MOSI         5
+#define U8G_PI_SDA          5
+#define U8G_PI_D1           6
+#define U8G_PI_MISO         6
+#define U8G_PI_D2           7
+#define U8G_PI_D3           8
+#define U8G_PI_SET_A0       8
+#define U8G_PI_D4           9
+#define U8G_PI_D5           10
+#define U8G_PI_I2C_OPTION   11
+#define U8G_PI_D6           11
+#define U8G_PI_D7           12
 
 /* read/write pin, must be the last pin in the list, this means U8G_PIN_LIST_LEN =  U8G_PI_RW + 1*/
-#define U8G_PI_WR 13
-#define U8G_PI_RW 13
+#define U8G_PI_WR           13
+#define U8G_PI_RW           13
 
-#define U8G_PIN_LIST_LEN 14
+#define U8G_PIN_LIST_LEN    14
 
+#define U8G_PIN_DUMMY       254
+#define U8G_PIN_NONE        255
 
-#define U8G_PIN_DUMMY 254
-#define U8G_PIN_NONE 255
+#define U8G_FONT_HEIGHT_MODE_TEXT   0
+#define U8G_FONT_HEIGHT_MODE_XTEXT  1
+#define U8G_FONT_HEIGHT_MODE_ALL    2
 
-#define U8G_FONT_HEIGHT_MODE_TEXT 0
-#define U8G_FONT_HEIGHT_MODE_XTEXT 1
-#define U8G_FONT_HEIGHT_MODE_ALL 2
-
-struct _u8g_t
-{
+struct _u8g_t {
   u8g_uint_t width;
   u8g_uint_t height;
 
-
-  u8g_dev_t *dev;               /* first device in the device chain */
-  const u8g_pgm_uint8_t *font;             /* regular font for all text procedures */
-  const u8g_pgm_uint8_t *cursor_font;  /* special font for cursor procedures */
+  u8g_dev_t *dev;                       // first device in the device chain
+  const u8g_pgm_uint8_t *font;          // regular font for all text procedures
+  const u8g_pgm_uint8_t *cursor_font;   // special font for cursor procedures
   uint8_t cursor_fg_color, cursor_bg_color;
   uint8_t cursor_encoding;
-  uint8_t mode;                         /* display mode, one of U8G_MODE_xxx */
+  uint8_t mode;                         // display mode, one of U8G_MODE_xxx
   u8g_uint_t cursor_x;
   u8g_uint_t cursor_y;
   u8g_draw_cursor_fn cursor_fn;
@@ -1149,7 +1089,7 @@ struct _u8g_t
   uint8_t font_height_mode;
   int8_t font_ref_ascent;
   int8_t font_ref_descent;
-  uint8_t font_line_spacing_factor;     /* line_spacing = factor * (ascent - descent) / 64 */
+  uint8_t font_line_spacing_factor;     // line_spacing = factor * (ascent - descent) / 64
   uint8_t line_spacing;
 
   u8g_dev_arg_pixel_t arg_pixel;
@@ -1161,13 +1101,13 @@ struct _u8g_t
 
   u8g_state_cb state_cb;
 
-  u8g_box_t current_page;   /* current box of the visible page */
+  u8g_box_t current_page;               // current box of the visible page
 
 };
 
-#define u8g_GetFontAscent(u8g) ((u8g)->font_ref_ascent)
-#define u8g_GetFontDescent(u8g) ((u8g)->font_ref_descent)
-#define u8g_GetFontLineSpacing(u8g) ((u8g)->line_spacing)
+#define u8g_GetFontAscent(u8g)        ((u8g)->font_ref_ascent)
+#define u8g_GetFontDescent(u8g)       ((u8g)->font_ref_descent)
+#define u8g_GetFontLineSpacing(u8g)   ((u8g)->line_spacing)
 
 uint8_t u8g_call_dev_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg);
 
@@ -1178,23 +1118,23 @@ uint8_t u8g_SetContrastLL(u8g_t *u8g, u8g_dev_t *dev, uint8_t contrast);
 void u8g_DrawPixelLL(u8g_t *u8g, u8g_dev_t *dev, u8g_uint_t x, u8g_uint_t y);
 void u8g_Draw8PixelLL(u8g_t *u8g, u8g_dev_t *dev, u8g_uint_t x, u8g_uint_t y, uint8_t dir, uint8_t pixel);
 void u8g_Draw4TPixelLL(u8g_t *u8g, u8g_dev_t *dev, u8g_uint_t x, u8g_uint_t y, uint8_t dir, uint8_t pixel);
-uint8_t u8g_IsBBXIntersectionLL(u8g_t *u8g, u8g_dev_t *dev, u8g_uint_t x, u8g_uint_t y, u8g_uint_t w, u8g_uint_t h);  /* obsolete */
+uint8_t u8g_IsBBXIntersectionLL(u8g_t *u8g, u8g_dev_t *dev, u8g_uint_t x, u8g_uint_t y, u8g_uint_t w, u8g_uint_t h);    // obsolete
 u8g_uint_t u8g_GetWidthLL(u8g_t *u8g, u8g_dev_t *dev);
 u8g_uint_t u8g_GetHeightLL(u8g_t *u8g, u8g_dev_t *dev);
 
 void u8g_UpdateDimension(u8g_t *u8g);
-uint8_t u8g_Begin(u8g_t *u8g);        /* reset device, put it into default state and call u8g_UpdateDimension() */
-uint8_t u8g_Init(u8g_t *u8g, u8g_dev_t *dev);   /* only usefull if the device only as hardcoded ports */
-uint8_t u8g_InitComFn(u8g_t *u8g, u8g_dev_t *dev, u8g_com_fnptr com_fn);  /* Init procedure for anything which is not Arduino or AVR (e.g. ARM, but not Due, which is Arduino) */
+uint8_t u8g_Begin(u8g_t *u8g);                  // reset device, put it into default state and call u8g_UpdateDimension()
+uint8_t u8g_Init(u8g_t *u8g, u8g_dev_t *dev);   // only usefull if the device only as hardcoded ports
+uint8_t u8g_InitComFn(u8g_t *u8g, u8g_dev_t *dev, u8g_com_fnptr com_fn);    // Init procedure for anything which is not Arduino or AVR (e.g. ARM, but not Due, which is Arduino)
 
 #ifdef U8G_WITH_PINLIST
-uint8_t u8g_InitSPI(u8g_t *u8g, u8g_dev_t *dev, uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset);
-uint8_t u8g_InitHWSPI(u8g_t *u8g, u8g_dev_t *dev, uint8_t cs, uint8_t a0, uint8_t reset);
-uint8_t u8g_InitI2C(u8g_t *u8g, u8g_dev_t *dev, uint8_t options); /* use U8G_I2C_OPT_NONE as options */
-uint8_t u8g_Init8BitFixedPort(u8g_t *u8g, u8g_dev_t *dev, uint8_t en, uint8_t cs, uint8_t di, uint8_t rw, uint8_t reset);
-uint8_t u8g_Init8Bit(u8g_t *u8g, u8g_dev_t *dev, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7,
+  uint8_t u8g_InitSPI(u8g_t *u8g, u8g_dev_t *dev, uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset);
+  uint8_t u8g_InitHWSPI(u8g_t *u8g, u8g_dev_t *dev, uint8_t cs, uint8_t a0, uint8_t reset);
+  uint8_t u8g_InitI2C(u8g_t *u8g, u8g_dev_t *dev, uint8_t options);     // use U8G_I2C_OPT_NONE as options
+  uint8_t u8g_Init8BitFixedPort(u8g_t *u8g, u8g_dev_t *dev, uint8_t en, uint8_t cs, uint8_t di, uint8_t rw, uint8_t reset);
+  uint8_t u8g_Init8Bit(u8g_t *u8g, u8g_dev_t *dev, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7,
   uint8_t en, uint8_t cs1, uint8_t cs2, uint8_t di, uint8_t rw, uint8_t reset);
-uint8_t u8g_InitRW8Bit(u8g_t *u8g, u8g_dev_t *dev, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7,
+  uint8_t u8g_InitRW8Bit(u8g_t *u8g, u8g_dev_t *dev, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7,
   uint8_t cs, uint8_t a0, uint8_t wr, uint8_t rd, uint8_t reset);
 #endif
 
@@ -1228,30 +1168,28 @@ void u8g_SetDefaultMidColor(u8g_t *u8g);
 #define u8g_GetWidth(u8g) ((u8g)->width)
 #define u8g_GetHeight(u8g) ((u8g)->height)
 #define u8g_GetMode(u8g) ((u8g)->mode)
-/*
-  U8G_MODE_GET_BITS_PER_PIXEL(u8g_GetMode(u8g))
-  U8G_MODE_IS_COLOR(u8g_GetMode(u8g))
-*/
+//  U8G_MODE_GET_BITS_PER_PIXEL(u8g_GetMode(u8g))
+//  U8G_MODE_IS_COLOR(u8g_GetMode(u8g))
 
 /* u8g_state.c */
-#define U8G_STATE_ENV_IDX 0
-#define U8G_STATE_U8G_IDX 1
-#define U8G_STATE_RESTORE 0
-#define U8G_STATE_BACKUP 1
-#define U8G_STATE_MSG_COMPOSE(cmd,idx) (((cmd)<<1) | (idx))
+#define U8G_STATE_ENV_IDX               0
+#define U8G_STATE_U8G_IDX               1
+#define U8G_STATE_RESTORE               0
+#define U8G_STATE_BACKUP                1
+#define U8G_STATE_MSG_COMPOSE(cmd,idx)  (((cmd)<<1) | (idx))
 
-#define U8G_STATE_MSG_RESTORE_ENV U8G_STATE_MSG_COMPOSE(U8G_STATE_RESTORE,U8G_STATE_ENV_IDX)
-#define U8G_STATE_MSG_BACKUP_ENV U8G_STATE_MSG_COMPOSE(U8G_STATE_BACKUP,U8G_STATE_ENV_IDX)
-#define U8G_STATE_MSG_RESTORE_U8G U8G_STATE_MSG_COMPOSE(U8G_STATE_RESTORE,U8G_STATE_U8G_IDX)
-#define U8G_STATE_MSG_BACKUP_U8G U8G_STATE_MSG_COMPOSE(U8G_STATE_BACKUP,U8G_STATE_U8G_IDX)
+#define U8G_STATE_MSG_RESTORE_ENV   U8G_STATE_MSG_COMPOSE(U8G_STATE_RESTORE,U8G_STATE_ENV_IDX)
+#define U8G_STATE_MSG_BACKUP_ENV    U8G_STATE_MSG_COMPOSE(U8G_STATE_BACKUP,U8G_STATE_ENV_IDX)
+#define U8G_STATE_MSG_RESTORE_U8G   U8G_STATE_MSG_COMPOSE(U8G_STATE_RESTORE,U8G_STATE_U8G_IDX)
+#define U8G_STATE_MSG_BACKUP_U8G    U8G_STATE_MSG_COMPOSE(U8G_STATE_BACKUP,U8G_STATE_U8G_IDX)
 
-#define U8G_STATE_MSG_GET_IDX(msg) ((msg)&1)
-#define U8G_STATE_MSG_IS_BACKUP(msg) ((msg)&2)
+#define U8G_STATE_MSG_GET_IDX(msg)    ((msg)&1)
+#define U8G_STATE_MSG_IS_BACKUP(msg)  ((msg)&2)
 
 
 
 void u8g_state_dummy_cb(uint8_t msg);
-void u8g_backup_spi(uint8_t msg);   /* backup SPI state controller */
+void u8g_backup_spi(uint8_t msg);   // backup SPI state controller
 /* backward compatible definition */
 #define u8g_backup_avr_spi u8g_backup_spi
 
@@ -1292,7 +1230,7 @@ uint8_t u8g_GetFontCapitalAHeight(u8g_t *u8g);
 uint8_t u8g_IsGlyph(u8g_t *u8g, uint8_t requested_encoding);
 int8_t u8g_GetGlyphDeltaX(u8g_t *u8g, uint8_t requested_encoding);
 
-int8_t u8g_draw_glyph(u8g_t *u8g, u8g_uint_t x, u8g_uint_t y, uint8_t encoding); /* used by u8g_cursor.c */
+int8_t u8g_draw_glyph(u8g_t *u8g, u8g_uint_t x, u8g_uint_t y, uint8_t encoding);    // used by u8g_cursor.c
 
 int8_t u8g_DrawGlyphDir(u8g_t *u8g, u8g_uint_t x, u8g_uint_t y, uint8_t dir, uint8_t encoding);
 int8_t u8g_DrawGlyph(u8g_t *u8g, u8g_uint_t x, u8g_uint_t y, uint8_t encoding);
@@ -1375,22 +1313,23 @@ void u8g_DrawLine(u8g_t *u8g, u8g_uint_t x1, u8g_uint_t y1, u8g_uint_t x2, u8g_u
 
 /* u8g_circle.c */
 
-/* the following, commented code has been rewritten or is not yet finished
-#define U8G_CIRC_UPPER_RIGHT 0x01
-#define U8G_CIRC_UPPER_LEFT  0x02
-#define U8G_CIRC_LOWER_LEFT 0x04
-#define U8G_CIRC_LOWER_RIGHT  0x08
-#define U8G_CIRC_ALL (U8G_CIRC_UPPER_RIGHT|U8G_CIRC_UPPER_LEFT|U8G_CIRC_LOWER_RIGHT|U8G_CIRC_LOWER_LEFT)
-void u8g_DrawEmpCirc(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t rad, uint8_t option);
-void u8g_DrawFillCirc(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t rad, uint8_t option);
-void u8g_DrawEllipseRect(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t x1, u8g_uint_t y1);
-*/
+/**
+ * the following, commented code has been rewritten or is not yet finished
+ * #define U8G_CIRC_UPPER_RIGHT  0x01
+ * #define U8G_CIRC_UPPER_LEFT   0x02
+ * #define U8G_CIRC_LOWER_LEFT   0x04
+ * #define U8G_CIRC_LOWER_RIGHT  0x08
+ * #define U8G_CIRC_ALL (U8G_CIRC_UPPER_RIGHT|U8G_CIRC_UPPER_LEFT|U8G_CIRC_LOWER_RIGHT|U8G_CIRC_LOWER_LEFT)
+ * void u8g_DrawEmpCirc(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t rad, uint8_t option);
+ * void u8g_DrawFillCirc(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t rad, uint8_t option);
+ * void u8g_DrawEllipseRect(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t x1, u8g_uint_t y1);
+ */
 
-#define U8G_DRAW_UPPER_RIGHT 0x01
-#define U8G_DRAW_UPPER_LEFT  0x02
-#define U8G_DRAW_LOWER_LEFT 0x04
+#define U8G_DRAW_UPPER_RIGHT  0x01
+#define U8G_DRAW_UPPER_LEFT   0x02
+#define U8G_DRAW_LOWER_LEFT   0x04
 #define U8G_DRAW_LOWER_RIGHT  0x08
-#define U8G_DRAW_ALL (U8G_DRAW_UPPER_RIGHT|U8G_DRAW_UPPER_LEFT|U8G_DRAW_LOWER_RIGHT|U8G_DRAW_LOWER_LEFT)
+#define U8G_DRAW_ALL          (U8G_DRAW_UPPER_RIGHT|U8G_DRAW_UPPER_LEFT|U8G_DRAW_LOWER_RIGHT|U8G_DRAW_LOWER_LEFT)
 
 void u8g_draw_circle(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t rad, uint8_t option) U8G_NOINLINE;
 void u8g_draw_disc(u8g_t *u8g, u8g_uint_t x0, u8g_uint_t y0, u8g_uint_t rad, uint8_t option) U8G_NOINLINE;
@@ -1419,50 +1358,47 @@ void u8g_DrawCursor(u8g_t *u8g);
 
 typedef int16_t pg_word_t;
 
-#define PG_NOINLINE U8G_NOINLINE
+#define PG_NOINLINE   U8G_NOINLINE
 
-struct pg_point_struct
-{
+struct pg_point_struct {
   pg_word_t x;
   pg_word_t y;
 };
 
-typedef struct _pg_struct pg_struct;  /* forward declaration */
+typedef struct _pg_struct pg_struct;    // forward declaration
 
-struct pg_edge_struct
-{
-  pg_word_t x_direction;  /* 1, if x2 is greater than x1, -1 otherwise */
+struct pg_edge_struct {
+  pg_word_t x_direction;      // 1, if x2 is greater than x1, -1 otherwise
   pg_word_t height;
   pg_word_t current_x_offset;
   pg_word_t error_offset;
 
-  /* --- line loop --- */
+  // --- line loop ---
   pg_word_t current_y;
   pg_word_t max_y;
   pg_word_t current_x;
   pg_word_t error;
 
-  /* --- outer loop --- */
+  // --- outer loop ---
   uint8_t (*next_idx_fn)(pg_struct *pg, uint8_t i);
   uint8_t curr_idx;
 };
 
 /* maximum number of points in the polygon */
 /* can be redefined, but highest possible value is 254 */
-#define PG_MAX_POINTS 6
+#define PG_MAX_POINTS   6
 
 /* index numbers for the pge structures below */
-#define PG_LEFT 0
-#define PG_RIGHT 1
+#define PG_LEFT   0
+#define PG_RIGHT  1
 
 
-struct _pg_struct
-{
+struct _pg_struct {
   struct pg_point_struct list[PG_MAX_POINTS];
   uint8_t cnt;
   uint8_t is_min_y_not_flat;
   pg_word_t total_scan_line_cnt;
-  struct pg_edge_struct pge[2]; /* left and right line draw structures */
+  struct pg_edge_struct pge[2];   // left and right line draw structures
 };
 
 void pg_ClearPolygonXY(pg_struct *pg);
@@ -1487,22 +1423,22 @@ void st_Step(uint8_t player_pos, uint8_t is_auto_fire, uint8_t is_fire);
 /* u8g_com_i2c.c */
 
 /* options for u8g_i2c_init() */
-#define U8G_I2C_OPT_NONE 0
-#define U8G_I2C_OPT_NO_ACK 2
-#define U8G_I2C_OPT_DEV_0 0
-#define U8G_I2C_OPT_DEV_1 4
-#define U8G_I2C_OPT_FAST 16
+#define U8G_I2C_OPT_NONE    0
+#define U8G_I2C_OPT_NO_ACK  2
+#define U8G_I2C_OPT_DEV_0   0
+#define U8G_I2C_OPT_DEV_1   4
+#define U8G_I2C_OPT_FAST    16
 
 /* retrun values from u8g_twi_get_error() */
-#define U8G_I2C_ERR_NONE 0x00
+#define U8G_I2C_ERR_NONE      0x00
 /* the following values are bit masks */
-#define U8G_I2C_ERR_TIMEOUT 0x01
-#define U8G_I2C_ERR_BUS 0x02
+#define U8G_I2C_ERR_TIMEOUT   0x01
+#define U8G_I2C_ERR_BUS       0x02
 
 void u8g_i2c_clear_error(void) U8G_NOINLINE;
 uint8_t  u8g_i2c_get_error(void) U8G_NOINLINE;
 uint8_t u8g_i2c_get_err_pos(void) U8G_NOINLINE;
-void u8g_i2c_init(uint8_t options) U8G_NOINLINE;    /* use U8G_I2C_OPT_NONE as options */
+void u8g_i2c_init(uint8_t options) U8G_NOINLINE;    // use U8G_I2C_OPT_NONE as options
 uint8_t u8g_i2c_wait(uint8_t mask, uint8_t pos) U8G_NOINLINE;
 uint8_t u8g_i2c_start(uint8_t sla) U8G_NOINLINE;
 uint8_t u8g_i2c_send_byte(uint8_t data) U8G_NOINLINE;
@@ -1533,11 +1469,11 @@ void u8g_10MicroDelay(void);
 
 /*===============================================================*/
 /* chessengine.c */
-#define CHESS_KEY_NONE 0
-#define CHESS_KEY_NEXT 1
-#define CHESS_KEY_PREV 2
-#define CHESS_KEY_SELECT 3
-#define CHESS_KEY_BACK 4
+#define CHESS_KEY_NONE    0
+#define CHESS_KEY_NEXT    1
+#define CHESS_KEY_PREV    2
+#define CHESS_KEY_SELECT  3
+#define CHESS_KEY_BACK    4
 
 void chess_Init(u8g_t *u8g, uint8_t empty_body_color);
 void chess_Draw(void);
@@ -1631,11 +1567,11 @@ extern const u8g_fntpgm_uint8_t u8g_font_cu12_78_79[] U8G_FONT_SECTION("u8g_font
 extern const u8g_fntpgm_uint8_t u8g_font_cu12[] U8G_FONT_SECTION("u8g_font_cu12");
 
 /*
-  Free-Universal Bold
-  r: Reduced char set (codes 32 - 128)
-  n: Numbers (codes 42 - 57)
-  no char: Full set (codes 32 - 255)
-*/
+ * Free-Universal Bold
+ * r: Reduced char set (codes 32 - 128)
+ * n: Numbers (codes 42 - 57)
+ * no char: Full set (codes 32 - 255)
+ */
 
 extern const u8g_fntpgm_uint8_t u8g_font_fub11[] U8G_FONT_SECTION("u8g_font_fub11");
 extern const u8g_fntpgm_uint8_t u8g_font_fub11r[] U8G_FONT_SECTION("u8g_font_fub11r");
@@ -1659,12 +1595,12 @@ extern const u8g_fntpgm_uint8_t u8g_font_fub35n[] U8G_FONT_SECTION("u8g_font_fub
 extern const u8g_fntpgm_uint8_t u8g_font_fub42n[] U8G_FONT_SECTION("u8g_font_fub42n");
 extern const u8g_fntpgm_uint8_t u8g_font_fub49n[] U8G_FONT_SECTION("u8g_font_fub49n");
 
-/*
-  Free-Universal Regular
-  r: Reduced char set (codes 32 - 128)
-  n: Numbers (codes 42 - 57)
-  no char: Full set (codes 32 - 255)
-*/
+/**
+ * Free-Universal Regular
+ * r: Reduced char set (codes 32 - 128)
+ * n: Numbers (codes 42 - 57)
+ * no char: Full set (codes 32 - 255)
+ */
 
 extern const u8g_fntpgm_uint8_t u8g_font_fur11[] U8G_FONT_SECTION("u8g_font_fur11");
 extern const u8g_fntpgm_uint8_t u8g_font_fur11r[] U8G_FONT_SECTION("u8g_font_fur11r");
@@ -1688,12 +1624,12 @@ extern const u8g_fntpgm_uint8_t u8g_font_fur35n[] U8G_FONT_SECTION("u8g_font_fur
 extern const u8g_fntpgm_uint8_t u8g_font_fur42n[] U8G_FONT_SECTION("u8g_font_fur42n");
 extern const u8g_fntpgm_uint8_t u8g_font_fur49n[] U8G_FONT_SECTION("u8g_font_fur49n");
 
-/*
-  Gentium Bold
-  r: Reduced char set (codes 32 - 128)
-  n: Numbers (codes 42 - 57)
-  no char: Full set (codes 32 - 255)
-*/
+/**
+ * Gentium Bold
+ * r: Reduced char set (codes 32 - 128)
+ * n: Numbers (codes 42 - 57)
+ * no char: Full set (codes 32 - 255)
+ */
 
 extern const u8g_fntpgm_uint8_t u8g_font_gdb11[] U8G_FONT_SECTION("u8g_font_gdb11");
 extern const u8g_fntpgm_uint8_t u8g_font_gdb12[] U8G_FONT_SECTION("u8g_font_gdb12");
@@ -1719,12 +1655,12 @@ extern const u8g_fntpgm_uint8_t u8g_font_gdb20n[] U8G_FONT_SECTION("u8g_font_gdb
 extern const u8g_fntpgm_uint8_t u8g_font_gdb25n[] U8G_FONT_SECTION("u8g_font_gdb25n");
 extern const u8g_fntpgm_uint8_t u8g_font_gdb30n[] U8G_FONT_SECTION("u8g_font_gdb30n");
 
-/*
-  Gentium Regular
-  r: Reduced char set (codes 32 - 128)
-  n: Numbers (codes 42 - 57)
-  no char: Full set (codes 32 - 255)
-*/
+/**
+ * Gentium Regular
+ * r: Reduced char set (codes 32 - 128)
+ * n: Numbers (codes 42 - 57)
+ * no char: Full set (codes 32 - 255)
+ */
 
 extern const u8g_fntpgm_uint8_t u8g_font_gdr9[] U8G_FONT_SECTION("u8g_font_gdr9");
 extern const u8g_fntpgm_uint8_t u8g_font_gdr10[] U8G_FONT_SECTION("u8g_font_gdr10");
@@ -1756,12 +1692,12 @@ extern const u8g_fntpgm_uint8_t u8g_font_gdr20n[] U8G_FONT_SECTION("u8g_font_gdr
 extern const u8g_fntpgm_uint8_t u8g_font_gdr25n[] U8G_FONT_SECTION("u8g_font_gdr25n");
 extern const u8g_fntpgm_uint8_t u8g_font_gdr30n[] U8G_FONT_SECTION("u8g_font_gdr30n");
 
-/*
-  Old-Standard Bold
-  r: Reduced char set (codes 32 - 128)
-  n: Numbers (codes 42 - 57)
-  no char: Full set (codes 32 - 255)
-*/
+/**
+ * Old-Standard Bold
+ * r: Reduced char set (codes 32 - 128)
+ * n: Numbers (codes 42 - 57)
+ * no char: Full set (codes 32 - 255)
+ */
 
 extern const u8g_fntpgm_uint8_t u8g_font_osb18[] U8G_FONT_SECTION("u8g_font_osb18");
 extern const u8g_fntpgm_uint8_t u8g_font_osb21[] U8G_FONT_SECTION("u8g_font_osb21");
@@ -1781,12 +1717,12 @@ extern const u8g_fntpgm_uint8_t u8g_font_osb26n[] U8G_FONT_SECTION("u8g_font_osb
 extern const u8g_fntpgm_uint8_t u8g_font_osb29n[] U8G_FONT_SECTION("u8g_font_osb29n");
 extern const u8g_fntpgm_uint8_t u8g_font_osb35n[] U8G_FONT_SECTION("u8g_font_osb35n");
 
-/*
-  Old-Standard Regular
-  r: Reduced char set (codes 32 - 128)
-  n: Numbers (codes 42 - 57)
-  no char: Full set (codes 32 - 255)
-*/
+/**
+ * Old-Standard Regular
+ * r: Reduced char set (codes 32 - 128)
+ * n: Numbers (codes 42 - 57)
+ * no char: Full set (codes 32 - 255)
+ */
 
 extern const u8g_fntpgm_uint8_t u8g_font_osr18[] U8G_FONT_SECTION("u8g_font_osr18");
 extern const u8g_fntpgm_uint8_t u8g_font_osr21[] U8G_FONT_SECTION("u8g_font_osr21");
@@ -2050,5 +1986,5 @@ extern const u8g_fntpgm_uint8_t u8g_font_profont29r[] U8G_FONT_SECTION("u8g_font
 
 
 #ifdef __cplusplus
-}
+  }
 #endif

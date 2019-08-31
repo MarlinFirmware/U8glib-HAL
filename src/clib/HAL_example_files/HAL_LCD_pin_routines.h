@@ -17,7 +17,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 /**
@@ -32,5 +31,5 @@
 
 void u8g_SetPinOutput(uint8_t internal_pin_number);
 void u8g_SetPinInput(uint8_t internal_pin_number);
-void u8g_SetPinLevel(uint8_t  pin, uint8_t  pin_status);
+void u8g_SetPinLevel(uint8_t pin, uint8_t pin_status);
 uint8_t u8g_GetPinLevel(uint8_t pin);

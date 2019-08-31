@@ -15,8 +15,8 @@
  */
 
 #if defined(BUFFER_LENGTH) && BUFFER_LENGTH < 144
-#define I2C_MAX_LENGTH (BUFFER_LENGTH - 1)
-#endif // BUFFER_LENGTH
+  #define I2C_MAX_LENGTH (BUFFER_LENGTH - 1)
+#endif
 
 static uint8_t control;
 
@@ -38,7 +38,7 @@ uint8_t u8g_com_esp32_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void 
       Wire.endTransmission();
       break;
 
-    case U8G_COM_MSG_WRITE_SEQ: {
+    case U8G_COM_MSG_WRITE_SEQ:
       #ifdef I2C_MAX_LENGTH
         while (arg_val > 0) {
           Wire.beginTransmission(0x3c);
@@ -54,15 +54,13 @@ uint8_t u8g_com_esp32_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void 
           }
           Wire.endTransmission();
         }
-      #else
+      #else   // !I2C_MAX_LENGTH
         Wire.beginTransmission(0x3c);
         Wire.write(control);
         Wire.write((uint8_t *) arg_ptr, arg_val);
         Wire.endTransmission();
-      #endif // I2C_MAX_LENGTH
+      #endif   // !I2C_MAX_LENGTH
       break;
-    }
-
   }
   return 1;
 }

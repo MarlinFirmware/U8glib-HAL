@@ -1,8 +1,8 @@
-/*
-  u8g_com_stm32duino_hw_spi.cpp
-
-  communication interface for SPI protocol
-*/
+/**
+ * u8g_com_stm32duino_hw_spi.cpp
+ *
+ * communication interface for SPI protocol
+ */
 
 #ifdef ARDUINO_ARCH_STM32
 
@@ -12,16 +12,13 @@
 static SPISettings spiConfig;
 static uint8_t msgInitCount = 2; // Ignore all messages until 2nd U8G_COM_MSG_INIT
 
-
-uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
+uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
   if (msgInitCount) {
     if (msg == U8G_COM_MSG_INIT) msgInitCount --;
     if (msgInitCount) return -1;
   }
 
-  switch(msg)
-  {
+  switch (msg) {
     case U8G_COM_MSG_STOP:
       break;
     case U8G_COM_MSG_INIT:
@@ -30,22 +27,23 @@ uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, v
       u8g_SetPIOutput(u8g, U8G_PI_RESET);
 
       u8g_SetPILevel(u8g, U8G_PI_CS, 1);
-      
+
       spiConfig = SPISettings(SPI_CLOCK_DIV2, MSBFIRST, SPI_MODE0);
       SPI.begin();
       break;
 
-    case U8G_COM_MSG_ADDRESS:           /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
+    case U8G_COM_MSG_ADDRESS:             // define cmd (arg_val = 0) or data mode (arg_val = 1)
       u8g_SetPILevel(u8g, U8G_PI_A0, arg_val);
       break;
 
-    case U8G_COM_MSG_CHIP_SELECT:       /* arg_val == 0 means HIGH level of U8G_PI_CS */
-      if ( arg_val == 0 ) {
-        /* disable */
+    case U8G_COM_MSG_CHIP_SELECT:         // arg_val == 0 means HIGH level of U8G_PI_CS
+      if (arg_val == 0) {
+        // disable
         u8g_SetPILevel(u8g, U8G_PI_CS, 1);
-      } else {
-        /* enable */
-        u8g_SetPILevel(u8g, U8G_PI_CS, 0); /* CS = 0 (low active) */
+      }
+      else {
+        // enable
+        u8g_SetPILevel(u8g, U8G_PI_CS, 0);  // CS = 0 (low active)
       }
       break;
 
@@ -76,5 +74,4 @@ uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, v
   return 1;
 }
 
-#endif // ARDUINO_ARCH_STM32
-
+#endif  // ARDUINO_ARCH_STM32

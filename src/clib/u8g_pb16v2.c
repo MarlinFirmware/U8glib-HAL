@@ -1,78 +1,67 @@
-/*
-
-  u8g_pb16v2.c
-
-  16 bit height 2 bit per pixel page buffer
-  byte has vertical orientation
-
-  Universal 8bit Graphics Library
-
-  Copyright (c) 2012, olikraus@gmail.com
-  All rights reserved.
-
-  Redistribution and use in source and binary forms, with or without modification,
-  are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this list
-    of conditions and the following disclaimer.
-
-  * Redistributions in binary form must reproduce the above copyright notice, this
-    list of conditions and the following disclaimer in the documentation and/or other
-    materials provided with the distribution.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-  CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-*/
+/**
+ * u8g_pb16v2.c
+ *
+ * 16 bit height 2 bit per pixel page buffer
+ * byte has vertical orientation
+ *
+ * Universal 8bit Graphics Library
+ *
+ * Copyright (c) 2012, olikraus@gmail.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * - Redistributions of source code must retain the above copyright notice, this list
+ *   of conditions and the following disclaimer.
+ *
+ * - Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or other
+ *   materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+ * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #include "u8g.h"
 #include <string.h>
 
-
-void u8g_pb16v2_Clear(u8g_pb_t *b)
-{
+void u8g_pb16v2_Clear(u8g_pb_t *b) {
   uint8_t *ptr = (uint8_t *)b->buf;
   uint8_t *end_ptr = ptr;
 
-  /* two bits per pixel, 16 bits height --> 8 pixel --> 4 pixel per byte */
+  // two bits per pixel, 16 bits height --> 8 pixel --> 4 pixel per byte
   end_ptr += b->width;
   end_ptr += b->width;
 
-  do
-  {
+  do {
     *ptr++ = 0;
-  } while( ptr != end_ptr );
+  } while (ptr != end_ptr);
 }
 
-void u8g_pb16v2Init(u8g_pb_t *b, void *buf, u8g_uint_t width)
-{
+void u8g_pb16v2Init(u8g_pb_t *b, void *buf, u8g_uint_t width) {
   b->buf = buf;
   b->width = width;
   u8g_pb16v2_Clear(b);
 }
 
-void u8g_pb16v2_set_pixel(u8g_pb_t *b, u8g_uint_t x, u8g_uint_t y, uint8_t color_index)
-{
-  register uint8_t mask;
+void u8g_pb16v2_set_pixel(u8g_pb_t *b, u8g_uint_t x, u8g_uint_t y, uint8_t color_index) {
   uint8_t *ptr = b->buf;
   y -= b->p.page_y0;
-  if ( y >= 4 )
-  {
+  if (y >= 4)
     ptr += b->width;
-  }
-  mask = 0x03;
+  register uint8_t mask = 0x03;
   y &= 0x03;
   y <<= 1;
   mask <<= y;
@@ -84,51 +73,37 @@ void u8g_pb16v2_set_pixel(u8g_pb_t *b, u8g_uint_t x, u8g_uint_t y, uint8_t color
   *ptr |= color_index;
 }
 
-
-void u8g_pb16v2_SetPixel(u8g_pb_t *b, const u8g_dev_arg_pixel_t * const arg_pixel)
-{
-  if ( arg_pixel->y < b->p.page_y0 )
+void u8g_pb16v2_SetPixel(u8g_pb_t *b, const u8g_dev_arg_pixel_t * const arg_pixel) {
+  if (arg_pixel->y < b->p.page_y0)
     return;
-  if ( arg_pixel->y > b->p.page_y1 )
+  if (arg_pixel->y > b->p.page_y1)
     return;
-  if ( arg_pixel->x >= b->width )
+  if (arg_pixel->x >= b->width)
     return;
   u8g_pb16v2_set_pixel(b, arg_pixel->x, arg_pixel->y, arg_pixel->color);
 }
 
-
-void u8g_pb16v2_Set8PixelStd(u8g_pb_t *b, u8g_dev_arg_pixel_t *arg_pixel)
-{
+void u8g_pb16v2_Set8PixelStd(u8g_pb_t *b, u8g_dev_arg_pixel_t *arg_pixel) {
   register uint8_t pixel = arg_pixel->pixel;
-  do
-  {
-    if ( pixel & 128 )
-    {
+  do {
+    if (pixel & 0x80)
       u8g_pb16v2_SetPixel(b, arg_pixel);
-    }
-    switch( arg_pixel->dir )
-    {
+    switch (arg_pixel->dir) {
       case 0: arg_pixel->x++; break;
       case 1: arg_pixel->y++; break;
       case 2: arg_pixel->x--; break;
       case 3: arg_pixel->y--; break;
     }
     pixel <<= 1;
-  } while( pixel != 0  );
+  } while (pixel != 0);
 }
 
-
-
-uint8_t u8g_dev_pb16v2_base_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg)
-{
+uint8_t u8g_dev_pb16v2_base_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg) {
   u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
-  switch(msg)
-  {
+  switch (msg) {
     case U8G_DEV_MSG_SET_8PIXEL:
-      if ( u8g_pb_Is8PixelVisible(pb, (u8g_dev_arg_pixel_t *)arg) )
-      {
+      if (u8g_pb_Is8PixelVisible(pb, (u8g_dev_arg_pixel_t *)arg))
         u8g_pb16v2_Set8PixelStd(pb, (u8g_dev_arg_pixel_t *)arg);
-      }
       break;
     case U8G_DEV_MSG_SET_PIXEL:
       u8g_pb16v2_SetPixel(pb, (u8g_dev_arg_pixel_t *)arg);
@@ -142,7 +117,7 @@ uint8_t u8g_dev_pb16v2_base_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *ar
       u8g_page_First(&(pb->p));
       break;
     case U8G_DEV_MSG_PAGE_NEXT:
-      if ( u8g_page_Next(&(pb->p)) == 0 )
+      if (u8g_page_Next(&(pb->p)) == 0)
         return 0;
       u8g_pb16v2_Clear(pb);
       break;
@@ -168,5 +143,3 @@ uint8_t u8g_dev_pb16v2_base_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *ar
   }
   return 1;
 }
-
-

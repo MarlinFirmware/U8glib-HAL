@@ -47,13 +47,13 @@
 #pragma once
 
 #ifdef ARDUINO_ARCH_SAM
-//  #include "HAL_DUE/HAL_DUE_LCD_defines.h"
+  //#include "HAL_DUE/HAL_DUE_LCD_defines.h"
 
 #elif defined(IS_32BIT_TEENSY)
-//  #include "HAL_TEENSY35_36/HAL_TEENSY_LCD_defines.h"
+  //#include "HAL_TEENSY35_36/HAL_TEENSY_LCD_defines.h"
 
 #elif defined(ARDUINO_ARCH_AVR)
-//  #include "HAL_AVR/HAL_ARDUINO_LCD_defines.h"
+  //#include "HAL_AVR/HAL_ARDUINO_LCD_defines.h"
 
 #elif defined(TARGET_LPC1768)
   #include "HAL_LPC1768_LCD_defines.h"

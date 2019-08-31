@@ -1,12 +1,8 @@
 /**
- * u8g_com_psoc5_ssd_hw_parallel.c
- *
- * com interface for Cypress PSoC5 and the SSDxxxx chip variant
- * I2C protocol
- *
+ * u8g_com_samd51_hw_spi.cpp
  * Universal 8bit Graphics Library
  *
- * Copyright (c) 2015, olikraus@gmail.com, schmidt.ronny@gmail.com
+ * Copyright (c) 2012, olikraus@gmail.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -34,64 +30,61 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifdef __SAMD51__
+
 #include "u8g.h"
+#include "SPI.h"
 
-#ifdef U8G_CYPRESS_PSOC5
+static SPISettings lcdSPIConfig;
 
-#include <project.h>
-
-static uint8 dc = 0;  // need to store whether next write is data or command
-
-uint8_t u8g_com_psoc5_ssd_hw_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+uint8_t u8g_com_samd51_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
   switch (msg) {
     case U8G_COM_MSG_STOP:
-      // stop the device
-      GraphicLCDIntf_Stop();
       break;
 
     case U8G_COM_MSG_INIT:
-  		// init hardware interfaces, timers, gpios, ...
-      GraphicLCDIntf_Init();
+      u8g_SetPIOutput(u8g, U8G_PI_CS);
+      u8g_SetPIOutput(u8g, U8G_PI_A0);
+      u8g_SetPIOutput(u8g, U8G_PI_RESET);
+
+      u8g_SetPILevel(u8g, U8G_PI_CS, HIGH);
+
+      lcdSPIConfig = SPISettings(SPI_CLOCK_DIV2, MSBFIRST, SPI_MODE0);
+      SPI.begin();
       break;
 
-    case U8G_COM_MSG_ADDRESS:
-      // switch from cmd (arg_val = 0) to data mode (arg_val = 1) or vice versa
-      dc = arg_val;
+    case U8G_COM_MSG_ADDRESS:             // define cmd (arg_val = 0) or data mode (arg_val = 1)
+      u8g_SetPILevel(u8g, U8G_PI_A0, arg_val);
       break;
 
-    case U8G_COM_MSG_CHIP_SELECT:
-		  // done by the hardware
+    case U8G_COM_MSG_CHIP_SELECT:         // arg_val == 0 means HIGH level of U8G_PI_CS
+      if (arg_val == 0) {
+        // disable
+        u8g_SetPILevel(u8g, U8G_PI_CS, HIGH);
+      }
+      else {
+        // enable
+        u8g_SetPILevel(u8g, U8G_PI_CS, LOW);
+      }
       break;
 
     case U8G_COM_MSG_RESET:
-      // toggle the reset pin of the display by value in arg_val
-      nRES_Write(0);
-      u8g_10MicroDelay();
-      nRES_Write(1);
+      u8g_SetPILevel(u8g, U8G_PI_RESET, arg_val);
       break;
 
     case U8G_COM_MSG_WRITE_BYTE:
-      // write byte to the device
-		  GraphicLCDIntf_Write8(dc, arg_val);
+      SPI.beginTransaction(lcdSPIConfig);
+      SPI.transfer(arg_val);
+      SPI.endTransaction();
       break;
 
     case U8G_COM_MSG_WRITE_SEQ:
-    case U8G_COM_MSG_WRITE_SEQ_P:
-      {
-        // write a sequence of bytes to the device
-        register uint8_t *ptr = arg_ptr;
-        while (arg_val-- > 0)
-          GraphicLCDIntf_Write8(dc, *ptr++);
-      }
+      SPI.beginTransaction(lcdSPIConfig);
+      SPI.transfer((uint8_t *)arg_ptr, arg_val);
+      SPI.endTransaction();
       break;
   }
   return 1;
 }
 
-#else    // !U8G_CYPRESS_PSOC5
-
-uint8_t u8g_com_psoc5_ssd_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
-  return 1;
-}
-
-#endif    // !U8G_CYPRESS_PSOC5
+#endif  // __SAMD51__
