@@ -45,8 +45,7 @@ uint8_t u8g_dev_rot_dummy_fn(void *u8g, void *dev, uint8_t msg, void *arg)
   return 0;
 }
 
-u8g_dev_t u8g_dev_rot = { u8g_dev_rot_dummy_fn, NULL, NULL };
-
+u8g_dev_t u8g_dev_rot = { (u8g_dev_fnptr)u8g_dev_rot_dummy_fn, NULL, NULL };
 
 void u8g_UndoRotation(u8g_t *u8g)
 {
