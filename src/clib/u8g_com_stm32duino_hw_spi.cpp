@@ -31,7 +31,7 @@ uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, v
 
       u8g_SetPILevel(u8g, U8G_PI_CS, 1);
       
-      spiConfig = SPISettings(SPI_CLOCK_DIV2, MSBFIRST, SPI_MODE0);
+      spiConfig = SPISettings(2500000, MSBFIRST, SPI_MODE0); // 2.5 Mbits base clock
       SPI.begin();
       break;
 
