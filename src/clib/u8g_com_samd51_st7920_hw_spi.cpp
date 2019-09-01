@@ -58,14 +58,7 @@ uint8_t u8g_com_samd51_st7920_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val
       break;
 
     case U8G_COM_MSG_CHIP_SELECT:         // arg_val == 0 means LOW level of U8G_PI_CS
-      if (arg_val == 0) {
-        // disable, note: the st7920 has an active high chip select
-        u8g_SetPILevel(u8g, U8G_PI_CS, LOW);
-      }
-      else {
-        // enable
-        u8g_SetPILevel(u8g, U8G_PI_CS, HIGH);
-      }
+      u8g_SetPILevel(u8g, U8G_PI_CS, arg_val ? HIGH : LOW); // (ST7920 has active high CS)
       break;
 
     case U8G_COM_MSG_RESET:
@@ -80,7 +73,7 @@ uint8_t u8g_com_samd51_st7920_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val
 
     case U8G_COM_MSG_WRITE_SEQ:
       SPI.beginTransaction(lcdSPIConfig);
-      SPI.transfer((uint8_t *)arg_ptr, arg_val);
+      SPI.transfer((uint8_t*)arg_ptr, arg_val);
       SPI.endTransaction();
       break;
   }
