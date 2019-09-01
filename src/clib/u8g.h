@@ -771,7 +771,7 @@ defined(__18CXX) || defined(__PIC32MX)
 #endif
 
 #ifndef U8G_COM_HW_SPI
-#if defined(__SAMD51__)
+#ifdef __SAMD51__
 #define U8G_COM_HW_SPI u8g_com_samd51_hw_spi_fn
 #define U8G_COM_ST7920_HW_SPI u8g_com_samd51_st7920_hw_spi_fn
 #endif
