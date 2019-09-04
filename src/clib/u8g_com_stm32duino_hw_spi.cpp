@@ -40,13 +40,7 @@ uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, v
       break;
 
     case U8G_COM_MSG_CHIP_SELECT:       /* arg_val == 0 means HIGH level of U8G_PI_CS */
-      if ( arg_val == 0 ) {
-        /* disable */
-        u8g_SetPILevel(u8g, U8G_PI_CS, 1);
-      } else {
-        /* enable */
-        u8g_SetPILevel(u8g, U8G_PI_CS, 0); /* CS = 0 (low active) */
-      }
+      u8g_SetPILevel(u8g, U8G_PI_CS, arg_val ? LOW : HIGH); /* CS = 0 (low active) */
       break;
 
     case U8G_COM_MSG_RESET:
