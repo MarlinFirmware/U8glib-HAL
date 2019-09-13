@@ -144,19 +144,7 @@ static void u8g_com_arduino_t6963_set_port_output(void)
 {
   uint8_t i;
   U8G_ATOMIC_START();
-  for( i = 0; i < 8; i++ )
-  {
-#ifdef __PIC32MX
-/* CHIPKIT PIC32 */
-      *u8g_mode_port[i] |= u8g_data_mask[i];
-#elif defined(__AVR__)
-      *u8g_mode_port[i] |= u8g_data_mask[i];
-#else
-      /* TODO: use generic Arduino API */
-      *u8g_mode_port[i] |= u8g_data_mask[i];
-#endif
-
-  }
+  for (i = 0; i < 8; i++) *u8g_mode_port[i] |= u8g_data_mask[i];
   U8G_ATOMIC_END();
 }
 
@@ -166,17 +154,9 @@ static void u8g_com_arduino_t6963_set_port_input(void)
   U8G_ATOMIC_START();
   for( i = 0; i < 8; i++ )
   {
-#ifdef __PIC32MX
-/* CHIPKIT PIC32 */
-      *u8g_mode_port[i] &= ~u8g_data_mask[i];
-#elif defined(__AVR__)
-/* avr */
-      *u8g_mode_port[i] &= ~u8g_data_mask[i];
-      *u8g_output_data_port[i] &= ~u8g_data_mask[i]; 	// no pullup
-#else
-      /* TODO: use generic Arduino API */
-      *u8g_mode_port[i] &= ~u8g_data_mask[i];
-      *u8g_output_data_port[i] &= ~u8g_data_mask[i]; 	// no pullup
+    *u8g_mode_port[i] &= ~u8g_data_mask[i];
+#if !defined(__PIC32MX) && defined(__AVR__)
+    *u8g_output_data_port[i] &= ~u8g_data_mask[i]; 	// no pullup
 #endif
   }
   U8G_ATOMIC_END();
