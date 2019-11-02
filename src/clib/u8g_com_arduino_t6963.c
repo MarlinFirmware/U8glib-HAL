@@ -85,7 +85,9 @@ static volatile u8g_ptr_t u8g_input_data_port[8];
 static volatile u8g_ptr_t u8g_mode_port[8];
 static u8g_data_t u8g_data_mask[8];
 
-
+#ifdef ARDUINO_ARCH_SAM
+  #define portModeRegister(port) ( &(port->PIO_OSR) )
+#endif
 
 static void u8g_com_arduino_t6963_init(u8g_t *u8g)
 {
