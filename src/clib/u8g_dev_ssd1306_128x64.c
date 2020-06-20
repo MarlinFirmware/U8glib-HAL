@@ -47,9 +47,11 @@
   4 - Univision datasheet (NOT TESTED)
 */
 
-#define INIT_SEQUENCE 3
+#ifndef U8G_INIT_SEQUENCE
+  #define U8G_INIT_SEQUENCE 3
+#endif
 
-#if INIT_SEQUENCE == 1
+#if U8G_INIT_SEQUENCE == 1
 
   /* init sequence adafruit 128x64 OLED (NOT TESTED) */
   static const uint8_t u8g_dev_ssd1306_128x64_adafruit1_init_seq[] PROGMEM = {
@@ -86,12 +88,12 @@
   };
   #define u8g_dev_ssd1306_128x64_init_seq u8g_dev_ssd1306_128x64_adafruit1_init_seq
 
-#elif INIT_SEQUENCE == 2
+#elif U8G_INIT_SEQUENCE == 2
 
   /* init sequence adafruit 128x64 OLED (NOT TESTED) */
   #define u8g_dev_ssd1306_128x64_init_seq u8g_dev_ssd1306_128x64_adafruit2_init_seq
 
-#elif INIT_SEQUENCE == 3
+#elif U8G_INIT_SEQUENCE == 3
 
   /* init sequence adafruit 128x64 OLED (NOT TESTED), like adafruit3, but with page addressing mode */
   static const uint8_t u8g_dev_ssd1306_128x64_adafruit3_init_seq[] PROGMEM = {
@@ -128,7 +130,7 @@
   };
   #define u8g_dev_ssd1306_128x64_init_seq u8g_dev_ssd1306_128x64_adafruit3_init_seq
 
-#elif INIT_SEQUENCE == 4
+#elif U8G_INIT_SEQUENCE == 4
 
   /* init sequence Univision datasheet (NOT TESTED) */
   static const uint8_t u8g_dev_ssd1306_128x64_univision_init_seq[] PROGMEM = {
