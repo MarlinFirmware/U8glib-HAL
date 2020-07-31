@@ -1659,6 +1659,7 @@ extern const u8g_fntpgm_uint8_t u8g_font_fub17n[] U8G_FONT_SECTION("u8g_font_fub
 extern const u8g_fntpgm_uint8_t u8g_font_fub20[] U8G_FONT_SECTION("u8g_font_fub20");
 extern const u8g_fntpgm_uint8_t u8g_font_fub20r[] U8G_FONT_SECTION("u8g_font_fub20r");
 extern const u8g_fntpgm_uint8_t u8g_font_fub20n[] U8G_FONT_SECTION("u8g_font_fub20n");
+extern const u8g_fntpgm_uint8_t u8g_font_fub20t[] U8G_FONT_SECTION("u8g_font_fub20t");
 extern const u8g_fntpgm_uint8_t u8g_font_fub25[] U8G_FONT_SECTION("u8g_font_fub25");
 extern const u8g_fntpgm_uint8_t u8g_font_fub25r[] U8G_FONT_SECTION("u8g_font_fub25r");
 extern const u8g_fntpgm_uint8_t u8g_font_fub25n[] U8G_FONT_SECTION("u8g_font_fub25n");
