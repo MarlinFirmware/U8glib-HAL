@@ -55,7 +55,7 @@
 #include "u8g.h"
 
 
-#if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32)
+#if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32) && !defined(ARDUINO_ARCH_STM32F1)
 
 #if ARDUINO < 100
 #include <WProgram.h>

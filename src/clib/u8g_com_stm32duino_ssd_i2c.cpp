@@ -4,7 +4,7 @@
   communication interface for SSDxxxx chip variant I2C protocol
 */
 
-#ifdef ARDUINO_ARCH_STM32
+#if defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1)
 
 #include "u8g.h"
 #include "Wire.h"
