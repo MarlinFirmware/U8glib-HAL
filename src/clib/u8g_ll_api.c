@@ -252,7 +252,8 @@ uint8_t u8g_InitSPI(u8g_t *u8g, u8g_dev_t *dev, uint8_t sck, uint8_t mosi, uint8
   /* if - in future releases - this is removed, then still call u8g_UpdateDimension() */
   /* if Arduino call u8g_UpdateDimension else u8g_Begin */
   /* issue 146 */
-  return u8g_Begin(u8g);
+  u8g_UpdateDimension(u8g);
+  return 1;
 }
 
 uint8_t u8g_InitHWSPI(u8g_t *u8g, u8g_dev_t *dev, uint8_t cs, uint8_t a0, uint8_t reset)
