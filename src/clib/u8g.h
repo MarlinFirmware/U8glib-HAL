@@ -869,7 +869,7 @@ defined(__18CXX) || defined(__PIC32MX)
 #endif
 
 #ifndef U8G_COM_SSD_I2C
-#ifdef ARDUINO_ARCH_STM32
+#if defined(ARDUINO_ARCH_STM32) && !defined(HAL_I2C_MODULE_DISABLED)
 #define U8G_COM_SSD_I2C u8g_com_stm32duino_ssd_i2c_fn
 #endif
 #endif

@@ -4,7 +4,7 @@
   communication interface for SSDxxxx chip variant I2C protocol
 */
 
-#ifdef ARDUINO_ARCH_STM32
+#if defined(ARDUINO_ARCH_STM32) && !defined(HAL_I2C_MODULE_DISABLED)
 
 #include "u8g.h"
 #include "Wire.h"
