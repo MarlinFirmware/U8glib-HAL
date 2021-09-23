@@ -71,26 +71,26 @@
 
 #if ARDUINO < 100
 
-/* fixed pins */
-#if defined(__AVR_ATmega644P__) || defined(__AVR_ATmega1284P__) // Sanguino.cc board
-#define PIN_SCK         7
-#define PIN_MISO        6
-#define PIN_MOSI        5
-#define PIN_CS          4
-#else                                   // Arduino Board
-#define PIN_SCK 13
-#define PIN_MISO  12
-#define PIN_MOSI 11
-#define PIN_CS 10
-#endif // (__AVR_ATmega644P__) || defined(__AVR_ATmega1284P__)
+  /* fixed pins */
+  #if defined(__AVR_ATmega644P__) || defined(__AVR_ATmega1284P__) // Sanguino.cc board
+    #define PIN_SCK       7
+    #define PIN_MISO      6
+    #define PIN_MOSI      5
+    #define PIN_CS        4
+  #else                                 // Arduino Board
+    #define PIN_SCK      13
+    #define PIN_MISO     12
+    #define PIN_MOSI     11
+    #define PIN_CS       10
+  #endif // (__AVR_ATmega644P__) || defined(__AVR_ATmega1284P__)
 
 #else
 
-/* use Arduino pin definitions */
-#define PIN_SCK SCK
-#define PIN_MISO  MISO
-#define PIN_MOSI MOSI
-#define PIN_CS SS
+  /* use Arduino pin definitions */
+  #define PIN_SCK  SCK
+  #define PIN_MISO MISO
+  #define PIN_MOSI MOSI
+  #define PIN_CS   SS
 
 #endif
 

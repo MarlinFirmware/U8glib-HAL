@@ -31,21 +31,9 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-  PIN_D0 8
-  PIN_D1 9
-  PIN_D2 10
-  PIN_D3 11
-  PIN_D4 4
-  PIN_D5 5
-  PIN_D6 6
-  PIN_D7 7
+*/
 
-  PIN_CS1 14
-  PIN_CS2 15
-  PIN_RW 16
-  PIN_DI 17
-  PIN_EN 18
-
+/*
   u8g_Init8Bit(u8g, dev, d0, d1, d2, d3, d4, d5, d6, d7, en, cs1, cs2, di, rw, reset)
   u8g_Init8Bit(u8g, dev,  8,    9, 10, 11,   4,   5,   6,   7, 18, 14, 15, 17, 16, U8G_PIN_NONE)
 
@@ -54,7 +42,6 @@
     U8G_ATOMIC_AND(ptr, val)
     U8G_ATOMIC_START();
     U8G_ATOMIC_END();
-
 */
 
 #include "u8g.h"
@@ -69,15 +56,26 @@
 #include <Arduino.h>
 #endif
 
+// Pin hacks
+#undef PIN_D0
+#undef PIN_D1
+#undef PIN_D2
+#undef PIN_D3
+#undef PIN_D4
+#undef PIN_D5
+#undef PIN_D6
+#undef PIN_D7
 
-#define PIN_D0 8
-#define PIN_D1 9
-#define PIN_D2 10
-#define PIN_D3 11
-#define PIN_D4 4
-#define PIN_D5 5
-#define PIN_D6 6
-#define PIN_D7 7
+#undef PIN_CS1
+#undef PIN_CS2
+#undef PIN_RW
+#undef PIN_DI
+#undef PIN_EN
+
+#define PIN_D0 8    // 0
+#define PIN_D1 9    // 1
+#define PIN_D2 10   // 2
+#define PIN_D3 11   // 3
 
 #define PIN_CS1 14
 #define PIN_CS2 15
