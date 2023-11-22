@@ -137,6 +137,43 @@ uint8_t u8g_dev_ssd1309_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void 
   return u8g_dev_pb8v1_base_fn(u8g, dev, msg, arg);
 }
 
+#include <string.h>
+#include <stdbool.h>
+
+uint8_t u8g_dev_ssd1309_128x64_f_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg)
+{
+  if (msg == U8G_DEV_MSG_PAGE_NEXT) {
+    u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
+    #define PAGE_COUNT (HEIGHT / PAGE_HEIGHT)
+    static uint8_t full_buffer[PAGE_COUNT][WIDTH] U8G_NOCOMMON;
+    static uint8_t page_change_flags = 0; // warn: only works when PAGE_COUNT ≤ 8, so when height ≤ 128
+    bool did_page_change = memcmp(full_buffer[pb->p.page], pb->buf, WIDTH) != 0;
+    if (did_page_change) {
+      page_change_flags |= 1 << pb->p.page;
+      memcpy(full_buffer[pb->p.page], pb->buf, WIDTH);
+    }
+    bool is_last_page = pb->p.page == PAGE_COUNT - 1;
+    if (is_last_page && page_change_flags) {
+      for (uint8_t page = 0; page < PAGE_COUNT; page++) {
+        bool did_page_change = page_change_flags >> pb->p.page & 1;
+        if (did_page_change) {
+          u8g_WriteEscSeqP(u8g, dev, u8g_dev_ssd1309_128x64_data_start);
+          u8g_WriteByte(u8g, dev, 0x0b0 | page); /* select current page (SSD1306) */
+          u8g_SetAddress(u8g, dev, 1);           /* data mode */
+          if (u8g_WriteSequence(u8g, dev, WIDTH, full_buffer[page]) == 0) return 0;
+        }
+      }
+      u8g_SetChipSelect(u8g, dev, 0);
+    }     
+    return u8g_dev_pb8v1_base_fn(u8g, dev, msg, arg);
+  }
+  return u8g_dev_ssd1309_128x64_fn(u8g, dev, msg, arg);
+}
+
 U8G_PB_DEV(u8g_dev_ssd1309_128x64_hw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1309_128x64_fn, U8G_COM_HW_SPI);
 U8G_PB_DEV(u8g_dev_ssd1309_128x64_sw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1309_128x64_fn, U8G_COM_SW_SPI);
 U8G_PB_DEV(u8g_dev_ssd1309_128x64_i2c, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1309_128x64_fn, U8G_COM_SSD_I2C);
+
+U8G_PB_DEV(u8g_dev_ssd1309_128x64_f_hw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1309_128x64_f_fn, U8G_COM_HW_SPI);
+U8G_PB_DEV(u8g_dev_ssd1309_128x64_f_sw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1309_128x64_f_fn, U8G_COM_SW_SPI);
+U8G_PB_DEV(u8g_dev_ssd1309_128x64_f_i2c, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_ssd1309_128x64_f_fn, U8G_COM_SSD_I2C);
