@@ -155,15 +155,16 @@ uint8_t u8g_dev_ssd1309_128x64_f_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, voi
     bool is_last_page = pb->p.page == PAGE_COUNT - 1;
     if (is_last_page && page_change_flags) {
       for (uint8_t page = 0; page < PAGE_COUNT; page++) {
-        bool did_page_change = page_change_flags >> pb->p.page & 1;
+        bool did_page_change = page_change_flags >> page & 1;
         if (did_page_change) {
           u8g_WriteEscSeqP(u8g, dev, u8g_dev_ssd1309_128x64_data_start);
           u8g_WriteByte(u8g, dev, 0x0b0 | page); /* select current page (SSD1306) */
           u8g_SetAddress(u8g, dev, 1);           /* data mode */
-          if (u8g_WriteSequence(u8g, dev, WIDTH, full_buffer[page]) == 0) return 0;
+          u8g_WriteSequence(u8g, dev, WIDTH, full_buffer[page]);
         }
       }
       u8g_SetChipSelect(u8g, dev, 0);
+      page_change_flags = 0;
     }     
     return u8g_dev_pb8v1_base_fn(u8g, dev, msg, arg);
   }
