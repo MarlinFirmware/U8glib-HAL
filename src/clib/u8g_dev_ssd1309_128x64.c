@@ -134,36 +134,60 @@ uint8_t u8g_dev_ssd1309_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void 
 
 #define PAGE_COUNT (HEIGHT / PAGE_HEIGHT)
 
-#if PAGE_COUNT > 8
-  typedef uint16_t pageflags_t;
-#else
-  typedef uint8_t pageflags_t;
-#endif
-
+/* The _f_ variant keeps an the contents of the full screen in an extra buffer,
+ * and sends it all at once after all pages were drawn.
+ * It also skips unchanged pages, and within those it skips unchanged columns at the beggining and end.
+ * All of this improves fps by reducing both total transferred data and screen rerenders.
+ * It requires an extra 1041 bytes of RAM.
+ */
 uint8_t u8g_dev_ssd1309_128x64_f_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg) {
   if (msg == U8G_DEV_MSG_PAGE_NEXT) {
     u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
+    uint8_t *buf = (uint8_t *)pb->buf;
+    uint8_t page = pb->p.page;
     static uint8_t full_buffer[PAGE_COUNT][WIDTH] U8G_NOCOMMON;
-    static pageflags_t page_change_flags = 0; /* warn: only works when PAGE_COUNT ≤ 8, so when height ≤ 128 */
-    const bool did_page_change = memcmp(full_buffer[pb->p.page], pb->buf, WIDTH) != 0;
-    if (did_page_change) {
-      page_change_flags |= 1 << pb->p.page;
-      memcpy(full_buffer[pb->p.page], pb->buf, WIDTH);
+    static uint8_t column_start[PAGE_COUNT] = {};
+    static uint8_t column_end[PAGE_COUNT] = {};
+
+    uint8_t start = 0;
+    while (start < WIDTH && full_buffer[page][start] == buf[start]) start++;
+    column_start[page] = start;
+
+    const bool page_did_change = start < WIDTH;
+    if (page_did_change) {
+      uint8_t end = WIDTH - 1;
+      while (end > start && full_buffer[page][end] == buf[end]) end--;
+      column_end[page] = end + 1;
+      memcpy(full_buffer[page], buf, WIDTH);
     }
-    bool is_last_page = pb->p.page == PAGE_COUNT - 1;
-    if (is_last_page && page_change_flags) {
+
+    const bool is_last_page = page == PAGE_COUNT - 1;
+    if (is_last_page) {
+      // Only send buffer after the last page has been drawn.
+      static bool is_first_render = true;
       for (uint8_t page = 0; page < PAGE_COUNT; page++) {
-        const bool did_page_change = page_change_flags & (1 << page);
-        if (did_page_change) {
+        uint8_t start = column_start[page];
+        uint8_t end = column_end[page];
+        if (is_first_render) {
+          // send the full buffer on the first render since the lcd ram is noise.
+          start = 0; 
+          end = WIDTH;
+        }
+        const bool page_did_change = start < WIDTH;
+        if (page_did_change) {
           u8g_WriteEscSeqP(u8g, dev, u8g_dev_ssd1309_128x64_data_start);
-          u8g_WriteByte(u8g, dev, 0xB0 | page); /* select current page (SSD1306) */
-          u8g_SetAddress(u8g, dev, 1);          /* data mode */
-          u8g_WriteSequence(u8g, dev, WIDTH, full_buffer[page]);
+          u8g_WriteByte(u8g, dev, 0xB0 | page);             /* select current page (SSD1306) */
+          if (start > 0) {
+            u8g_WriteByte(u8g, dev, 0x00 | (start & 0b1111)); /* start column low nibble */
+            u8g_WriteByte(u8g, dev, 0x10 | (start >> 4));     /* start column high nibble */
+          }
+          u8g_SetAddress(u8g, dev, 1);                       /* data mode */
+          u8g_WriteSequence(u8g, dev, end - start, full_buffer[page] + start);
         }
       }
       u8g_SetChipSelect(u8g, dev, 0);
-      page_change_flags = 0;
-    }     
+      is_first_render = false;
+    }
     return u8g_dev_pb8v1_base_fn(u8g, dev, msg, arg);
   }
   return u8g_dev_ssd1309_128x64_fn(u8g, dev, msg, arg);
