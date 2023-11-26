@@ -146,48 +146,43 @@ uint8_t u8g_dev_ssd1309_128x64_f_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, voi
     uint8_t *buf = (uint8_t *)pb->buf;
     uint8_t page = pb->p.page;
     static uint8_t full_buffer[PAGE_COUNT][WIDTH] U8G_NOCOMMON;
-    static uint8_t column_start[PAGE_COUNT] = {};
-    static uint8_t column_end[PAGE_COUNT] = {};
+    static uint8_t column_start[PAGE_COUNT] = {},
+                   column_width[PAGE_COUNT] = {};
 
     uint8_t start = 0;
     while (start < WIDTH && full_buffer[page][start] == buf[start]) start++;
     column_start[page] = start;
 
-    const bool page_did_change = start < WIDTH;
-    if (page_did_change) {
+    const bool page_changed = start < WIDTH;
+    if (page_changed) {
       uint8_t end = WIDTH - 1;
       while (end > start && full_buffer[page][end] == buf[end]) end--;
-      end++;
-      column_end[page] = end;
-      memcpy(full_buffer[page] + start, buf + start, end - start);
+      const uint8_t width = column_width[page] = end - start + 1;
+      memcpy(full_buffer[page] + start, buf + start, width);
     }
 
+    /* Only send buffer after the last page has been cached */
     const bool is_last_page = page == PAGE_COUNT - 1;
     if (is_last_page) {
-      // Only send buffer after the last page has been drawn.
-      static bool is_first_render = true;
+      /* Full render to clear noise in LCD RAM on start */
+      static bool has_rendered = false;
       for (uint8_t page = 0; page < PAGE_COUNT; page++) {
-        uint8_t start = column_start[page];
-        uint8_t end = column_end[page];
-        if (is_first_render) {
-          // send the full buffer on the first render since the lcd ram is noise.
-          start = 0; 
-          end = WIDTH;
-        }
-        const bool page_did_change = start < WIDTH;
-        if (page_did_change) {
+        const uint8_t start = has_rendered ? column_start[page] : 0,
+                      width = has_rendered ? column_width[page] : WIDTH;
+        const bool page_changed = start < WIDTH;
+        if (page_changed) {
           u8g_WriteEscSeqP(u8g, dev, u8g_dev_ssd1309_128x64_data_start);
-          u8g_WriteByte(u8g, dev, 0xB0 | page);             /* select current page (SSD1306) */
+          u8g_WriteByte(u8g, dev, 0xB0 | page);               /* Select current page (SSD1306) */
           if (start > 0) {
-            u8g_WriteByte(u8g, dev, 0x00 | (start & 0b1111)); /* start column low nibble */
-            u8g_WriteByte(u8g, dev, 0x10 | (start >> 4));     /* start column high nibble */
+            u8g_WriteByte(u8g, dev, 0x00 | (start & 0b1111)); /* Start column low nybble */
+            u8g_WriteByte(u8g, dev, 0x10 | (start >> 4));     /* Start column high nybble */
           }
-          u8g_SetAddress(u8g, dev, 1);                       /* data mode */
-          u8g_WriteSequence(u8g, dev, end - start, full_buffer[page] + start);
+          u8g_SetAddress(u8g, dev, 1);                        /* Data mode */
+          u8g_WriteSequence(u8g, dev, width, full_buffer[page] + start);
         }
       }
       u8g_SetChipSelect(u8g, dev, 0);
-      is_first_render = false;
+      has_rendered = true;
     }
     return u8g_dev_pb8v1_base_fn(u8g, dev, msg, arg);
   }
