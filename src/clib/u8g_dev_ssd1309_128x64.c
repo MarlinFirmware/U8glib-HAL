@@ -157,8 +157,9 @@ uint8_t u8g_dev_ssd1309_128x64_f_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, voi
     if (page_did_change) {
       uint8_t end = WIDTH - 1;
       while (end > start && full_buffer[page][end] == buf[end]) end--;
-      column_end[page] = end + 1;
-      memcpy(full_buffer[page], buf, WIDTH);
+      end++;
+      column_end[page] = end;
+      memcpy(full_buffer[page] + start, buf + start, end - start);
     }
 
     const bool is_last_page = page == PAGE_COUNT - 1;
