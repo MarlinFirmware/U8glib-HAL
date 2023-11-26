@@ -147,7 +147,7 @@ uint8_t u8g_dev_ssd1309_128x64_f_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, voi
     uint8_t page = pb->p.page;
     static uint8_t full_buffer[PAGE_COUNT][WIDTH] U8G_NOCOMMON;
     static uint8_t column_start[PAGE_COUNT] = {},
-                   column_width[PAGE_COUNT] = {};
+                   column_count[PAGE_COUNT] = {};
 
     uint8_t start = 0;
     while (start < WIDTH && full_buffer[page][start] == buf[start]) start++;
@@ -157,8 +157,8 @@ uint8_t u8g_dev_ssd1309_128x64_f_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, voi
     if (page_changed) {
       uint8_t end = WIDTH - 1;
       while (end > start && full_buffer[page][end] == buf[end]) end--;
-      const uint8_t width = column_width[page] = end - start + 1;
-      memcpy(full_buffer[page] + start, buf + start, width);
+      const uint8_t count = column_count[page] = end - start + 1;
+      memcpy(full_buffer[page] + start, buf + start, count);
     }
 
     /* Only send buffer after the last page has been cached */
@@ -168,7 +168,7 @@ uint8_t u8g_dev_ssd1309_128x64_f_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, voi
       static bool has_rendered = false;
       for (uint8_t page = 0; page < PAGE_COUNT; page++) {
         const uint8_t start = has_rendered ? column_start[page] : 0,
-                      width = has_rendered ? column_width[page] : WIDTH;
+                      count = has_rendered ? column_count[page] : WIDTH;
         const bool page_changed = start < WIDTH;
         if (page_changed) {
           u8g_WriteEscSeqP(u8g, dev, u8g_dev_ssd1309_128x64_data_start);
@@ -178,7 +178,7 @@ uint8_t u8g_dev_ssd1309_128x64_f_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, voi
             u8g_WriteByte(u8g, dev, 0x10 | (start >> 4));     /* Start column high nybble */
           }
           u8g_SetAddress(u8g, dev, 1);                        /* Data mode */
-          u8g_WriteSequence(u8g, dev, width, full_buffer[page] + start);
+          u8g_WriteSequence(u8g, dev, count, full_buffer[page] + start);
         }
       }
       u8g_SetChipSelect(u8g, dev, 0);
