@@ -455,6 +455,11 @@ extern u8g_dev_t u8g_dev_ssd1309_128x64_sw_spi;
 extern u8g_dev_t u8g_dev_ssd1309_128x64_hw_spi;
 extern u8g_dev_t u8g_dev_ssd1309_128x64_i2c;
 
+/* OLED 128x64 Display with SSD1309 Controller - Fast Single Page */
+extern u8g_dev_t u8g_dev_ssd1309_128x64_f_sw_spi;
+extern u8g_dev_t u8g_dev_ssd1309_128x64_f_hw_spi;
+extern u8g_dev_t u8g_dev_ssd1309_128x64_f_i2c;
+
 /* OLED 128x32 Display with SSD1306 Controller */
 extern u8g_dev_t u8g_dev_ssd1306_128x32_sw_spi;
 extern u8g_dev_t u8g_dev_ssd1306_128x32_hw_spi;

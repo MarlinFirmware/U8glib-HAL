@@ -35,7 +35,7 @@
 #ifdef __SAMD51__
 
 #include "u8g.h"
-#include "SPI.h"
+#include <SPI.h>
 
 static SPISettings lcdSPIConfig;
 

@@ -7,21 +7,19 @@
 #ifdef ARDUINO_ARCH_STM32
 
 #include "u8g.h"
-#include "SPI.h"
+#include <SPI.h>
 
 static SPISettings spiConfig;
 static uint8_t msgInitCount = 2; // Ignore all messages until 2nd U8G_COM_MSG_INIT
 
 
-uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
+uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
   if (msgInitCount) {
     if (msg == U8G_COM_MSG_INIT) msgInitCount --;
     if (msgInitCount) return -1;
   }
 
-  switch(msg)
-  {
+  switch(msg) {
     case U8G_COM_MSG_STOP:
       break;
     case U8G_COM_MSG_INIT:
@@ -30,7 +28,7 @@ uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, v
       u8g_SetPIOutput(u8g, U8G_PI_RESET);
 
       u8g_SetPILevel(u8g, U8G_PI_CS, 1);
-      
+
       spiConfig = SPISettings(2500000, MSBFIRST, SPI_MODE0); // 2.5 Mbits base clock
       SPI.begin();
       break;
@@ -71,4 +69,3 @@ uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, v
 }
 
 #endif // ARDUINO_ARCH_STM32
-

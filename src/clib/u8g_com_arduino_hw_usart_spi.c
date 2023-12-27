@@ -46,7 +46,7 @@
 
 #ifdef ARDUINO
 
-#ifdef __AVR_ATmega32U4__ 
+#ifdef __AVR_ATmega32U4__
 
 #include <avr/interrupt.h>
 #include <avr/io.h>

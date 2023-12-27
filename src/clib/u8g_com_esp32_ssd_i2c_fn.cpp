@@ -6,7 +6,7 @@
 #ifdef ARDUINO_ARCH_ESP32
 
 #include "u8g.h"
-#include "Wire.h"
+#include <Wire.h>
 
 /**
  * BUFFER_LENGTH is defined in libraries\Wire\utility\WireBase.h
