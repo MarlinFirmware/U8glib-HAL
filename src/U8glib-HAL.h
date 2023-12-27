@@ -935,6 +935,17 @@ public:
   void init(uint8_t options = U8G_I2C_OPT_NONE) { U8GLIB::init(&u8g_dev_ssd1309_128x64_i2c, options); }
 };
 
+class U8GLIB_SSD1309_128X64_F : public U8GLIB {
+public:
+  U8GLIB_SSD1309_128X64_F() : U8GLIB() { }
+  U8GLIB_SSD1309_128X64_F(uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE) { init(sck, mosi, cs, a0, reset); }
+  U8GLIB_SSD1309_128X64_F(uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE) { init(cs, a0, reset); }
+  U8GLIB_SSD1309_128X64_F(uint8_t options) { init(options); }
+  void init(uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE) { U8GLIB::init(&u8g_dev_ssd1309_128x64_f_sw_spi, sck, mosi, cs, a0, reset); }
+  void init(uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE) { U8GLIB::init(&u8g_dev_ssd1309_128x64_f_hw_spi, cs, a0, reset); }
+  void init(uint8_t options = U8G_I2C_OPT_NONE) { U8GLIB::init(&u8g_dev_ssd1309_128x64_f_i2c, options); }
+};
+
 class U8GLIB_SSD1306_128X32 : public U8GLIB {
 public:
   U8GLIB_SSD1306_128X32() : U8GLIB() { }
