@@ -12,7 +12,6 @@
 static SPISettings spiConfig;
 static uint8_t msgInitCount = 2; // Ignore all messages until 2nd U8G_COM_MSG_INIT
 
-
 uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
   if (msgInitCount) {
     if (msg == U8G_COM_MSG_INIT) msgInitCount --;

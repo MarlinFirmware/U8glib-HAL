@@ -34,12 +34,9 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-
 */
 
 #include "u8g.h"
-
 
 #define WIDTH 128
 #define HEIGHT 64
@@ -52,12 +49,10 @@ u8g_pb_t u8g_pb_dev_gprof = { {PAGE_HEIGHT, HEIGHT, 0, 0, 0},  WIDTH, u8g_pb_dev
 
 u8g_dev_t u8g_dev_gprof = { u8g_dev_gprof_fn, &u8g_pb_dev_gprof, NULL };
 
-uint8_t u8g_dev_gprof_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg)
-{
+uint8_t u8g_dev_gprof_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg) {
   u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
 
-  switch(msg)
-  {
+  switch (msg) {
     case U8G_DEV_MSG_INIT:
       break;
     case U8G_DEV_MSG_STOP:
@@ -88,36 +83,33 @@ uint8_t u8g_dev_gprof_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg)
         }
       }
       */
-      if ( u8g_page_Next(&(pb->p)) == 0 )
-      {
-        //printf("\n");
+      if (u8g_page_Next(&(pb->p)) == 0)
+        // printf("\n");
         return 0;
-      }
       u8g_pb_Clear(pb);
       break;
-#ifdef U8G_DEV_MSG_IS_BBX_INTERSECTION
-    case U8G_DEV_MSG_IS_BBX_INTERSECTION:
-       {
-        u8g_dev_arg_bbx_t *bbx = (u8g_dev_arg_bbx_t *)arg;
-        u8g_uint_t x2, y2;
+      #ifdef U8G_DEV_MSG_IS_BBX_INTERSECTION
+          case U8G_DEV_MSG_IS_BBX_INTERSECTION: {
+            u8g_dev_arg_bbx_t *bbx = (u8g_dev_arg_bbx_t *)arg;
+            u8g_uint_t x2, y2;
 
-        y2 = bbx->y;
-        y2 += bbx->h;
-        y2--;
+            y2 = bbx->y;
+            y2 += bbx->h;
+            y2--;
 
-        if ( u8g_pb_IsYIntersection(pb, bbx->y, y2) == 0 )
-          return 0;
+            if (u8g_pb_IsYIntersection(pb, bbx->y, y2) == 0)
+              return 0;
 
-        /* maybe this one can be skiped... probability is very high to have an intersection, so it would be ok to always return 1 */
-        x2 = bbx->x;
-        x2 += bbx->w;
-        x2--;
+            // maybe this one can be skiped... probability is very high to have an intersection, so it would be ok to always return 1
+            x2 = bbx->x;
+            x2 += bbx->w;
+            x2--;
 
-        if ( u8g_pb_IsXIntersection(pb, bbx->x, x2) == 0 )
-          return 0;
-      }
-      return 1;
-#endif
+            if (u8g_pb_IsXIntersection(pb, bbx->x, x2) == 0)
+              return 0;
+          }
+            return 1;
+      #endif // ifdef U8G_DEV_MSG_IS_BBX_INTERSECTION
     case U8G_DEV_MSG_GET_PAGE_BOX:
       u8g_pb_GetPageBox(pb, (u8g_box_t *)arg);
       break;

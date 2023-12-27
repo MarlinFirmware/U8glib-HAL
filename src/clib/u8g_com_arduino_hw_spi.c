@@ -46,7 +46,6 @@
   PA26  MOSI    75
   PA27  SCLK    76
 
-
 typedef struct {
   WoReg SPI_CR;        (Spi Offset: 0x00) Control Register
   RwReg SPI_MR;        (Spi Offset: 0x04) Mode Register
@@ -70,7 +69,6 @@ typedef struct {
       REG_PMC_PCER0 = 1UL << ID_PIOA
     - enable SPI
       REG_PMC_PCER0 = 1UL << ID_SPI0
-
 
     - enable PIOA and SPI0
       REG_PMC_PCER0 = (1UL << ID_PIOA) | (1UL << ID_SPI0);
@@ -130,307 +128,267 @@ typedef struct {
 
 #ifdef ARDUINO
 
-#ifdef __AVR__
-#define U8G_ARDUINO_ATMEGA_HW_SPI
-/* remove the definition for attiny */
-#if __AVR_ARCH__ == 2
-#undef U8G_ARDUINO_ATMEGA_HW_SPI
-#endif
-#if __AVR_ARCH__ == 25
-#undef U8G_ARDUINO_ATMEGA_HW_SPI
-#endif
-#endif
+  #ifdef __AVR__
+    #define U8G_ARDUINO_ATMEGA_HW_SPI
+    // remove the definition for attiny
+    #if __AVR_ARCH__ == 2
+      #undef U8G_ARDUINO_ATMEGA_HW_SPI
+    #endif
+    #if __AVR_ARCH__ == 25
+      #undef U8G_ARDUINO_ATMEGA_HW_SPI
+    #endif
+  #endif
 
-#ifdef U8G_ARDUINO_ATMEGA_HW_SPI
+  #ifdef U8G_ARDUINO_ATMEGA_HW_SPI
 
-#include <avr/interrupt.h>
-#include <avr/io.h>
+    #include <avr/interrupt.h>
+    #include <avr/io.h>
 
-#if ARDUINO < 100
-#include <WProgram.h>
+    #if ARDUINO < 100
+      #include <WProgram.h>
 
-/* fixed pins */
-#if defined(__AVR_ATmega644P__) || defined(__AVR_ATmega1284P__) // Sanguino.cc board
-#define PIN_SCK         7
-#define PIN_MISO        6
-#define PIN_MOSI        5
-#define PIN_CS          4
-#else                                   // Arduino Board
-#define PIN_SCK 13
-#define PIN_MISO  12
-#define PIN_MOSI 11
-#define PIN_CS 10
-#endif // (__AVR_ATmega644P__) || defined(__AVR_ATmega1284P__)
+      // fixed pins
+      #if defined(__AVR_ATmega644P__) || defined(__AVR_ATmega1284P__) // Sanguino.cc board
+        #define PIN_SCK         7
+        #define PIN_MISO        6
+        #define PIN_MOSI        5
+        #define PIN_CS          4
+      #else                                   // Arduino Board
+        #define PIN_SCK 13
+        #define PIN_MISO  12
+        #define PIN_MOSI 11
+        #define PIN_CS 10
+      #endif // (__AVR_ATmega644P__) || defined(__AVR_ATmega1284P__)
 
-#else
+    #else
 
-#include <Arduino.h>
+      #include <Arduino.h>
 
-/* use Arduino pin definitions */
-#define PIN_SCK SCK
-#define PIN_MISO  MISO
-#define PIN_MOSI MOSI
-#define PIN_CS SS
+      // use Arduino pin definitions
+      #define PIN_SCK SCK
+      #define PIN_MISO  MISO
+      #define PIN_MOSI MOSI
+      #define PIN_CS SS
 
-#endif
+    #endif // if ARDUINO < 100
 
+    static uint8_t u8g_spi_out(uint8_t data) {
+      // unsigned char x = 100;
+      // send data
+      SPDR = data;
+      // wait for transmission
+      while (!(SPSR & (1 << SPIF)));
+      // clear the SPIF flag by reading SPDR
+      return SPDR;
+    }
 
+    uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+      switch (msg) {
+        case U8G_COM_MSG_STOP:
+          break;
 
-static uint8_t u8g_spi_out(uint8_t data)
-{
-  /* unsigned char x = 100; */
-  /* send data */
-  SPDR = data;
-  /* wait for transmission */
-  while (!(SPSR & (1<<SPIF)))
-    ;
-  /* clear the SPIF flag by reading SPDR */
-  return  SPDR;
-}
+        case U8G_COM_MSG_INIT:
+          u8g_com_arduino_assign_pin_output_high(u8g);
+          pinMode(PIN_SCK, OUTPUT);
+          digitalWrite(PIN_SCK, LOW);
+          pinMode(PIN_MOSI, OUTPUT);
+          digitalWrite(PIN_MOSI, LOW);
+          // pinMode(PIN_MISO, INPUT);
 
+          pinMode(PIN_CS, OUTPUT);              // system chip select for the atmega board
+          digitalWrite(PIN_CS, HIGH);
 
-uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  switch(msg)
-  {
-    case U8G_COM_MSG_STOP:
-      break;
+          /*
+            SPR1 SPR0
+                0   0               fclk/4
+                0   1               fclk/16
+                1   0               fclk/64
+                1   1               fclk/128
+          */
+          SPCR = 0;
+          SPCR =  (1 << SPE) | (1 << MSTR) | (0 << SPR1) | (0 << SPR0) | (0 << CPOL) | (0 << CPHA);
+          #ifdef U8G_HW_SPI_2X
+            SPSR = (1 << SPI2X); // double speed, issue 89
+          #else
+            if (arg_val  <= U8G_SPI_CLK_CYCLE_50NS)
+              SPSR = (1 << SPI2X); // double speed, issue 89
 
-    case U8G_COM_MSG_INIT:
-      u8g_com_arduino_assign_pin_output_high(u8g);
-      pinMode(PIN_SCK, OUTPUT);
-      digitalWrite(PIN_SCK, LOW);
-      pinMode(PIN_MOSI, OUTPUT);
-      digitalWrite(PIN_MOSI, LOW);
-      /* pinMode(PIN_MISO, INPUT); */
+          #endif
 
-      pinMode(PIN_CS, OUTPUT);                  /* system chip select for the atmega board */
-      digitalWrite(PIN_CS, HIGH);
+          break;
 
+        case U8G_COM_MSG_ADDRESS:                 // define cmd (arg_val = 0) or data mode (arg_val = 1)
+          u8g_com_arduino_digital_write(u8g, U8G_PI_A0, arg_val);
+          break;
 
+        case U8G_COM_MSG_CHIP_SELECT:
+          if (arg_val == 0) {
+            // disable
+            u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
+          }
+          else {
+            // enable
+            u8g_com_arduino_digital_write(u8g, U8G_PI_SCK, LOW);
+            u8g_com_arduino_digital_write(u8g, U8G_PI_CS, LOW);
+          }
+          break;
 
-      /*
-        SPR1 SPR0
-            0   0               fclk/4
-            0   1               fclk/16
-            1   0               fclk/64
-            1   1               fclk/128
-      */
-      SPCR = 0;
-      SPCR =  (1<<SPE) | (1<<MSTR)|(0<<SPR1)|(0<<SPR0)|(0<<CPOL)|(0<<CPHA);
-#ifdef U8G_HW_SPI_2X
-      SPSR = (1 << SPI2X);  /* double speed, issue 89 */
-#else
-      if ( arg_val  <= U8G_SPI_CLK_CYCLE_50NS )
-      {
-        SPSR = (1 << SPI2X);  /* double speed, issue 89 */
-      }
-#endif
+        case U8G_COM_MSG_RESET:
+          if (u8g->pin_list[U8G_PI_RESET] != U8G_PIN_NONE)
+            u8g_com_arduino_digital_write(u8g, U8G_PI_RESET, arg_val);
+          break;
 
+        case U8G_COM_MSG_WRITE_BYTE:
+          u8g_spi_out(arg_val);
+          break;
 
-      break;
-
-    case U8G_COM_MSG_ADDRESS:                     /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
-      u8g_com_arduino_digital_write(u8g, U8G_PI_A0, arg_val);
-      break;
-
-    case U8G_COM_MSG_CHIP_SELECT:
-      if ( arg_val == 0 )
-      {
-        /* disable */
-        u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
-      }
-      else
-      {
-        /* enable */
-        u8g_com_arduino_digital_write(u8g, U8G_PI_SCK, LOW);
-        u8g_com_arduino_digital_write(u8g, U8G_PI_CS, LOW);
-      }
-      break;
-
-    case U8G_COM_MSG_RESET:
-      if ( u8g->pin_list[U8G_PI_RESET] != U8G_PIN_NONE )
-        u8g_com_arduino_digital_write(u8g, U8G_PI_RESET, arg_val);
-      break;
-
-    case U8G_COM_MSG_WRITE_BYTE:
-      u8g_spi_out(arg_val);
-      break;
-
-    case U8G_COM_MSG_WRITE_SEQ:
-      {
-        register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
-          u8g_spi_out(*ptr++);
-          arg_val--;
+        case U8G_COM_MSG_WRITE_SEQ: {
+          register uint8_t *ptr = arg_ptr;
+          while (arg_val > 0) {
+            u8g_spi_out(*ptr++);
+            arg_val--;
+          }
         }
-      }
-      break;
-    case U8G_COM_MSG_WRITE_SEQ_P:
-      {
-        register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
-          u8g_spi_out(u8g_pgm_read(ptr));
-          ptr++;
-          arg_val--;
+        break;
+        case U8G_COM_MSG_WRITE_SEQ_P: {
+          register uint8_t *ptr = arg_ptr;
+          while (arg_val > 0) {
+            u8g_spi_out(u8g_pgm_read(ptr));
+            ptr++;
+            arg_val--;
+          }
         }
+        break;
       }
-      break;
-  }
-  return 1;
-}
+      return 1;
+    }
 
-/* #elif defined(__18CXX) || defined(__PIC32MX) */
+    // #elif defined(__18CXX) || defined(__PIC32MX)
 
-#elif defined(__SAM3X8E__)              // Arduino Due, maybe we should better check for __SAM3X8E__
+  #elif defined(__SAM3X8E__)            // Arduino Due, maybe we should better check for __SAM3X8E__
 
-#include <Arduino.h>
+    #include <Arduino.h>
 
-/* use Arduino pin definitions */
-#define PIN_SCK SCK
-#define PIN_MISO  MISO
-#define PIN_MOSI MOSI
-#define PIN_CS SS
+    // use Arduino pin definitions
+    #define PIN_SCK SCK
+    #define PIN_MISO  MISO
+    #define PIN_MOSI MOSI
+    #define PIN_CS SS
 
+    static uint8_t u8g_spi_out(uint8_t data) {
+      // wait until tx register is empty
+      while ((SPI0->SPI_SR & SPI_SR_TDRE) == 0);
+      // send data
+      SPI0->SPI_TDR = (uint32_t)data;
+      return data;
+    }
 
-static uint8_t u8g_spi_out(uint8_t data)
-{
-  /* wait until tx register is empty */
-  while( (SPI0->SPI_SR & SPI_SR_TDRE) == 0 )
-    ;
-  /* send data */
-  SPI0->SPI_TDR = (uint32_t)data;
-  return  data;
-}
+    uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+      switch (msg) {
+        case U8G_COM_MSG_STOP:
+          break;
 
+        case U8G_COM_MSG_INIT:
+          u8g_com_arduino_assign_pin_output_high(u8g);
+          u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
 
-uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  switch(msg)
-  {
-    case U8G_COM_MSG_STOP:
-      break;
+          // Arduino Due specific code
 
-    case U8G_COM_MSG_INIT:
-      u8g_com_arduino_assign_pin_output_high(u8g);
-      u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
+          // enable PIOA and SPI0
+          REG_PMC_PCER0 = (1UL << ID_PIOA) | (1UL << ID_SPI0);
 
-      /* Arduino Due specific code */
+          // disable PIO on A26 and A27
+          REG_PIOA_PDR = 0x0c000000;
 
-      /* enable PIOA and SPI0 */
-      REG_PMC_PCER0 = (1UL << ID_PIOA) | (1UL << ID_SPI0);
+          // reset SPI0 (from sam lib)
+          SPI0->SPI_CR = SPI_CR_SPIDIS;
+          SPI0->SPI_CR = SPI_CR_SWRST;
+          SPI0->SPI_CR = SPI_CR_SWRST;
+          SPI0->SPI_CR = SPI_CR_SPIEN;
+          u8g_MicroDelay();
 
-      /* disable PIO on A26 and A27 */
-      REG_PIOA_PDR = 0x0c000000;
+          // master mode, no fault detection, chip select 0
+          SPI0->SPI_MR = SPI_MR_MSTR | SPI_MR_PCSDEC | SPI_MR_MODFDIS;
 
-      /* reset SPI0 (from sam lib) */
-      SPI0->SPI_CR = SPI_CR_SPIDIS;
-      SPI0->SPI_CR = SPI_CR_SWRST;
-      SPI0->SPI_CR = SPI_CR_SWRST;
-      SPI0->SPI_CR = SPI_CR_SPIEN;
-      u8g_MicroDelay();
+          // Polarity, Phase, 8 Bit data transfer, baud rate
+          /* x * 1000 / 84 --> clock cycle in ns
+            5 * 1000 / 84 = 58 ns
+            SCBR  > 50 *84 / 1000 --> SCBR=5
+            SCBR  > 300*84 / 1000 --> SCBR=26
+            SCBR  > 400*84 / 1000 --> SCBR=34
+          */
 
-      /* master mode, no fault detection, chip select 0 */
-      SPI0->SPI_MR = SPI_MR_MSTR | SPI_MR_PCSDEC | SPI_MR_MODFDIS;
+          if (arg_val <= U8G_SPI_CLK_CYCLE_50NS)
+            SPI0->SPI_CSR[0] = SPI_CSR_SCBR(5) | 1;
+          else if (arg_val <= U8G_SPI_CLK_CYCLE_300NS)
+            SPI0->SPI_CSR[0] = SPI_CSR_SCBR(26) | 1;
+          else if (arg_val <= U8G_SPI_CLK_CYCLE_400NS)
+            SPI0->SPI_CSR[0] = SPI_CSR_SCBR(34) | 1;
+          else
+            SPI0->SPI_CSR[0] = SPI_CSR_SCBR(84) | 1;
 
-      /* Polarity, Phase, 8 Bit data transfer, baud rate */
-      /* x * 1000 / 84 --> clock cycle in ns
-        5 * 1000 / 84 = 58 ns
-        SCBR  > 50 *84 / 1000 --> SCBR=5
-        SCBR  > 300*84 / 1000 --> SCBR=26
-        SCBR  > 400*84 / 1000 --> SCBR=34
-      */
+          u8g_MicroDelay();
+          break;
 
-      if ( arg_val <= U8G_SPI_CLK_CYCLE_50NS )
-      {
-        SPI0->SPI_CSR[0] = SPI_CSR_SCBR(5) | 1;
-      }
-      else if ( arg_val <= U8G_SPI_CLK_CYCLE_300NS )
-      {
-        SPI0->SPI_CSR[0] = SPI_CSR_SCBR(26) | 1;
-      }
-      else if ( arg_val <= U8G_SPI_CLK_CYCLE_400NS )
-      {
-        SPI0->SPI_CSR[0] = SPI_CSR_SCBR(34) | 1;
-      }
-      else
-      {
-        SPI0->SPI_CSR[0] = SPI_CSR_SCBR(84) | 1;
-      }
+        case U8G_COM_MSG_ADDRESS:                 // define cmd (arg_val = 0) or data mode (arg_val = 1)
+          u8g_com_arduino_digital_write(u8g, U8G_PI_A0, arg_val);
+          u8g_MicroDelay();
+          break;
 
-      u8g_MicroDelay();
-      break;
+        case U8G_COM_MSG_CHIP_SELECT:
+          if (arg_val == 0) {
+            // disable
+            u8g_MicroDelay();           // this delay is required to avoid that the display is switched off too early --> DOGS102 with DUE
+            u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
+            u8g_MicroDelay();
+          }
+          else {
+            // enable
+            // u8g_com_arduino_digital_write(u8g, U8G_PI_SCK, LOW);
+            u8g_com_arduino_digital_write(u8g, U8G_PI_CS, LOW);
+            u8g_MicroDelay();
+          }
+          break;
 
-    case U8G_COM_MSG_ADDRESS:                     /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
-      u8g_com_arduino_digital_write(u8g, U8G_PI_A0, arg_val);
-      u8g_MicroDelay();
-      break;
+        case U8G_COM_MSG_RESET:
+          if (u8g->pin_list[U8G_PI_RESET] != U8G_PIN_NONE)
+            u8g_com_arduino_digital_write(u8g, U8G_PI_RESET, arg_val);
+          break;
 
-    case U8G_COM_MSG_CHIP_SELECT:
-      if ( arg_val == 0 )
-      {
-        /* disable */
-        u8g_MicroDelay();               /* this delay is required to avoid that the display is switched off too early --> DOGS102 with DUE */
-        u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
-        u8g_MicroDelay();
-      }
-      else
-      {
-        /* enable */
-        //u8g_com_arduino_digital_write(u8g, U8G_PI_SCK, LOW);
-        u8g_com_arduino_digital_write(u8g, U8G_PI_CS, LOW);
-        u8g_MicroDelay();
-      }
-      break;
+        case U8G_COM_MSG_WRITE_BYTE:
+          u8g_spi_out(arg_val);
+          u8g_MicroDelay();
+          break;
 
-    case U8G_COM_MSG_RESET:
-      if ( u8g->pin_list[U8G_PI_RESET] != U8G_PIN_NONE )
-        u8g_com_arduino_digital_write(u8g, U8G_PI_RESET, arg_val);
-      break;
-
-    case U8G_COM_MSG_WRITE_BYTE:
-      u8g_spi_out(arg_val);
-      u8g_MicroDelay();
-      break;
-
-    case U8G_COM_MSG_WRITE_SEQ:
-      {
-        register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
-          u8g_spi_out(*ptr++);
-          arg_val--;
+        case U8G_COM_MSG_WRITE_SEQ: {
+          register uint8_t *ptr = arg_ptr;
+          while (arg_val > 0) {
+            u8g_spi_out(*ptr++);
+            arg_val--;
+          }
         }
-      }
-      break;
-    case U8G_COM_MSG_WRITE_SEQ_P:
-      {
-        register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
-          u8g_spi_out(u8g_pgm_read(ptr));
-          ptr++;
-          arg_val--;
+        break;
+        case U8G_COM_MSG_WRITE_SEQ_P: {
+          register uint8_t *ptr = arg_ptr;
+          while (arg_val > 0) {
+            u8g_spi_out(u8g_pgm_read(ptr));
+            ptr++;
+            arg_val--;
+          }
         }
+        break;
       }
-      break;
-  }
-  return 1;
-}
+      return 1;
+    }
 
+  #else /* U8G_ARDUINO_ATMEGA_HW_SPI */
 
-
-#else /* U8G_ARDUINO_ATMEGA_HW_SPI */
-
-#endif /* U8G_ARDUINO_ATMEGA_HW_SPI */
+  #endif /* U8G_ARDUINO_ATMEGA_HW_SPI */
 
 #else /* ARDUINO */
 
-uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  return 1;
-}
+  uint8_t u8g_com_arduino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    return 1;
+  }
 
 #endif /* ARDUINO */

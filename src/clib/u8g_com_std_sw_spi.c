@@ -37,83 +37,73 @@
 
 #ifdef U8G_WITH_PINLIST
 
-static void u8g_sw_spi_shift_out(uint8_t dataPin, uint8_t clockPin, uint8_t val)
-{
-  uint8_t i = 8;
-  do
-  {
-    if ( val & 128 )
-      u8g_SetPinLevel(dataPin, 1);
-    else
-      u8g_SetPinLevel(dataPin, 0);
-    val <<= 1;
-    u8g_MicroDelay();		/* 23 Sep 2012 */
-    //delay(1);
-    u8g_SetPinLevel(clockPin, 1);
-    u8g_MicroDelay();		/* 23 Sep 2012 */
-    //delay(1);
-    u8g_SetPinLevel(clockPin, 0);
-    u8g_MicroDelay();		/* 23 Sep 2012 */
-    //delay(1);
-    i--;
-  } while( i != 0 );
-}
-
-uint8_t u8g_com_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  switch(msg)
-  {
-    case U8G_COM_MSG_INIT:
-      u8g_SetPIOutput(u8g, U8G_PI_SCK);
-      u8g_SetPIOutput(u8g, U8G_PI_MOSI);
-      u8g_SetPIOutput(u8g, U8G_PI_RESET);
-      u8g_SetPIOutput(u8g, U8G_PI_CS);
-      u8g_SetPIOutput(u8g, U8G_PI_A0);
-      u8g_SetPILevel(u8g, U8G_PI_SCK, 0);
-      u8g_SetPILevel(u8g, U8G_PI_MOSI, 0);
-      break;
-
-    case U8G_COM_MSG_STOP:
-      break;
-
-    case U8G_COM_MSG_RESET:
-      u8g_SetPILevel(u8g, U8G_PI_RESET, arg_val);
-      break;
-
-    case U8G_COM_MSG_CHIP_SELECT:
-      if ( arg_val == 0 )
-      {
-        /* disable */
-	u8g_SetPILevel(u8g, U8G_PI_CS, 1);
-      }
+  static void u8g_sw_spi_shift_out(uint8_t dataPin, uint8_t clockPin, uint8_t val) {
+    uint8_t i = 8;
+    do {
+      if (val & 128)
+        u8g_SetPinLevel(dataPin, 1);
       else
-      {
-        /* enable */
-	u8g_SetPILevel(u8g, U8G_PI_SCK, 0);
-	u8g_SetPILevel(u8g, U8G_PI_CS, 0);
-      }
-      break;
+        u8g_SetPinLevel(dataPin, 0);
+      val <<= 1;
+      u8g_MicroDelay(); // 23 Sep 2012
+      // delay(1);
+      u8g_SetPinLevel(clockPin, 1);
+      u8g_MicroDelay(); // 23 Sep 2012
+      // delay(1);
+      u8g_SetPinLevel(clockPin, 0);
+      u8g_MicroDelay(); // 23 Sep 2012
+      // delay(1);
+      i--;
+    } while (i != 0);
+  }
 
-    case U8G_COM_MSG_WRITE_BYTE:
-      u8g_sw_spi_shift_out(u8g->pin_list[U8G_PI_MOSI], u8g->pin_list[U8G_PI_SCK], arg_val);
-      break;
+  uint8_t u8g_com_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    switch (msg) {
+      case U8G_COM_MSG_INIT:
+        u8g_SetPIOutput(u8g, U8G_PI_SCK);
+        u8g_SetPIOutput(u8g, U8G_PI_MOSI);
+        u8g_SetPIOutput(u8g, U8G_PI_RESET);
+        u8g_SetPIOutput(u8g, U8G_PI_CS);
+        u8g_SetPIOutput(u8g, U8G_PI_A0);
+        u8g_SetPILevel(u8g, U8G_PI_SCK, 0);
+        u8g_SetPILevel(u8g, U8G_PI_MOSI, 0);
+        break;
 
-    case U8G_COM_MSG_WRITE_SEQ:
-      {
+      case U8G_COM_MSG_STOP:
+        break;
+
+      case U8G_COM_MSG_RESET:
+        u8g_SetPILevel(u8g, U8G_PI_RESET, arg_val);
+        break;
+
+      case U8G_COM_MSG_CHIP_SELECT:
+        if (arg_val == 0) {
+          // disable
+          u8g_SetPILevel(u8g, U8G_PI_CS, 1);
+        }
+        else {
+          // enable
+          u8g_SetPILevel(u8g, U8G_PI_SCK, 0);
+          u8g_SetPILevel(u8g, U8G_PI_CS, 0);
+        }
+        break;
+
+      case U8G_COM_MSG_WRITE_BYTE:
+        u8g_sw_spi_shift_out(u8g->pin_list[U8G_PI_MOSI], u8g->pin_list[U8G_PI_SCK], arg_val);
+        break;
+
+      case U8G_COM_MSG_WRITE_SEQ: {
         register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
+        while (arg_val > 0) {
           u8g_sw_spi_shift_out(u8g->pin_list[U8G_PI_MOSI], u8g->pin_list[U8G_PI_SCK], *ptr++);
           arg_val--;
         }
       }
       break;
 
-      case U8G_COM_MSG_WRITE_SEQ_P:
-      {
+      case U8G_COM_MSG_WRITE_SEQ_P: {
         register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
+        while (arg_val > 0) {
           u8g_sw_spi_shift_out(u8g->pin_list[U8G_PI_MOSI], u8g->pin_list[U8G_PI_SCK], u8g_pgm_read(ptr));
           ptr++;
           arg_val--;
@@ -121,20 +111,17 @@ uint8_t u8g_com_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *ar
       }
       break;
 
-    case U8G_COM_MSG_ADDRESS:                     /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
-      u8g_SetPILevel(u8g, U8G_PI_A0, arg_val);
-      break;
+      case U8G_COM_MSG_ADDRESS:                   // define cmd (arg_val = 0) or data mode (arg_val = 1)
+        u8g_SetPILevel(u8g, U8G_PI_A0, arg_val);
+        break;
+    }
+    return 1;
   }
-  return 1;
-}
 
-#else
+#else // ifdef U8G_WITH_PINLIST
 
+  uint8_t u8g_com_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    return 1;
+  }
 
-uint8_t u8g_com_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  return 1;
-}
-
-
-#endif
+#endif // ifdef U8G_WITH_PINLIST

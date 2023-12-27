@@ -33,25 +33,20 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 */
 
 #include "u8g.h"
 
-uint8_t u8g_com_null_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  switch(msg)
-  {
+uint8_t u8g_com_null_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+  switch (msg) {
     case U8G_COM_MSG_INIT:
       break;
     case U8G_COM_MSG_STOP:
       break;
 
-
     case U8G_COM_MSG_CHIP_SELECT:
-      /* arg_val contains the chip number, which should be enabled */
+      // arg_val contains the chip number, which should be enabled
       break;
-
 
     case U8G_COM_MSG_WRITE_BYTE:
       break;
@@ -60,4 +55,3 @@ uint8_t u8g_com_null_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
   }
   return 1;
 }
-

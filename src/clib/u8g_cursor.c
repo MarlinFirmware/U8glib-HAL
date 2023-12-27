@@ -31,69 +31,60 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 */
 
 #include "u8g.h"
 
-void u8g_SetCursorFont(u8g_t *u8g, const u8g_pgm_uint8_t *cursor_font)
-{
+void u8g_SetCursorFont(u8g_t *u8g, const u8g_pgm_uint8_t *cursor_font) {
   u8g->cursor_font = cursor_font;
 }
 
-void u8g_SetCursorStyle(u8g_t *u8g, uint8_t encoding)
-{
+void u8g_SetCursorStyle(u8g_t *u8g, uint8_t encoding) {
   u8g->cursor_encoding = encoding;
 }
 
-void u8g_SetCursorColor(u8g_t *u8g, uint8_t fg, uint8_t bg)
-{
+void u8g_SetCursorColor(u8g_t *u8g, uint8_t fg, uint8_t bg) {
   u8g->cursor_bg_color = bg;
   u8g->cursor_fg_color = fg;
 }
 
-void u8g_SetCursorPos(u8g_t *u8g, u8g_uint_t cursor_x, u8g_uint_t cursor_y)
-{
+void u8g_SetCursorPos(u8g_t *u8g, u8g_uint_t cursor_x, u8g_uint_t cursor_y) {
   u8g->cursor_x = cursor_x;
   u8g->cursor_y = cursor_y;
 }
 
-void u8g_EnableCursor(u8g_t *u8g)
-{
-    u8g->cursor_fn = u8g_DrawCursor;
+void u8g_EnableCursor(u8g_t *u8g) {
+  u8g->cursor_fn = u8g_DrawCursor;
 }
 
-void u8g_DisableCursor(u8g_t *u8g)
-{
-    u8g->cursor_fn = (u8g_draw_cursor_fn)0;
+void u8g_DisableCursor(u8g_t *u8g) {
+  u8g->cursor_fn = (u8g_draw_cursor_fn)0;
 }
 
-void u8g_DrawCursor(u8g_t *u8g)
-{
+void u8g_DrawCursor(u8g_t *u8g) {
   const u8g_pgm_uint8_t *font;
   uint8_t color;
   uint8_t encoding = u8g->cursor_encoding;
 
-  /* get current values */
+  // get current values
   color = u8g_GetColorIndex(u8g);
   font = u8g->font;
 
-  /* draw cursor */
+  // draw cursor
   u8g->font = u8g->cursor_font;
   encoding++;
   u8g_SetColorIndex(u8g, u8g->cursor_bg_color);
-  /* 27. Jan 2013: replaced call to u8g_DrawGlyph with call to u8g_draw_glyph */
-  /* required, because y adjustment should not happen to the cursor fonts */
+  // 27. Jan 2013: replaced call to u8g_DrawGlyph with call to u8g_draw_glyph
+  // required, because y adjustment should not happen to the cursor fonts
   u8g_draw_glyph(u8g, u8g->cursor_x, u8g->cursor_y, encoding);
   encoding--;
   u8g_SetColorIndex(u8g, u8g->cursor_fg_color);
-  /* 27. Jan 2013: replaced call to u8g_DrawGlyph with call to u8g_draw_glyph */
-  /* required, because y adjustment should not happen to the cursor fonts */
-  /* u8g_DrawGlyph(u8g, u8g->cursor_x, u8g->cursor_y, encoding); */
+  // 27. Jan 2013: replaced call to u8g_DrawGlyph with call to u8g_draw_glyph
+  // required, because y adjustment should not happen to the cursor fonts
+  // u8g_DrawGlyph(u8g, u8g->cursor_x, u8g->cursor_y, encoding);
   u8g_draw_glyph(u8g, u8g->cursor_x, u8g->cursor_y, encoding);
 
-  /* restore previous values */
+  // restore previous values
   u8g->font = font;
   u8g_SetColorIndex(u8g, color);
 }
-

@@ -104,7 +104,6 @@
     return (uint32_t)LPC_GPIO(LPC1768_PIN_PORT(pin))->FIOPIN & LPC_PIN(LPC1768_PIN_PIN(pin)) ? 1 : 0;
   }
 
-
   #ifdef __cplusplus
     }
   #endif

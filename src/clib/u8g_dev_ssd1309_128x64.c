@@ -42,65 +42,65 @@
 #define HEIGHT 64
 #define PAGE_HEIGHT 8
 
-/* ssd1309 ini sequence */
+// ssd1309 ini sequence
 static const uint8_t u8g_dev_ssd1309_128x64_init_seq[] PROGMEM = {
-  U8G_ESC_CS(0),      /* disable chip */
-  U8G_ESC_ADR(0),     /* instruction mode */
-  U8G_ESC_RST(1),     /* do reset low pulse with (1*16)+2 milliseconds */
-  U8G_ESC_CS(1),      /* enable chip */
+  U8G_ESC_CS(0),      // disable chip
+  U8G_ESC_ADR(0),     // instruction mode
+  U8G_ESC_RST(1),     // do reset low pulse with (1*16)+2 milliseconds
+  U8G_ESC_CS(1),      // enable chip
 
-  0xFD, 0x12,         /* Command Lock */
-  0xAE,               /* Set Display Off */
-  0xD5, 0xA0,         /* set Display Clock Divide Ratio/Oscillator Frequency */
-  0xA8, 0x3F,         /* Set Multiplex Ratio */
-  0x3D, 0x00,         /* Set Display Offset */
-  0x40,               /* Set Display Start Line */
-  0xA1,               /* Set Segment Re-Map */
-  0xC8,               /* Set COM Output Scan Direction */
-  0xDA, 0x12,         /* Set COM Pins Hardware Configuration */
-  0x81, 0xDF,         /* Set Current Control */
-  0xD9, 0x82,         /* Set Pre-Charge Period */
-  0xDB, 0x34,         /* Set VCOMH Deselect Level */
-  0xA4,               /* Set Entire Display On/Off */
-  0xA6,               /* Set Normal/Inverse Display */
-  U8G_ESC_VCC(1),     /* Power up VCC & Stabilized */
+  0xFD, 0x12,         // Command Lock
+  0xAE,               // Set Display Off
+  0xD5, 0xA0,         // set Display Clock Divide Ratio/Oscillator Frequency
+  0xA8, 0x3F,         // Set Multiplex Ratio
+  0x3D, 0x00,         // Set Display Offset
+  0x40,               // Set Display Start Line
+  0xA1,               // Set Segment Re-Map
+  0xC8,               // Set COM Output Scan Direction
+  0xDA, 0x12,         // Set COM Pins Hardware Configuration
+  0x81, 0xDF,         // Set Current Control
+  0xD9, 0x82,         // Set Pre-Charge Period
+  0xDB, 0x34,         // Set VCOMH Deselect Level
+  0xA4,               // Set Entire Display On/Off
+  0xA6,               // Set Normal/Inverse Display
+  U8G_ESC_VCC(1),     // Power up VCC & Stabilized
   U8G_ESC_DLY(50),
-  0xAF,               /* Set Display On */
+  0xAF,               // Set Display On
   U8G_ESC_DLY(50),
-  U8G_ESC_CS(0),      /* disable chip */
-  U8G_ESC_END         /* end of sequence */
+  U8G_ESC_CS(0),      // disable chip
+  U8G_ESC_END         // end of sequence
 };
 
-/* select one init sequence here */
+// select one init sequence here
 #define u8g_dev_ssd1309_128x64_init_seq u8g_dev_ssd1309_128x64_init_seq
 
 static const uint8_t u8g_dev_ssd1309_128x64_data_start[] PROGMEM = {
-  U8G_ESC_ADR(0),     /* instruction mode */
-  U8G_ESC_CS(1),      /* enable chip */
-  0x10,               /* set upper 4 bit of the col adr to 0 */
-  0x00,               /* set lower 4 bit of the col adr to 4 */
-  U8G_ESC_END         /* end of sequence */
+  U8G_ESC_ADR(0),     // instruction mode
+  U8G_ESC_CS(1),      // enable chip
+  0x10,               // set upper 4 bit of the col adr to 0
+  0x00,               // set lower 4 bit of the col adr to 4
+  U8G_ESC_END         // end of sequence
 };
 
 static const uint8_t u8g_dev_ssd13xx_sleep_on[] PROGMEM = {
-  U8G_ESC_ADR(0),     /* instruction mode */
-  U8G_ESC_CS(1),      /* enable chip */
-  0xAE,               /* display off */
-  U8G_ESC_CS(0),      /* disable chip */
-  U8G_ESC_END         /* end of sequence */
+  U8G_ESC_ADR(0),     // instruction mode
+  U8G_ESC_CS(1),      // enable chip
+  0xAE,               // display off
+  U8G_ESC_CS(0),      // disable chip
+  U8G_ESC_END         // end of sequence
 };
 
 static const uint8_t u8g_dev_ssd13xx_sleep_off[] PROGMEM = {
-  U8G_ESC_ADR(0),     /* instruction mode */
-  U8G_ESC_CS(1),      /* enable chip */
-  0xAF,               /* display on */
-  U8G_ESC_DLY(50),    /* delay 50 ms */
-  U8G_ESC_CS(0),      /* disable chip */
-  U8G_ESC_END         /* end of sequence */
+  U8G_ESC_ADR(0),     // instruction mode
+  U8G_ESC_CS(1),      // enable chip
+  0xAF,               // display on
+  U8G_ESC_DLY(50),    // delay 50 ms
+  U8G_ESC_CS(0),      // disable chip
+  U8G_ESC_END         // end of sequence
 };
 
 uint8_t u8g_dev_ssd1309_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg) {
-  switch(msg) {
+  switch (msg) {
     case U8G_DEV_MSG_INIT:
       u8g_InitCom(u8g, dev, U8G_SPI_CLK_CYCLE_300NS);
       u8g_WriteEscSeqP(u8g, dev, u8g_dev_ssd1309_128x64_init_seq);
@@ -110,16 +110,17 @@ uint8_t u8g_dev_ssd1309_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void 
     case U8G_DEV_MSG_PAGE_NEXT: {
       u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
       u8g_WriteEscSeqP(u8g, dev, u8g_dev_ssd1309_128x64_data_start);
-      u8g_WriteByte(u8g, dev, 0xB0 | pb->p.page);   /* select current page (SSD1306) */
-      u8g_SetAddress(u8g, dev, 1);                  /* data mode */
+      u8g_WriteByte(u8g, dev, 0xB0 | pb->p.page);   // select current page (SSD1306)
+      u8g_SetAddress(u8g, dev, 1);                  // data mode
       if (u8g_pb_WriteBuffer(pb, u8g, dev) == 0) return 0;
       u8g_SetChipSelect(u8g, dev, 0);
-    } break;
+    }
+    break;
     case U8G_DEV_MSG_CONTRAST:
       u8g_SetChipSelect(u8g, dev, 1);
-      u8g_SetAddress(u8g, dev, 0);                  /* instruction mode */
+      u8g_SetAddress(u8g, dev, 0);                  // instruction mode
       u8g_WriteByte(u8g, dev, 0x81);
-      u8g_WriteByte(u8g, dev, (*(uint8_t *)arg) );  /* 11 Jul 2015: fixed contrast calculation */
+      u8g_WriteByte(u8g, dev, (*(uint8_t *)arg));   // 11 Jul 2015: fixed contrast calculation
       u8g_SetChipSelect(u8g, dev, 0);
       return 1;
     case U8G_DEV_MSG_SLEEP_ON:
@@ -161,10 +162,10 @@ uint8_t u8g_dev_ssd1309_128x64_f_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, voi
       memcpy(full_buffer[page] + start, buf + start, count);
     }
 
-    /* Only send buffer after the last page has been cached */
+    // Only send buffer after the last page has been cached
     const bool is_last_page = page == PAGE_COUNT - 1;
     if (is_last_page) {
-      /* Full render to clear noise in LCD RAM on start */
+      // Full render to clear noise in LCD RAM on start
       static bool has_rendered = false;
       for (uint8_t page = 0; page < PAGE_COUNT; page++) {
         const uint8_t start = has_rendered ? column_start[page] : 0,
@@ -172,12 +173,12 @@ uint8_t u8g_dev_ssd1309_128x64_f_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, voi
         const bool page_changed = start < WIDTH;
         if (page_changed) {
           u8g_WriteEscSeqP(u8g, dev, u8g_dev_ssd1309_128x64_data_start);
-          u8g_WriteByte(u8g, dev, 0xB0 | page);               /* Select current page (SSD1306) */
+          u8g_WriteByte(u8g, dev, 0xB0 | page);               // Select current page (SSD1306)
           if (start > 0) {
-            u8g_WriteByte(u8g, dev, 0x00 | (start & 0b1111)); /* Start column low nybble */
-            u8g_WriteByte(u8g, dev, 0x10 | (start >> 4));     /* Start column high nybble */
+            u8g_WriteByte(u8g, dev, 0x00 | (start & 0b1111)); // Start column low nybble
+            u8g_WriteByte(u8g, dev, 0x10 | (start >> 4));     // Start column high nybble
           }
-          u8g_SetAddress(u8g, dev, 1);                        /* Data mode */
+          u8g_SetAddress(u8g, dev, 1);                        // Data mode
           u8g_WriteSequence(u8g, dev, count, full_buffer[page] + start);
         }
       }

@@ -31,16 +31,13 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 */
 
 #include "u8g.h"
 
-
 #define WIDTH 240
 #define HEIGHT 64
 #define PAGE_HEIGHT 8
-
 
 static const uint8_t u8g_dev_uc1611_dogm240_init_seq[] PROGMEM = {
   U8G_ESC_CS(1),             // enable chip
@@ -54,7 +51,7 @@ static const uint8_t u8g_dev_uc1611_dogm240_init_seq[] PROGMEM = {
   0x81,     // set contrast (0-255)
   0xB7,     // 183
   0xC0,     // set view
-  //0x04,     // topview
+  // 0x04,     // topview
   0x02,     // bottomview
   0xA3,     // set line rate (9.4k)
   0xE9,     // set bias ratio (10)
@@ -64,55 +61,50 @@ static const uint8_t u8g_dev_uc1611_dogm240_init_seq[] PROGMEM = {
   U8G_ESC_END                // end of sequence
 };
 
-static void setPage(u8g_t *u8g, u8g_dev_t *dev, unsigned char page)
-{
-  u8g_WriteByte(u8g, dev, 0x70 + (page>>4));
-  u8g_WriteByte(u8g, dev, 0x60 + (page&0x0F));
+static void setPage(u8g_t *u8g, u8g_dev_t *dev, unsigned char page) {
+  u8g_WriteByte(u8g, dev, 0x70 + (page >> 4));
+  u8g_WriteByte(u8g, dev, 0x60 + (page & 0x0F));
 }
 
 static const uint8_t u8g_dev_uc1611_dogm240_data_start[] PROGMEM = {
-  U8G_ESC_ADR(0),           /* instruction mode */
-  U8G_ESC_CS(1),            /* enable chip */
-  0x10,                     /* set upper 4 bit of the col adr to 0 */
-  0x00,                     /* set lower 4 bit of the col adr to 0 */
-  U8G_ESC_END               /* end of sequence */
+  U8G_ESC_ADR(0),           // instruction mode
+  U8G_ESC_CS(1),            // enable chip
+  0x10,                     // set upper 4 bit of the col adr to 0
+  0x00,                     // set lower 4 bit of the col adr to 0
+  U8G_ESC_END               // end of sequence
 };
 
-uint8_t u8g_dev_uc1611_dogm240_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg)
-{
-  switch(msg)
-  {
+uint8_t u8g_dev_uc1611_dogm240_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg) {
+  switch (msg) {
     case U8G_DEV_MSG_INIT:
       u8g_InitCom(u8g, dev, U8G_SPI_CLK_CYCLE_300NS);
       u8g_WriteEscSeqP(u8g, dev, u8g_dev_uc1611_dogm240_init_seq);
       break;
     case U8G_DEV_MSG_STOP:
       break;
-    case U8G_DEV_MSG_PAGE_NEXT:
-      {
+    case U8G_DEV_MSG_PAGE_NEXT: {
       u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
       u8g_WriteEscSeqP(u8g, dev, u8g_dev_uc1611_dogm240_data_start);
-      setPage(u8g, dev, pb->p.page);   /* select current page (uc1611) */
-      u8g_SetAddress(u8g, dev, 1);     /* data mode */
-      if ( u8g_pb_WriteBuffer(pb, u8g, dev) == 0 )
+      setPage(u8g, dev, pb->p.page);   // select current page (uc1611)
+      u8g_SetAddress(u8g, dev, 1);     // data mode
+      if (u8g_pb_WriteBuffer(pb, u8g, dev) == 0)
         return 0;
       u8g_SetChipSelect(u8g, dev, 1);
-      }
-      break;
+    }
+    break;
     case U8G_DEV_MSG_CONTRAST:
       u8g_SetChipSelect(u8g, dev, 0);
-      u8g_SetAddress(u8g, dev, 0);          /* instruction mode */
+      u8g_SetAddress(u8g, dev, 0);          // instruction mode
       u8g_WriteByte(u8g, dev, 0x81);
-      /* 11 Jul 2015: bugfix, github issue 339 */
-      u8g_WriteByte(u8g, dev, (*(uint8_t *)arg) );	/* set contrast from, keep gain at 0 */
+      // 11 Jul 2015: bugfix, github issue 339
+      u8g_WriteByte(u8g, dev, (*(uint8_t *)arg));   // set contrast from, keep gain at 0
       u8g_SetChipSelect(u8g, dev, 1);
       return 1;
   }
   return u8g_dev_pb8v1_base_fn(u8g, dev, msg, arg);
 }
 
-U8G_PB_DEV(u8g_dev_uc1611_dogm240_i2c , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogm240_fn, U8G_COM_UC_I2C);
-U8G_PB_DEV(u8g_dev_uc1611_dogm240_sw_spi , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogm240_fn, U8G_COM_SW_SPI);
-U8G_PB_DEV(u8g_dev_uc1611_dogm240_hw_spi , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogm240_fn, U8G_COM_HW_SPI);
-U8G_PB_DEV(u8g_dev_uc1611_dogm240_8bit , WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogm240_fn, U8G_COM_FAST_PARALLEL);
-
+U8G_PB_DEV(u8g_dev_uc1611_dogm240_i2c, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogm240_fn, U8G_COM_UC_I2C);
+U8G_PB_DEV(u8g_dev_uc1611_dogm240_sw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogm240_fn, U8G_COM_SW_SPI);
+U8G_PB_DEV(u8g_dev_uc1611_dogm240_hw_spi, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogm240_fn, U8G_COM_HW_SPI);
+U8G_PB_DEV(u8g_dev_uc1611_dogm240_8bit, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_uc1611_dogm240_fn, U8G_COM_FAST_PARALLEL);

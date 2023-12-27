@@ -33,7 +33,6 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 */
 
 #include "u8g.h"
@@ -42,33 +41,29 @@
   setup page count structure
   conditions: page_height <= total_height
 */
-void u8g_page_Init(u8g_page_t *p, u8g_uint_t page_height, u8g_uint_t total_height )
-{
+void u8g_page_Init(u8g_page_t *p, u8g_uint_t page_height, u8g_uint_t total_height ) {
   p->page_height = page_height;
   p->total_height = total_height;
   p->page = 0;
   u8g_page_First(p);
 }
 
-void u8g_page_First(u8g_page_t *p)
-{
+void u8g_page_First(u8g_page_t *p) {
   p->page_y0 = 0;
   p->page_y1 = p->page_height;
   p->page_y1--;
   p->page = 0;
 }
 
-uint8_t u8g_page_Next(u8g_page_t * p)
-{
+uint8_t u8g_page_Next(u8g_page_t * p) {
   register u8g_uint_t y1;
   p->page_y0 += p->page_height;
-  if ( p->page_y0 >= p->total_height )
+  if (p->page_y0 >= p->total_height)
     return 0;
   p->page++;
   y1 = p->page_y1;
   y1 += p->page_height;
-  if ( y1 >= p->total_height )
-  {
+  if (y1 >= p->total_height) {
     y1 = p->total_height;
     y1--;
   }
@@ -76,6 +71,3 @@ uint8_t u8g_page_Next(u8g_page_t * p)
 
   return 1;
 }
-
-
-

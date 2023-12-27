@@ -34,74 +34,67 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 */
 
 #include "u8g.h"
 
 #ifdef U8G_CYPRESS_PSOC5
 
-#include <project.h>
+  #include <project.h>
 
-static uint8 dc = 0; // need to store whether next write is data or command
+  static uint8 dc = 0; // need to store whether next write is data or command
 
-uint8_t u8g_com_psoc5_ssd_hw_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  switch(msg)
-  {
-    case U8G_COM_MSG_STOP:
-      // stop the device
-      GraphicLCDIntf_Stop();
-      break;
+  uint8_t u8g_com_psoc5_ssd_hw_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    switch (msg) {
+      case U8G_COM_MSG_STOP:
+        // stop the device
+        GraphicLCDIntf_Stop();
+        break;
 
-    case U8G_COM_MSG_INIT:
-  		// init hardware interfaces, timers, gpios, ...
-      GraphicLCDIntf_Init();
-      break;
+      case U8G_COM_MSG_INIT:
+        // init hardware interfaces, timers, gpios, ...
+        GraphicLCDIntf_Init();
+        break;
 
-    case U8G_COM_MSG_ADDRESS:
-      // switch from cmd (arg_val = 0) to data mode (arg_val = 1) or vice versa
-      dc = arg_val;
-      break;
+      case U8G_COM_MSG_ADDRESS:
+        // switch from cmd (arg_val = 0) to data mode (arg_val = 1) or vice versa
+        dc = arg_val;
+        break;
 
-    case U8G_COM_MSG_CHIP_SELECT:
-		  /* done by the hardware */
-      break;
+      case U8G_COM_MSG_CHIP_SELECT:
+        // done by the hardware
+        break;
 
-    case U8G_COM_MSG_RESET:
-      // toggle the reset pin of the display by value in arg_val
-      nRES_Write(0);
-      u8g_10MicroDelay();
-      nRES_Write(1);
-      break;
+      case U8G_COM_MSG_RESET:
+        // toggle the reset pin of the display by value in arg_val
+        nRES_Write(0);
+        u8g_10MicroDelay();
+        nRES_Write(1);
+        break;
 
-    case U8G_COM_MSG_WRITE_BYTE:
-      // write byte to the device
-		  GraphicLCDIntf_Write8(dc, arg_val);
-      break;
+      case U8G_COM_MSG_WRITE_BYTE:
+        // write byte to the device
+        GraphicLCDIntf_Write8(dc, arg_val);
+        break;
 
-    case U8G_COM_MSG_WRITE_SEQ:
-    case U8G_COM_MSG_WRITE_SEQ_P:
-      {
+      case U8G_COM_MSG_WRITE_SEQ:
+      case U8G_COM_MSG_WRITE_SEQ_P: {
         // write a sequence of bytes to the device
         register uint8_t *ptr = arg_ptr;
-        while (arg_val-- > 0)
-        {
+        while (arg_val-- > 0) {
           GraphicLCDIntf_Write8(dc, *ptr++);
         }
       }
       break;
 
-
+    }
+    return 1;
   }
-  return 1;
-}
 
-#else
+#else // ifdef U8G_CYPRESS_PSOC5
 
-uint8_t u8g_com_psoc5_ssd_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  return 1;
-}
+  uint8_t u8g_com_psoc5_ssd_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    return 1;
+  }
 
-#endif
+#endif // ifdef U8G_CYPRESS_PSOC5

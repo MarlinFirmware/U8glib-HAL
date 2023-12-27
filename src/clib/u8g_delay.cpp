@@ -31,14 +31,11 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
   void u8g_Delay(uint16_t val)    Delay by "val" milliseconds
   void u8g_MicroDelay(void)   Delay be one microsecond
   void u8g_10MicroDelay(void) Delay by 10 microseconds
 
-
 */
-
 
 #include "u8g.h"
 
@@ -78,8 +75,6 @@
 #  define USE_DUMMY_DELAY
 #endif
 
-
-
 /*==== Part 2: Definition of the delay procedures ====*/
 
 /*== Raspberry Pi Delay ==*/
@@ -115,8 +110,6 @@ void u8g_10MicroDelay(void)
    usleep(10);
 }
 #endif
-
-
 
 /*== AVR Delay ==*/
 
@@ -171,7 +164,6 @@ void u8g_10MicroDelay(void)
 
 #endif
 
-
 /*== Delay for PIC18 (not tested) ==*/
 
 #ifdef USE_PIC18_DELAY
@@ -195,7 +187,6 @@ void u8g_10MicroDelay(void)
   /* not implemented */
 }
 #endif
-
 
 /*== Arduino Delay ==*/
 #ifdef USE_ARDUINO_DELAY
@@ -268,7 +259,6 @@ void u8g_10MicroDelay(void)
 #define F_CPU 1000000UL
 #endif
 
-
 void u8g_Delay(uint16_t val)
 {
   int t;
@@ -288,13 +278,11 @@ void u8g_10MicroDelay(void)
 }
 #endif
 
-
 #ifdef USE_HAL_DELAY
 
   #include <LCD_delay.h>
 
 #endif
-
 
 /*== Any other systems: Dummy Delay ==*/
 #ifdef USE_DUMMY_DELAY

@@ -156,7 +156,6 @@ class U8GLIB : public U8GLIB_PRINT_CLASS {
     void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
       { u8g_DrawTriangle(&u8g, x0, y0, x1, y1, x2, y2); }
 
-
     /* bitmap handling */
     void drawBitmap(u8g_uint_t x, u8g_uint_t y, u8g_uint_t cnt, u8g_uint_t h, const uint8_t *bitmap)
       { u8g_DrawBitmap(&u8g, x, y, cnt, h, bitmap); }
@@ -167,7 +166,6 @@ class U8GLIB : public U8GLIB_PRINT_CLASS {
       { u8g_DrawXBM(&u8g, x, y, w, h, bitmap); }
     void drawXBMP(u8g_uint_t x, u8g_uint_t y, u8g_uint_t w, u8g_uint_t h, const u8g_pgm_uint8_t *bitmap)
       { u8g_DrawXBMP(&u8g, x, y, w, h, bitmap); }
-
 
     /* font handling */
     void setFont(const u8g_fntpgm_uint8_t *font) {u8g_SetFont(&u8g, font); }
@@ -193,7 +191,6 @@ class U8GLIB : public U8GLIB_PRINT_CLASS {
     void setFontRefHeightExtendedText() { u8g_SetFontRefHeightExtendedText(&u8g); }
     void setFontRefHeightAll() { u8g_SetFontRefHeightAll(&u8g); }
     void setFontLineSpacingFactor(uint8_t factor) { u8g_SetFontLineSpacingFactor(&u8g, factor); }
-
 
     u8g_uint_t getStrPixelWidth(const char *s) { return u8g_GetStrPixelWidth(&u8g, s); }
     u8g_uint_t getStrPixelWidthP(u8g_pgm_uint8_t *s) { return u8g_GetStrPixelWidthP(&u8g, s); }
@@ -478,7 +475,6 @@ public:
   void init(uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE) { U8GLIB::init(&u8g_dev_uc1608_240x128_2x_hw_spi, cs, a0, reset); }
 };
 
-
 class U8GLIB_UC1611_DOGM240 : public U8GLIB {
 public:
   U8GLIB_UC1611_DOGM240() : U8GLIB() { }
@@ -587,7 +583,6 @@ public:
   }
 };
 
-
 class U8GLIB_ST7920_192X32 : public U8GLIB { // OBSOLETE, use U8GLIB_ST7920_192X32_1X instead
 public:
   U8GLIB_ST7920_192X32() : U8GLIB() { }
@@ -639,7 +634,6 @@ public:
   }
 };
 
-
 class U8GLIB_ST7920_202X32 : public U8GLIB {
 public:
   U8GLIB_ST7920_202X32() : U8GLIB() { }
@@ -688,7 +682,6 @@ public:
     U8GLIB::init(&u8g_dev_st7920_202x32_4x_8bit, d0, d1, d2, d3, d4, d5, d6, d7, en, U8G_PIN_NONE, U8G_PIN_NONE, di, rw, reset); // cs1 = cs2 = U8G_PIN_NONE
   }
 };
-
 
 class U8GLIB_LC7981_160X80 : public U8GLIB {
 public:
@@ -743,7 +736,6 @@ public:
   }
 };
 
-
 class U8GLIB_DOGXL160_BW : public U8GLIB {
 public:
   U8GLIB_DOGXL160_BW() : U8GLIB() { }
@@ -779,7 +771,6 @@ public:
   void init(uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE) { U8GLIB::init(&u8g_dev_uc1610_dogxl160_2x_gr_sw_spi, sck, mosi, cs, a0, reset); }
   void init(uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE) { U8GLIB::init(&u8g_dev_uc1610_dogxl160_2x_gr_hw_spi, cs, a0, reset); }
 };
-
 
 class U8GLIB_NHD27OLED_BW : public U8GLIB {
 public:
@@ -867,7 +858,6 @@ public:
   void init(uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE) { U8GLIB::init(&u8g_dev_ssd1322_nhd31oled_2x_gr_hw_spi, cs, a0, reset); }
 };
 
-
 class U8GLIB_SSD1306_128X64 : public U8GLIB {
 public:
   U8GLIB_SSD1306_128X64() : U8GLIB() { }
@@ -889,7 +879,6 @@ public:
   void init(uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE) { U8GLIB::init(&u8g_dev_ssd1306_adafruit_128x64_hw_spi, cs, a0, reset); }
   void init(uint8_t options = U8G_I2C_OPT_NONE) { U8GLIB::init(&u8g_dev_ssd1306_adafruit_128x64_i2c, options); }
 };
-
 
 class U8GLIB_SSD1306_128X64_2X : public U8GLIB {
 public:
@@ -990,7 +979,6 @@ public:
   void init(uint8_t options = U8G_I2C_OPT_NONE) { U8GLIB::init(&u8g_dev_ssd1306_64x48_2x_i2c, options); }
 };
 
-
 class U8GLIB_NHD27OLED_GR : public U8GLIB {
 public:
   U8GLIB_NHD27OLED_GR() : U8GLIB() { }
@@ -1059,8 +1047,6 @@ public:
   U8GLIB_HT1632_24X16(uint8_t wr, uint8_t data, uint8_t cs) { init(wr, data, cs); }
   void init(uint8_t wr, uint8_t data, uint8_t cs) { U8GLIB::init(&u8g_dev_ht1632_24x16, wr, data, cs, U8G_PIN_NONE, U8G_PIN_NONE); }
 };
-
-
 
 class U8GLIB_PCF8812 : public U8GLIB {
 public:
@@ -1165,7 +1151,6 @@ public:
   }
 };
 
-
 class U8GLIB_ST7687_C144MVGD: public U8GLIB {
 public:
   U8GLIB_ST7687_C144MVGD() : U8GLIB() { }
@@ -1203,7 +1188,6 @@ public:
     (void)init8BitFixedPort(&u8g_dev_ili9325d_320x240_8bit, en, cs1, di, rw, reset);
   }
 };
-
 
 class U8GLIB_SSD1351_128X128_332 : public U8GLIB {
 public:
@@ -1287,7 +1271,6 @@ public:
   void init(uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE) { U8GLIB::init(&u8g_dev_ssd1351_128x128gh_4x_hicolor_sw_spi, sck, mosi, cs, a0, reset); }
   void init(uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE) { U8GLIB::init(&u8g_dev_ssd1351_128x128gh_4x_hicolor_hw_spi, cs, a0, reset); }
 };
-
 
 class U8GLIB_FLIPDISC_2X7 : public U8GLIB {
 public:

@@ -33,41 +33,35 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 */
 
 #include "u8g.h"
 
 #if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32)
 
-#if ARDUINO < 100
-#include <WProgram.h>
-#else
-#include <Arduino.h>
-#endif
+  #if ARDUINO < 100
+    #include <WProgram.h>
+  #else
+    #include <Arduino.h>
+  #endif
 
-void u8g_com_arduino_digital_write(u8g_t *u8g, uint8_t pin_index, uint8_t value)
-{
-  uint8_t pin;
-  pin = u8g->pin_list[pin_index];
-  if ( pin != U8G_PIN_NONE )
-    digitalWrite(pin, value);
-}
+  void u8g_com_arduino_digital_write(u8g_t *u8g, uint8_t pin_index, uint8_t value) {
+    uint8_t pin;
+    pin = u8g->pin_list[pin_index];
+    if (pin != U8G_PIN_NONE)
+      digitalWrite(pin, value);
+  }
 
-/* this procedure does not set the RW pin */
-void u8g_com_arduino_assign_pin_output_high(u8g_t *u8g)
-{
-  uint8_t i;
-  /* skip the RW pin, which is the last pin in the list */
-  for( i = 0; i < U8G_PIN_LIST_LEN-1; i++ )
-  {
-    if ( u8g->pin_list[i] != U8G_PIN_NONE )
-    {
-      pinMode(u8g->pin_list[i], OUTPUT);
-      digitalWrite(u8g->pin_list[i], HIGH);
+  // this procedure does not set the RW pin
+  void u8g_com_arduino_assign_pin_output_high(u8g_t *u8g) {
+    uint8_t i;
+    // skip the RW pin, which is the last pin in the list
+    for ( i = 0; i < U8G_PIN_LIST_LEN - 1; i++ ) {
+      if (u8g->pin_list[i] != U8G_PIN_NONE) {
+        pinMode(u8g->pin_list[i], OUTPUT);
+        digitalWrite(u8g->pin_list[i], HIGH);
+      }
     }
   }
-}
 
-
-#endif
+#endif // if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32)

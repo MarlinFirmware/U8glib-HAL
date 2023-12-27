@@ -37,7 +37,6 @@
 
 #include "U8glib-HAL.h"
 
-
 #ifdef U8G_WITH_PINLIST
 uint8_t U8GLIB::initSPI(u8g_dev_t *dev, uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset)
 {
@@ -77,4 +76,3 @@ uint8_t U8GLIB::initRW8Bit(u8g_dev_t *dev, uint8_t d0, uint8_t d1, uint8_t d2, u
   return u8g_InitRW8Bit(&u8g, dev, d0, d1, d2, d3, d4, d5, d6, d7, cs, a0, wr, rd, reset);
 }
 #endif
-

@@ -45,7 +45,6 @@
   void u8g_SetPinLevel(uint8_t internal_pin_number, uint8_t level)
   uint8_t u8g_GetPinLevel(uint8_t internal_pin_number)
 
-
 */
 
 #include "u8g.h"
@@ -88,7 +87,6 @@
       #endif
     #endif
   };
-
 
   const IO_PTR u8g_avr_port_P[] PROGMEM = {
     #ifdef PORTA

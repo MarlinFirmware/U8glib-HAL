@@ -35,89 +35,78 @@
 
 #include "u8g.h"
 
-
 #if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32)
 
-#if ARDUINO < 100
-#include <WProgram.h>
-#else
-#include <Arduino.h>
-#endif
+  #if ARDUINO < 100
+    #include <WProgram.h>
+  #else
+    #include <Arduino.h>
+  #endif
 
-void u8g_arduino_sw_spi_shift_out(uint8_t dataPin, uint8_t clockPin, uint8_t val)
-{
-  uint8_t i = 8;
-  do
-  {
-    if ( val & 128 )
-      digitalWrite(dataPin, HIGH);
-    else
-      digitalWrite(dataPin, LOW);
-    val <<= 1;
-    u8g_MicroDelay();		/* 23 Sep 2012 */
-    //delay(1);
-    digitalWrite(clockPin, HIGH);
-    u8g_MicroDelay();		/* 23 Sep 2012 */
-    //delay(1);
-    digitalWrite(clockPin, LOW);
-    u8g_MicroDelay();		/* 23 Sep 2012 */
-    //delay(1);
-    i--;
-  } while( i != 0 );
-}
-
-uint8_t u8g_com_arduino_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  switch(msg)
-  {
-    case U8G_COM_MSG_INIT:
-      u8g_com_arduino_assign_pin_output_high(u8g);
-      u8g_com_arduino_digital_write(u8g, U8G_PI_SCK, LOW);
-      u8g_com_arduino_digital_write(u8g, U8G_PI_MOSI, LOW);
-      break;
-
-    case U8G_COM_MSG_STOP:
-      break;
-
-    case U8G_COM_MSG_RESET:
-      if ( u8g->pin_list[U8G_PI_RESET] != U8G_PIN_NONE )
-        u8g_com_arduino_digital_write(u8g, U8G_PI_RESET, arg_val);
-      break;
-
-    case U8G_COM_MSG_CHIP_SELECT:
-      if ( arg_val == 0 )
-      {
-        /* disable */
-        u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
-      }
+  void u8g_arduino_sw_spi_shift_out(uint8_t dataPin, uint8_t clockPin, uint8_t val) {
+    uint8_t i = 8;
+    do {
+      if (val & 128)
+        digitalWrite(dataPin, HIGH);
       else
-      {
-        /* enable */
+        digitalWrite(dataPin, LOW);
+      val <<= 1;
+      u8g_MicroDelay(); // 23 Sep 2012
+      // delay(1);
+      digitalWrite(clockPin, HIGH);
+      u8g_MicroDelay(); // 23 Sep 2012
+      // delay(1);
+      digitalWrite(clockPin, LOW);
+      u8g_MicroDelay(); // 23 Sep 2012
+      // delay(1);
+      i--;
+    } while (i != 0);
+  }
+
+  uint8_t u8g_com_arduino_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    switch (msg) {
+      case U8G_COM_MSG_INIT:
+        u8g_com_arduino_assign_pin_output_high(u8g);
         u8g_com_arduino_digital_write(u8g, U8G_PI_SCK, LOW);
-        u8g_com_arduino_digital_write(u8g, U8G_PI_CS, LOW);
-      }
-      break;
+        u8g_com_arduino_digital_write(u8g, U8G_PI_MOSI, LOW);
+        break;
 
-    case U8G_COM_MSG_WRITE_BYTE:
-      u8g_arduino_sw_spi_shift_out(u8g->pin_list[U8G_PI_MOSI], u8g->pin_list[U8G_PI_SCK], arg_val);
-      break;
+      case U8G_COM_MSG_STOP:
+        break;
 
-    case U8G_COM_MSG_WRITE_SEQ:
-      {
+      case U8G_COM_MSG_RESET:
+        if (u8g->pin_list[U8G_PI_RESET] != U8G_PIN_NONE)
+          u8g_com_arduino_digital_write(u8g, U8G_PI_RESET, arg_val);
+        break;
+
+      case U8G_COM_MSG_CHIP_SELECT:
+        if (arg_val == 0) {
+          // disable
+          u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
+        }
+        else {
+          // enable
+          u8g_com_arduino_digital_write(u8g, U8G_PI_SCK, LOW);
+          u8g_com_arduino_digital_write(u8g, U8G_PI_CS, LOW);
+        }
+        break;
+
+      case U8G_COM_MSG_WRITE_BYTE:
+        u8g_arduino_sw_spi_shift_out(u8g->pin_list[U8G_PI_MOSI], u8g->pin_list[U8G_PI_SCK], arg_val);
+        break;
+
+      case U8G_COM_MSG_WRITE_SEQ: {
         register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
+        while (arg_val > 0) {
           u8g_arduino_sw_spi_shift_out(u8g->pin_list[U8G_PI_MOSI], u8g->pin_list[U8G_PI_SCK], *ptr++);
           arg_val--;
         }
       }
       break;
 
-      case U8G_COM_MSG_WRITE_SEQ_P:
-      {
+      case U8G_COM_MSG_WRITE_SEQ_P: {
         register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
+        while (arg_val > 0) {
           u8g_arduino_sw_spi_shift_out(u8g->pin_list[U8G_PI_MOSI], u8g->pin_list[U8G_PI_SCK], u8g_pgm_read(ptr));
           ptr++;
           arg_val--;
@@ -125,18 +114,17 @@ uint8_t u8g_com_arduino_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, 
       }
       break;
 
-    case U8G_COM_MSG_ADDRESS:                     /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
-      u8g_com_arduino_digital_write(u8g, U8G_PI_A0, arg_val);
-      break;
+      case U8G_COM_MSG_ADDRESS:                   // define cmd (arg_val = 0) or data mode (arg_val = 1)
+        u8g_com_arduino_digital_write(u8g, U8G_PI_A0, arg_val);
+        break;
+    }
+    return 1;
   }
-  return 1;
-}
 
 #else /* ARDUINO */
 
-uint8_t u8g_com_arduino_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  return 1;
-}
+  uint8_t u8g_com_arduino_std_sw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    return 1;
+  }
 
 #endif /* ARDUINO */

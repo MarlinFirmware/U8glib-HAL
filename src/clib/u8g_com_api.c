@@ -31,55 +31,44 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 */
 
 #include "u8g.h"
 
-uint8_t u8g_InitCom(u8g_t *u8g, u8g_dev_t *dev, uint8_t clk_cycle_time)
-{
+uint8_t u8g_InitCom(u8g_t *u8g, u8g_dev_t *dev, uint8_t clk_cycle_time) {
   return dev->com_fn(u8g, U8G_COM_MSG_INIT, clk_cycle_time, NULL);
 }
 
-void u8g_StopCom(u8g_t *u8g, u8g_dev_t *dev)
-{
+void u8g_StopCom(u8g_t *u8g, u8g_dev_t *dev) {
   dev->com_fn(u8g, U8G_COM_MSG_STOP, 0, NULL);
 }
 
-/* cs contains the chip number, which should be enabled */
-void u8g_SetChipSelect(u8g_t *u8g, u8g_dev_t *dev, uint8_t cs)
-{
+// cs contains the chip number, which should be enabled
+void u8g_SetChipSelect(u8g_t *u8g, u8g_dev_t *dev, uint8_t cs) {
   dev->com_fn(u8g, U8G_COM_MSG_CHIP_SELECT, cs, NULL);
 }
 
-void u8g_SetResetLow(u8g_t *u8g, u8g_dev_t *dev)
-{
+void u8g_SetResetLow(u8g_t *u8g, u8g_dev_t *dev) {
   dev->com_fn(u8g, U8G_COM_MSG_RESET, 0, NULL);
 }
 
-void u8g_SetResetHigh(u8g_t *u8g, u8g_dev_t *dev)
-{
+void u8g_SetResetHigh(u8g_t *u8g, u8g_dev_t *dev) {
   dev->com_fn(u8g, U8G_COM_MSG_RESET, 1, NULL);
 }
 
-
-void u8g_SetAddress(u8g_t *u8g, u8g_dev_t *dev, uint8_t address)
-{
+void u8g_SetAddress(u8g_t *u8g, u8g_dev_t *dev, uint8_t address) {
   dev->com_fn(u8g, U8G_COM_MSG_ADDRESS, address, NULL);
 }
 
-uint8_t u8g_WriteByte(u8g_t *u8g, u8g_dev_t *dev, uint8_t val)
-{
+uint8_t u8g_WriteByte(u8g_t *u8g, u8g_dev_t *dev, uint8_t val) {
   return dev->com_fn(u8g, U8G_COM_MSG_WRITE_BYTE, val, NULL);
 }
 
-uint8_t u8g_WriteSequence(u8g_t *u8g, u8g_dev_t *dev, uint8_t cnt, uint8_t *seq)
-{
+uint8_t u8g_WriteSequence(u8g_t *u8g, u8g_dev_t *dev, uint8_t cnt, uint8_t *seq) {
   return dev->com_fn(u8g, U8G_COM_MSG_WRITE_SEQ, cnt, seq);
 }
 
-uint8_t u8g_WriteSequenceP(u8g_t *u8g, u8g_dev_t *dev, uint8_t cnt, const uint8_t *seq)
-{
+uint8_t u8g_WriteSequenceP(u8g_t *u8g, u8g_dev_t *dev, uint8_t cnt, const uint8_t *seq) {
   return dev->com_fn(u8g, U8G_COM_MSG_WRITE_SEQ_P, cnt, (void *)seq);
 }
 
@@ -103,65 +92,51 @@ uint8_t u8g_WriteSequenceP(u8g_t *u8g, u8g_dev_t *dev, uint8_t cnt, const uint8_
 #define U8G_ESC_RST(x) 255, (0xc0 | ((x)&0x0f))
 
 */
-uint8_t u8g_WriteEscSeqP(u8g_t *u8g, u8g_dev_t *dev, const uint8_t *esc_seq)
-{
+uint8_t u8g_WriteEscSeqP(u8g_t *u8g, u8g_dev_t *dev, const uint8_t *esc_seq) {
   uint8_t is_escape = 0;
   uint8_t value;
-  for(;;)
-  {
+  for (;;) {
     value = u8g_pgm_read(esc_seq);
-    if ( is_escape == 0 )
-    {
-      if ( value != 255 )
-      {
-        if ( u8g_WriteByte(u8g, dev, value) == 0 )
+    if (is_escape == 0) {
+      if (value != 255) {
+        if (u8g_WriteByte(u8g, dev, value) == 0)
           return 0;
       }
-      else
-      {
+      else {
         is_escape = 1;
       }
     }
-    else
-    {
-      if ( value == 255 )
-      {
-        if ( u8g_WriteByte(u8g, dev, value) == 0 )
+    else {
+      if (value == 255) {
+        if (u8g_WriteByte(u8g, dev, value) == 0)
           return 0;
       }
-      else if ( value == 254 )
-      {
+      else if (value == 254) {
         break;
       }
-      else if ( value >= 0x0f0 )
-      {
-        /* not yet used, do nothing */
+      else if (value >= 0x0f0) {
+        // not yet used, do nothing
       }
-      else if ( value >= 0xe0  )
-      {
+      else if (value >= 0xe0) {
         u8g_SetAddress(u8g, dev, value & 0x0f);
       }
-      else if ( value >= 0xd0 )
-      {
+      else if (value >= 0xd0) {
         u8g_SetChipSelect(u8g, dev, value & 0x0f);
       }
-      else if ( value >= 0xc0 )
-      {
+      else if (value >= 0xc0) {
         u8g_SetResetLow(u8g, dev);
         value &= 0x0f;
         value <<= 4;
-        value+=2;
+        value += 2;
         u8g_Delay(value);
         u8g_SetResetHigh(u8g, dev);
         u8g_Delay(value);
       }
-      else if ( value >= 0xbe )
-      {
-        /* not yet implemented */
-        /* u8g_SetVCC(u8g, dev, value & 0x01); */
+      else if (value >= 0xbe) {
+        // not yet implemented
+        // u8g_SetVCC(u8g, dev, value & 0x01);
       }
-      else if ( value <= 127 )
-      {
+      else if (value <= 127) {
         u8g_Delay(value);
       }
       is_escape = 0;

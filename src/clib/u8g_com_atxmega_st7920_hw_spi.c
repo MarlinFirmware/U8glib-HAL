@@ -45,155 +45,130 @@
     U8G_ATOMIC_START()
     U8G_ATOMIC_END()
 
-
 */
 
 #include "u8g.h"
 
 #ifdef __AVR_XMEGA__
-#define U8G_ATXMEGA_HW_SPI
+  #define U8G_ATXMEGA_HW_SPI
 #endif
 
 #ifdef U8G_ATXMEGA_HW_SPI
 
-#include <avr/interrupt.h>
-#include <avr/io.h>
+  #include <avr/interrupt.h>
+  #include <avr/io.h>
 
-static uint8_t u8g_atxmega_st7920_hw_spi_shift_out(u8g_t *u8g, uint8_t val)
-{
-  /* send data */
-  SPIC.DATA = val;
+  static uint8_t u8g_atxmega_st7920_hw_spi_shift_out(u8g_t *u8g, uint8_t val) {
+    // send data
+    SPIC.DATA = val;
 
-  /* wait for transmission */
-  while(!(SPIC.STATUS & SPI_IF_bm));
+    // wait for transmission
+    while (!(SPIC.STATUS & SPI_IF_bm));
 
-  /* clear the SPIF flag by reading SPDR */
-  return SPIC.DATA;
-}
-
-
-static void u8g_com_atxmega_st7920_write_byte_hw_spi(u8g_t *u8g, uint8_t rs, uint8_t val)
-{
-  uint8_t i;
-
-  if ( rs == 0 )
-  {
-    /* command */
-    u8g_atxmega_st7920_hw_spi_shift_out(u8g, 0x0f8);
-  }
-  else if ( rs == 1 )
-  {
-    /* data */
-    u8g_atxmega_st7920_hw_spi_shift_out(u8g, 0x0fa);
+    // clear the SPIF flag by reading SPDR
+    return SPIC.DATA;
   }
 
-  u8g_atxmega_st7920_hw_spi_shift_out(u8g, val & 0x0f0);
-  u8g_atxmega_st7920_hw_spi_shift_out(u8g, val << 4);
+  static void u8g_com_atxmega_st7920_write_byte_hw_spi(u8g_t *u8g, uint8_t rs, uint8_t val) {
+    uint8_t i;
 
-  for( i = 0; i < 4; i++ )
-    u8g_10MicroDelay();
-}
+    if (rs == 0)
+      // command
+      u8g_atxmega_st7920_hw_spi_shift_out(u8g, 0x0f8);
+    else if (rs == 1)
+      // data
+      u8g_atxmega_st7920_hw_spi_shift_out(u8g, 0x0fa);
 
+    u8g_atxmega_st7920_hw_spi_shift_out(u8g, val & 0x0f0);
+    u8g_atxmega_st7920_hw_spi_shift_out(u8g, val << 4);
 
-uint8_t u8g_com_atxmega_st7920_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  switch(msg)
-  {
-    case U8G_COM_MSG_INIT:
-      u8g_SetPIOutput(u8g, U8G_PI_CS);
-      //u8g_SetPIOutput(u8g, U8G_PI_A0);
+    for ( i = 0; i < 4; i++ ) u8g_10MicroDelay();
+  }
 
-      //U8G_ATOMIC_START();
+  uint8_t u8g_com_atxmega_st7920_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    switch (msg) {
+      case U8G_COM_MSG_INIT:
+        u8g_SetPIOutput(u8g, U8G_PI_CS);
+        // u8g_SetPIOutput(u8g, U8G_PI_A0);
 
-      PORTC.DIR |= PIN4_bm | PIN5_bm | PIN7_bm;
-      PORTC.DIR &= ~PIN6_bm;
+        // U8G_ATOMIC_START();
 
-      //U8G_ATOMIC_END();
+        PORTC.DIR |= PIN4_bm | PIN5_bm | PIN7_bm;
+        PORTC.DIR &= ~PIN6_bm;
 
-      u8g_SetPILevel(u8g, U8G_PI_CS, 1);
+        // U8G_ATOMIC_END();
 
-      SPIC.CTRL = 0;
-      SPIC.CTRL     = SPI_PRESCALER_DIV4_gc |		// SPI prescaler.
-      //SPI_CLK2X_bm |			 //SPI Clock double.
-      SPI_ENABLE_bm |			 //Enable SPI module.
-      //SPI_DORD_bm |			 //Data order.
-      SPI_MASTER_bm |			 //SPI master.
-      SPI_MODE_0_gc;			// SPI mode.
+        u8g_SetPILevel(u8g, U8G_PI_CS, 1);
 
-#ifdef U8G_HW_SPI_2X
-      SPIC.CTRL |= SPI_CLK2X_bm;  /* double speed, issue 89 */
-#endif
+        SPIC.CTRL = 0;
+        SPIC.CTRL     = SPI_PRESCALER_DIV4_gc | // SPI prescaler.
+          // SPI_CLK2X_bm |                      //SPI Clock double.
+          SPI_ENABLE_bm |  // Enable SPI module.
+          // SPI_DORD_bm |                       //Data order.
+          SPI_MASTER_bm |  // SPI master.
+          SPI_MODE_0_gc;  // SPI mode.
 
-      u8g->pin_list[U8G_PI_A0_STATE] = 0;       /* inital RS state: command mode */
-      break;
+        #ifdef U8G_HW_SPI_2X
+          SPIC.CTRL |= SPI_CLK2X_bm; // double speed, issue 89
+        #endif
 
-    case U8G_COM_MSG_STOP:
-      break;
+        u8g->pin_list[U8G_PI_A0_STATE] = 0;     // inital RS state: command mode
+        break;
 
-    case U8G_COM_MSG_RESET:
-      u8g_SetPILevel(u8g, U8G_PI_RESET, arg_val);
-      break;
+      case U8G_COM_MSG_STOP:
+        break;
 
-    case U8G_COM_MSG_ADDRESS:                     /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
-      u8g->pin_list[U8G_PI_A0_STATE] = arg_val;
-      break;
+      case U8G_COM_MSG_RESET:
+        u8g_SetPILevel(u8g, U8G_PI_RESET, arg_val);
+        break;
 
-    case U8G_COM_MSG_CHIP_SELECT:
-      if ( arg_val == 0 )
-      {
-        /* disable, note: the st7920 has an active high chip select */
-        u8g_SetPILevel(u8g, U8G_PI_CS, 0);
-      }
-      else
-      {
-        /* u8g_SetPILevel(u8g, U8G_PI_SCK, 0 ); */
-        /* enable */
-        u8g_SetPILevel(u8g, U8G_PI_CS, 1); /* CS = 1 (high active) */
-      }
-      break;
+      case U8G_COM_MSG_ADDRESS:                   // define cmd (arg_val = 0) or data mode (arg_val = 1)
+        u8g->pin_list[U8G_PI_A0_STATE] = arg_val;
+        break;
 
+      case U8G_COM_MSG_CHIP_SELECT:
+        if (arg_val == 0)
+          // disable, note: the st7920 has an active high chip select
+          u8g_SetPILevel(u8g, U8G_PI_CS, 0);
+        else
+          // u8g_SetPILevel(u8g, U8G_PI_SCK, 0 );
+          // enable
+          u8g_SetPILevel(u8g, U8G_PI_CS, 1); // CS = 1 (high active)
+        break;
 
-    case U8G_COM_MSG_WRITE_BYTE:
-      u8g_com_atxmega_st7920_write_byte_hw_spi(u8g, u8g->pin_list[U8G_PI_A0_STATE], arg_val);
-      //u8g->pin_list[U8G_PI_A0_STATE] = 2;
-      break;
+      case U8G_COM_MSG_WRITE_BYTE:
+        u8g_com_atxmega_st7920_write_byte_hw_spi(u8g, u8g->pin_list[U8G_PI_A0_STATE], arg_val);
+        // u8g->pin_list[U8G_PI_A0_STATE] = 2;
+        break;
 
-    case U8G_COM_MSG_WRITE_SEQ:
-      {
+      case U8G_COM_MSG_WRITE_SEQ: {
         register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
+        while (arg_val > 0) {
           u8g_com_atxmega_st7920_write_byte_hw_spi(u8g, u8g->pin_list[U8G_PI_A0_STATE], *ptr++);
-	  //u8g->pin_list[U8G_PI_A0_STATE] = 2;
+          // u8g->pin_list[U8G_PI_A0_STATE] = 2;
           arg_val--;
         }
       }
       break;
 
-      case U8G_COM_MSG_WRITE_SEQ_P:
-      {
+      case U8G_COM_MSG_WRITE_SEQ_P: {
         register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
+        while (arg_val > 0) {
           u8g_com_atxmega_st7920_write_byte_hw_spi(u8g, u8g->pin_list[U8G_PI_A0_STATE], u8g_pgm_read(ptr));
-	  //u8g->pin_list[U8G_PI_A0_STATE] = 2;
+          // u8g->pin_list[U8G_PI_A0_STATE] = 2;
           ptr++;
           arg_val--;
         }
       }
       break;
+    }
+    return 1;
   }
-  return 1;
-}
 
-#else
+#else // ifdef U8G_ATXMEGA_HW_SPI
 
+  uint8_t u8g_com_atxmega_st7920_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    return 1;
+  }
 
-uint8_t u8g_com_atxmega_st7920_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  return 1;
-}
-
-
-#endif
-
+#endif // ifdef U8G_ATXMEGA_HW_SPI

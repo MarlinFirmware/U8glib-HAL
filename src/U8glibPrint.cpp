@@ -43,7 +43,6 @@ size_t U8glibPrint::write(const uint8_t *buffer, size_t size)
   return n;
 }
 
-
 size_t U8glibPrint::print(const char str[])
 {
   //while(1);
@@ -236,7 +235,6 @@ size_t U8glibPrint::printFloat(double number, uint8_t digits)
   return n;
 }
 
-
 #if (PrintfEnable == 1)
 size_t U8glibPrint::printf(const char *argList, ...)
 {
@@ -277,7 +275,6 @@ size_t U8glibPrint::printf(const char *argList, ...)
                 numOfDigits = 0xff;
             }
 
-
             switch(ch)       /* Decode the type of the argument */
             {
 
@@ -287,14 +284,11 @@ size_t U8glibPrint::printf(const char *argList, ...)
                 print(ch);
                 break;
 
-
-
             case 'd':    /* Argument type is of signed integer, hence read 16bit data from the argp */
             case 'D':
                 num_s32 = va_arg(argp, int);
                 print(num_s32, 10);
                 break;
-
 
             case 'u':
             case 'U':    /* Argument type is of integer, hence read 32bit unsigend data */
@@ -302,15 +296,11 @@ size_t U8glibPrint::printf(const char *argList, ...)
                 print(num_u32, 10);
                 break;
 
-
-
-
             case 'x':
             case 'X':  /* Argument type is of hex, hence hexadecimal data from the argp */
                 num_u32 = va_arg(argp, uint32_t);
                 print(num_u32, 16);
                 break;
-
 
             case 'b':
             case 'B':  /* Argument type is of binary,Read int and convert to binary */
@@ -318,23 +308,17 @@ size_t U8glibPrint::printf(const char *argList, ...)
                 print(num_u32, 2);
                 break;
 
-
-
             case 'F':
             case 'f': /* Argument type is of float, hence read double data from the argp */
                 floatNum_f32 = va_arg(argp, double);
                 printFloat(floatNum_f32,10);
                 break;
 
-
-
             case 'S':
             case 's': /* Argument type is of string, hence get the pointer to sting passed */
                 str = va_arg(argp, char *);
                 print(str);
                 break;
-
-
 
             case '%':
                 print('%');

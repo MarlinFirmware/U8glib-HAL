@@ -45,130 +45,116 @@
     U8G_ATOMIC_START()
     U8G_ATOMIC_END()
 
-
 */
 
 #include "u8g.h"
 
 #ifdef __AVR_XMEGA__
-#define U8G_ATXMEGA_HW_SPI
+  #define U8G_ATXMEGA_HW_SPI
 #endif
-
 
 #ifdef U8G_ATXMEGA_HW_SPI
 
-#include <avr/interrupt.h>
-#include <avr/io.h>
+  #include <avr/interrupt.h>
+  #include <avr/io.h>
 
+  static uint8_t u8g_atxmega_spi_out(uint8_t data) {
+    // send data
+    SPIC.DATA = data;
 
-static uint8_t u8g_atxmega_spi_out(uint8_t data)
-{
-  /* send data */
-  SPIC.DATA = data;
+    // wait for transmission
+    while (!(SPIC.STATUS & SPI_IF_bm));
 
-  /* wait for transmission */
-  while(!(SPIC.STATUS & SPI_IF_bm));
-
-  /* clear the SPIF flag by reading SPDR */
-  return SPIC.DATA;
-}
-
-
-uint8_t u8g_com_atxmega_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  switch(msg)
-  {
-    case U8G_COM_MSG_STOP:
-    break;
-
-    case U8G_COM_MSG_INIT:
-
-    u8g_SetPIOutput(u8g, U8G_PI_CS);
-    u8g_SetPIOutput(u8g, U8G_PI_A0);
-    u8g_SetPIOutput(u8g, U8G_PI_RESET);
-
-    //U8G_ATOMIC_START();
-
-    PORTC.DIR |= PIN4_bm | PIN5_bm | PIN7_bm;
-    PORTC.DIR &= ~PIN6_bm;
-
-    //U8G_ATOMIC_END();
-
-    u8g_SetPILevel(u8g, U8G_PI_CS, 1);
-
-    SPIC.CTRL = 0;
-    SPIC.CTRL     = SPI_PRESCALER_DIV4_gc |		// SPI prescaler.
-    //SPI_CLK2X_bm |			 //SPI Clock double.
-    SPI_ENABLE_bm |			 //Enable SPI module.
-    //SPI_DORD_bm |			 //Data order.
-    SPI_MASTER_bm |			 //SPI master.
-    SPI_MODE_0_gc;			// SPI mode.
-
-#ifdef U8G_HW_SPI_2X
-    SPIC.CTRL |= SPI_CLK2X_bm;  /* double speed, issue 89 */
-#endif
-
-    break;
-
-    case U8G_COM_MSG_ADDRESS:                     /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
-    u8g_SetPILevel(u8g, U8G_PI_A0, arg_val);
-    break;
-
-    case U8G_COM_MSG_CHIP_SELECT:
-
-    if ( arg_val == 0 )
-    {
-      /* disable */
-      u8g_SetPILevel(u8g, U8G_PI_CS, 1);
-    }
-    else
-    {
-      //PORTB &= ~_BV(5);        /* SCK = 0 */
-      PORTC.OUT &= ~PIN7_bm;
-      /* enable */
-      u8g_SetPILevel(u8g, U8G_PI_CS, 0); /* CS = 0 (low active) */
-    }
-
-    break;
-
-    case U8G_COM_MSG_RESET:
-    u8g_SetPILevel(u8g, U8G_PI_RESET, arg_val);
-    break;
-
-    case U8G_COM_MSG_WRITE_BYTE:
-    u8g_atxmega_spi_out(arg_val);
-    break;
-
-    case U8G_COM_MSG_WRITE_SEQ:
-    {
-      register uint8_t *ptr = arg_ptr;
-      while( arg_val > 0 )
-      {
-        u8g_atxmega_spi_out(*ptr++);
-        arg_val--;
-      }
-    }
-    break;
-    case U8G_COM_MSG_WRITE_SEQ_P:
-    {
-      register uint8_t *ptr = arg_ptr;
-      while( arg_val > 0 )
-      {
-        u8g_atxmega_spi_out(u8g_pgm_read(ptr));
-        ptr++;
-        arg_val--;
-      }
-    }
-    break;
+    // clear the SPIF flag by reading SPDR
+    return SPIC.DATA;
   }
-  return 1;
-}
 
-#else
+  uint8_t u8g_com_atxmega_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    switch (msg) {
+      case U8G_COM_MSG_STOP:
+        break;
 
-uint8_t u8g_com_atxmega_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  return 1;
-}
+      case U8G_COM_MSG_INIT:
 
-#endif
+        u8g_SetPIOutput(u8g, U8G_PI_CS);
+        u8g_SetPIOutput(u8g, U8G_PI_A0);
+        u8g_SetPIOutput(u8g, U8G_PI_RESET);
+
+        // U8G_ATOMIC_START();
+
+        PORTC.DIR |= PIN4_bm | PIN5_bm | PIN7_bm;
+        PORTC.DIR &= ~PIN6_bm;
+
+        // U8G_ATOMIC_END();
+
+        u8g_SetPILevel(u8g, U8G_PI_CS, 1);
+
+        SPIC.CTRL = 0;
+        SPIC.CTRL     = SPI_PRESCALER_DIV4_gc |// SPI prescaler.
+          // SPI_CLK2X_bm |                      //SPI Clock double.
+          SPI_ENABLE_bm | // Enable SPI module.
+          // SPI_DORD_bm |                       //Data order.
+          SPI_MASTER_bm | // SPI master.
+          SPI_MODE_0_gc; // SPI mode.
+
+        #ifdef U8G_HW_SPI_2X
+          SPIC.CTRL |= SPI_CLK2X_bm; // double speed, issue 89
+        #endif
+
+        break;
+
+      case U8G_COM_MSG_ADDRESS:                   // define cmd (arg_val = 0) or data mode (arg_val = 1)
+        u8g_SetPILevel(u8g, U8G_PI_A0, arg_val);
+        break;
+
+      case U8G_COM_MSG_CHIP_SELECT:
+
+        if (arg_val == 0) {
+          // disable
+          u8g_SetPILevel(u8g, U8G_PI_CS, 1);
+        }
+        else {
+          // PORTB &= ~_BV(5);        /* SCK = 0 */
+          PORTC.OUT &= ~PIN7_bm;
+          // enable
+          u8g_SetPILevel(u8g, U8G_PI_CS, 0); // CS = 0 (low active)
+        }
+
+        break;
+
+      case U8G_COM_MSG_RESET:
+        u8g_SetPILevel(u8g, U8G_PI_RESET, arg_val);
+        break;
+
+      case U8G_COM_MSG_WRITE_BYTE:
+        u8g_atxmega_spi_out(arg_val);
+        break;
+
+      case U8G_COM_MSG_WRITE_SEQ: {
+        register uint8_t *ptr = arg_ptr;
+        while (arg_val > 0) {
+          u8g_atxmega_spi_out(*ptr++);
+          arg_val--;
+        }
+      }
+      break;
+      case U8G_COM_MSG_WRITE_SEQ_P: {
+        register uint8_t *ptr = arg_ptr;
+        while (arg_val > 0) {
+          u8g_atxmega_spi_out(u8g_pgm_read(ptr));
+          ptr++;
+          arg_val--;
+        }
+      }
+      break;
+    }
+    return 1;
+  }
+
+#else // ifdef U8G_ATXMEGA_HW_SPI
+
+  uint8_t u8g_com_atxmega_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    return 1;
+  }
+
+#endif // ifdef U8G_ATXMEGA_HW_SPI

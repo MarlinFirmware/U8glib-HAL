@@ -31,7 +31,6 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
   Assumes, that
     MOSI is at PORTB, Pin 3
   and
@@ -43,82 +42,71 @@
     U8G_ATOMIC_START()
     U8G_ATOMIC_END()
 
-
-
 */
 
 #include "u8g.h"
 
-
-
 #ifdef U8G_RASPBERRY_PI
 
-#include <wiringPiSPI.h>
-#include <wiringPi.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
+  #include <wiringPiSPI.h>
+  #include <wiringPi.h>
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <errno.h>
 
-uint8_t u8g_com_raspberrypi_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  switch(msg)
-  {
-    case U8G_COM_MSG_STOP:
-      break;
+  uint8_t u8g_com_raspberrypi_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    switch (msg) {
+      case U8G_COM_MSG_STOP:
+        break;
 
-    case U8G_COM_MSG_INIT:
-		// check wiringPi setup
-		if (wiringPiSetup() == -1)
-		{
-			printf("wiringPi-Error\n");
-			exit(1);
-		}
+      case U8G_COM_MSG_INIT:
+        // check wiringPi setup
+        if (wiringPiSetup() == -1) {
+          printf("wiringPi-Error\n");
+          exit(1);
+        }
 
-		if (wiringPiSPISetup (0, 100000) < 0)
-		{
-			printf ("Unable to open SPI device 0: %s\n", strerror (errno)) ;
-			exit (1) ;
-		}
+        if (wiringPiSPISetup(0, 100000) < 0) {
+          printf("Unable to open SPI device 0: %s\n", strerror(errno));
+          exit(1);
+        }
 
-		u8g_SetPIOutput(u8g, U8G_PI_RESET);
-		u8g_SetPIOutput(u8g, U8G_PI_A0);
+        u8g_SetPIOutput(u8g, U8G_PI_RESET);
+        u8g_SetPIOutput(u8g, U8G_PI_A0);
 
-      break;
+        break;
 
-    case U8G_COM_MSG_ADDRESS:                     /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
-	  u8g_SetPILevel(u8g, U8G_PI_A0, arg_val);
-      break;
+      case U8G_COM_MSG_ADDRESS:                   // define cmd (arg_val = 0) or data mode (arg_val = 1)
+        u8g_SetPILevel(u8g, U8G_PI_A0, arg_val);
+        break;
 
-    case U8G_COM_MSG_CHIP_SELECT:
-		/* Done by the SPI hardware */
-      break;
+      case U8G_COM_MSG_CHIP_SELECT:
+        // Done by the SPI hardware
+        break;
 
-    case U8G_COM_MSG_RESET:
-      u8g_SetPILevel(u8g, U8G_PI_RESET, arg_val);
-      break;
+      case U8G_COM_MSG_RESET:
+        u8g_SetPILevel(u8g, U8G_PI_RESET, arg_val);
+        break;
 
-    case U8G_COM_MSG_WRITE_BYTE:
-		wiringPiSPIDataRW (0, &arg_val, 1) ;
-      break;
+      case U8G_COM_MSG_WRITE_BYTE:
+        wiringPiSPIDataRW(0, &arg_val, 1);
+        break;
 
-    case U8G_COM_MSG_WRITE_SEQ:
-		wiringPiSPIDataRW (0, arg_ptr, arg_val);
-      break;
+      case U8G_COM_MSG_WRITE_SEQ:
+        wiringPiSPIDataRW(0, arg_ptr, arg_val);
+        break;
 
-	case U8G_COM_MSG_WRITE_SEQ_P:
-		wiringPiSPIDataRW (0, arg_ptr, arg_val);
-      break;
+      case U8G_COM_MSG_WRITE_SEQ_P:
+        wiringPiSPIDataRW(0, arg_ptr, arg_val);
+        break;
+    }
+    return 1;
   }
-  return 1;
-}
 
-#else
+#else // ifdef U8G_RASPBERRY_PI
 
-uint8_t u8g_com_raspberrypi_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  return 1;
-}
+  uint8_t u8g_com_raspberrypi_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    return 1;
+  }
 
-#endif
-
-
+#endif // ifdef U8G_RASPBERRY_PI

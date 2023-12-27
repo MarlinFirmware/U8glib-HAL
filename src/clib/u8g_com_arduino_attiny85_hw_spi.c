@@ -45,96 +45,84 @@
 //                   GND  4|    |5  PB0 (D 0) pwm0  MOSI / DI / SDA
 //                         +----+
 
-
 #include "u8g.h"
-
 
 #if defined(ARDUINO) && defined(__AVR_ATtiny85__)
 
-#if ARDUINO < 100
-#include <WProgram.h>
-#else
-#include <Arduino.h>
-#endif
+  #if ARDUINO < 100
+    #include <WProgram.h>
+  #else
+    #include <Arduino.h>
+  #endif
 
-const byte DI   = 0;  // D0, pin 5  Data In
-const byte DO   = 1;  // D1, pin 6  Data Out (this is *not* MOSI)
-const byte USCK = 2;  // D2, pin 7  Universal Serial Interface clock
+  const byte DI   = 0;// D0, pin 5  Data In
+  const byte DO   = 1;// D1, pin 6  Data Out (this is *not* MOSI)
+  const byte USCK = 2; // D2, pin 7  Universal Serial Interface clock
 
-uint8_t u8g_arduino_ATtiny85_spi_out(uint8_t val)
-{
-  USIDR = val;  // byte to output
-  USISR = _BV (USIOIF);  // clear Counter Overflow Interrupt Flag, set count to zero
-  do
-  {
-    USICR = _BV (USIWM0)   // 3-wire mode
-          | _BV (USICS1) | _BV (USICLK)  // Software clock strobe
-          | _BV (USITC);   // Toggle Clock Port Pin
+  uint8_t u8g_arduino_ATtiny85_spi_out(uint8_t val) {
+    USIDR = val; // byte to output
+    USISR = _BV(USIOIF); // clear Counter Overflow Interrupt Flag, set count to zero
+    do {
+      USICR = _BV(USIWM0)  // 3-wire mode
+        | _BV(USICS1) | _BV(USICLK)      // Software clock strobe
+        | _BV(USITC);      // Toggle Clock Port Pin
+    }
+    while ((USISR & _BV(USIOIF)) == 0); // until Counter Overflow Interrupt Flag set
+
+    return USIDR; // return read data
   }
-  while ((USISR & _BV (USIOIF)) == 0);  // until Counter Overflow Interrupt Flag set
 
-  return USIDR;  // return read data
-}
-
-uint8_t u8g_com_arduino_ATtiny85_std_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  switch(msg)
-  {
-    case U8G_COM_MSG_INIT:
-      u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);  // ensure SS stays high until needed
-      pinMode (USCK, OUTPUT);
-      pinMode (DO, OUTPUT);
-      pinMode (u8g->pin_list[U8G_PI_CS], OUTPUT);
-      pinMode (u8g->pin_list[U8G_PI_A0], OUTPUT);
-      USICR = _BV (USIWM0);  // 3-wire mode
-      u8g_MicroDelay();
-      break;
-
-    case U8G_COM_MSG_STOP:
-      break;
-
-    case U8G_COM_MSG_RESET:
-      if ( u8g->pin_list[U8G_PI_RESET] != U8G_PIN_NONE )
-        u8g_com_arduino_digital_write(u8g, U8G_PI_RESET, arg_val);
-      break;
-
-    case U8G_COM_MSG_CHIP_SELECT:
-      if ( arg_val == 0 )
-      {
-        /* disable */
+  uint8_t u8g_com_arduino_ATtiny85_std_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    switch (msg) {
+      case U8G_COM_MSG_INIT:
+        u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH); // ensure SS stays high until needed
+        pinMode(USCK, OUTPUT);
+        pinMode(DO, OUTPUT);
+        pinMode(u8g->pin_list[U8G_PI_CS], OUTPUT);
+        pinMode(u8g->pin_list[U8G_PI_A0], OUTPUT);
+        USICR = _BV(USIWM0); // 3-wire mode
         u8g_MicroDelay();
-        u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
-        u8g_MicroDelay();
-      }
-      else
-      {
-        /* enable */
-        u8g_com_arduino_digital_write(u8g, U8G_PI_CS, LOW);
-        u8g_MicroDelay();
-      }
-      break;
+        break;
 
-    case U8G_COM_MSG_WRITE_BYTE:
-      u8g_arduino_ATtiny85_spi_out(arg_val);
-      u8g_MicroDelay();
-      break;
+      case U8G_COM_MSG_STOP:
+        break;
 
-    case U8G_COM_MSG_WRITE_SEQ:
-      {
+      case U8G_COM_MSG_RESET:
+        if (u8g->pin_list[U8G_PI_RESET] != U8G_PIN_NONE)
+          u8g_com_arduino_digital_write(u8g, U8G_PI_RESET, arg_val);
+        break;
+
+      case U8G_COM_MSG_CHIP_SELECT:
+        if (arg_val == 0) {
+          // disable
+          u8g_MicroDelay();
+          u8g_com_arduino_digital_write(u8g, U8G_PI_CS, HIGH);
+          u8g_MicroDelay();
+        }
+        else {
+          // enable
+          u8g_com_arduino_digital_write(u8g, U8G_PI_CS, LOW);
+          u8g_MicroDelay();
+        }
+        break;
+
+      case U8G_COM_MSG_WRITE_BYTE:
+        u8g_arduino_ATtiny85_spi_out(arg_val);
+        u8g_MicroDelay();
+        break;
+
+      case U8G_COM_MSG_WRITE_SEQ: {
         register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
+        while (arg_val > 0) {
           u8g_arduino_ATtiny85_spi_out(*ptr++);
           arg_val--;
         }
       }
       break;
 
-      case U8G_COM_MSG_WRITE_SEQ_P:
-      {
+      case U8G_COM_MSG_WRITE_SEQ_P: {
         register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
+        while (arg_val > 0) {
           u8g_arduino_ATtiny85_spi_out(u8g_pgm_read(ptr));
           ptr++;
           arg_val--;
@@ -142,19 +130,18 @@ uint8_t u8g_com_arduino_ATtiny85_std_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t 
       }
       break;
 
-    case U8G_COM_MSG_ADDRESS:                     /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
-      u8g_com_arduino_digital_write(u8g, U8G_PI_A0, arg_val);
-      u8g_MicroDelay();
-      break;
+      case U8G_COM_MSG_ADDRESS:                   // define cmd (arg_val = 0) or data mode (arg_val = 1)
+        u8g_com_arduino_digital_write(u8g, U8G_PI_A0, arg_val);
+        u8g_MicroDelay();
+        break;
+    }
+    return 1;
   }
-  return 1;
-}
 
 #else /* ARDUINO */
 
-uint8_t u8g_com_arduino_ATtiny85_std_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  return 1;
-}
+  uint8_t u8g_com_arduino_ATtiny85_std_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    return 1;
+  }
 
 #endif /* ARDUINO */

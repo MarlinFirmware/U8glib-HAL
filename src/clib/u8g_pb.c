@@ -33,23 +33,20 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 */
 
 #include "u8g.h"
 
-void u8g_pb_Clear(u8g_pb_t *b)
-{
+void u8g_pb_Clear(u8g_pb_t *b) {
   uint8_t *ptr = (uint8_t *)b->buf;
   uint8_t *end_ptr = ptr;
   end_ptr += b->width;
-  do
-  {
+  do {
     *ptr++ = 0;
-  } while( ptr != end_ptr );
+  } while (ptr != end_ptr);
 }
 
-/* the following procedure does not work. why? Can be checked with descpic */
+// the following procedure does not work. why? Can be checked with descpic
 /*
 void u8g_pb_Clear(u8g_pb_t *b)
 {
@@ -67,12 +64,12 @@ void u8g_pb_Clear(u8g_pb_t *b)
   intersection assumptions:
     a1 <= a2 is always true
 */
-  /*
-    minimized version
-    ---1----0 1             b1 <= a2 && b1 > b2
-    -----1--0 1             b2 >= a1 && b1 > b2
-    ---1-1--- 1             b1 <= a2 && b2 >= a1
-  */
+/*
+  minimized version
+  ---1----0 1             b1 <= a2 && b1 > b2
+  -----1--0 1             b2 >= a1 && b1 > b2
+  ---1-1--- 1             b1 <= a2 && b2 >= a1
+*/
 /*
 uint8_t u8g_pb8v1_IsYIntersection___Old(u8g_pb_t *b, u8g_uint_t v0, u8g_uint_t v1)
 {
@@ -87,8 +84,7 @@ uint8_t u8g_pb8v1_IsYIntersection___Old(u8g_pb_t *b, u8g_uint_t v0, u8g_uint_t v
 }
 */
 
-uint8_t u8g_pb_IsYIntersection(u8g_pb_t *pb, u8g_uint_t v0, u8g_uint_t v1)
-{
+uint8_t u8g_pb_IsYIntersection(u8g_pb_t *pb, u8g_uint_t v0, u8g_uint_t v1) {
   uint8_t c1, c2, c3, tmp;
   c1 = v0 <= pb->p.page_y1;
   c2 = v1 >= pb->p.page_y0;
@@ -112,9 +108,7 @@ uint8_t u8g_pb_IsYIntersection(u8g_pb_t *pb, u8g_uint_t v0, u8g_uint_t v1)
   return c1 & 1;
 }
 
-
-uint8_t u8g_pb_IsXIntersection(u8g_pb_t *b, u8g_uint_t v0, u8g_uint_t v1)
-{
+uint8_t u8g_pb_IsXIntersection(u8g_pb_t *b, u8g_uint_t v0, u8g_uint_t v1) {
   uint8_t /*c0, c1, */ c2, c3;
   /*
     conditions: b->p.page_y0 < b->p.page_y1
@@ -126,24 +120,23 @@ uint8_t u8g_pb_IsXIntersection(u8g_pb_t *b, u8g_uint_t v0, u8g_uint_t v1)
   */
   c2 = v0 > b->width;
   c3 = v1 > b->width;
-  /*if ( c0 && c1 ) return 0;*/
-  if ( c2 && c3 ) return 0;
-  /*if ( c1 && c2 ) return 0;*/
+  //if ( c0 && c1 ) return 0;
+  if (c2 && c3) return 0;
+  //if ( c1 && c2 ) return 0;
   return 1;
 }
 
-uint8_t u8g_pb_IsIntersection(u8g_pb_t *pb, u8g_dev_arg_bbx_t *bbx)
-{
+uint8_t u8g_pb_IsIntersection(u8g_pb_t *pb, u8g_dev_arg_bbx_t *bbx) {
   u8g_uint_t tmp;
 
   tmp = bbx->y;
   tmp += bbx->h;
   tmp--;
 
-  if ( u8g_pb_IsYIntersection(pb, bbx->y, tmp) == 0 )
+  if (u8g_pb_IsYIntersection(pb, bbx->y, tmp) == 0)
     return 0;
 
-  /* maybe this one can be skiped... probability is very high to have an intersection, so it would be ok to always return 1 */
+  // maybe this one can be skiped... probability is very high to have an intersection, so it would be ok to always return 1
   tmp = bbx->x;
   tmp += bbx->w;
   tmp--;
@@ -151,8 +144,7 @@ uint8_t u8g_pb_IsIntersection(u8g_pb_t *pb, u8g_dev_arg_bbx_t *bbx)
   return u8g_pb_IsXIntersection(pb, bbx->x, tmp);
 }
 
-void u8g_pb_GetPageBox(u8g_pb_t *pb, u8g_box_t *box)
-{
+void u8g_pb_GetPageBox(u8g_pb_t *pb, u8g_box_t *box) {
   box->x0 = 0;
   box->y0 = pb->p.page_y0;
   box->x1 = pb->width;
@@ -160,18 +152,15 @@ void u8g_pb_GetPageBox(u8g_pb_t *pb, u8g_box_t *box)
   box->y1 = pb->p.page_y1;
 }
 
-
-uint8_t u8g_pb_Is8PixelVisible(u8g_pb_t *b, u8g_dev_arg_pixel_t *arg_pixel)
-{
+uint8_t u8g_pb_Is8PixelVisible(u8g_pb_t *b, u8g_dev_arg_pixel_t *arg_pixel) {
   u8g_uint_t v0, v1;
   v0 = arg_pixel->y;
   v1 = v0;
-  switch( arg_pixel->dir )
-  {
+  switch (arg_pixel->dir) {
     case 0:
       break;
     case 1:
-      v1 += 8;          /* this is independent from the page height */
+      v1 += 8;          // this is independent from the page height
       break;
     case 2:
       break;
@@ -182,10 +171,6 @@ uint8_t u8g_pb_Is8PixelVisible(u8g_pb_t *b, u8g_dev_arg_pixel_t *arg_pixel)
   return u8g_pb_IsYIntersection(b, v0, v1);
 }
 
-
-
-uint8_t u8g_pb_WriteBuffer(u8g_pb_t *b, u8g_t *u8g, u8g_dev_t *dev)
-{
+uint8_t u8g_pb_WriteBuffer(u8g_pb_t *b, u8g_t *u8g, u8g_dev_t *dev) {
   return u8g_WriteSequence(u8g, dev, b->width, b->buf);
 }
-

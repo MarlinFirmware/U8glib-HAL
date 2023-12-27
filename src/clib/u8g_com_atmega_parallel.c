@@ -31,7 +31,6 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
   PIN_D0 8
   PIN_D1 9
   PIN_D2 10
@@ -56,127 +55,113 @@
 
 #ifdef __AVR__
 
-static void u8g_com_atmega_parallel_write(u8g_t *u8g, uint8_t val)
-{
+  static void u8g_com_atmega_parallel_write(u8g_t *u8g, uint8_t val) {
 
-  u8g_SetPILevel(u8g, U8G_PI_D0, val&1);
-  val >>= 1;
-  u8g_SetPILevel(u8g, U8G_PI_D1, val&1);
-  val >>= 1;
-  u8g_SetPILevel(u8g, U8G_PI_D2, val&1);
-  val >>= 1;
-  u8g_SetPILevel(u8g, U8G_PI_D3, val&1);
-  val >>= 1;
-  u8g_SetPILevel(u8g, U8G_PI_D4, val&1);
-  val >>= 1;
-  u8g_SetPILevel(u8g, U8G_PI_D5, val&1);
-  val >>= 1;
-  u8g_SetPILevel(u8g, U8G_PI_D6, val&1);
-  val >>= 1;
-  u8g_SetPILevel(u8g, U8G_PI_D7, val&1);
+    u8g_SetPILevel(u8g, U8G_PI_D0, val & 1);
+    val >>= 1;
+    u8g_SetPILevel(u8g, U8G_PI_D1, val & 1);
+    val >>= 1;
+    u8g_SetPILevel(u8g, U8G_PI_D2, val & 1);
+    val >>= 1;
+    u8g_SetPILevel(u8g, U8G_PI_D3, val & 1);
+    val >>= 1;
+    u8g_SetPILevel(u8g, U8G_PI_D4, val & 1);
+    val >>= 1;
+    u8g_SetPILevel(u8g, U8G_PI_D5, val & 1);
+    val >>= 1;
+    u8g_SetPILevel(u8g, U8G_PI_D6, val & 1);
+    val >>= 1;
+    u8g_SetPILevel(u8g, U8G_PI_D7, val & 1);
 
-  /* EN cycle time must be 1 micro second  */
-  u8g_SetPILevel(u8g, U8G_PI_EN, 1);
-  u8g_MicroDelay(); /* delay by 1000ns, reference: ST7920: 140ns, SBN1661: 100ns */
-  u8g_SetPILevel(u8g, U8G_PI_EN, 0);
-  u8g_10MicroDelay(); /* ST7920 commands: 72us */
-  u8g_10MicroDelay(); /* ST7920 commands: 72us */
-}
+    // EN cycle time must be 1 micro second
+    u8g_SetPILevel(u8g, U8G_PI_EN, 1);
+    u8g_MicroDelay(); // delay by 1000ns, reference: ST7920: 140ns, SBN1661: 100ns
+    u8g_SetPILevel(u8g, U8G_PI_EN, 0);
+    u8g_10MicroDelay(); // ST7920 commands: 72us
+    u8g_10MicroDelay(); // ST7920 commands: 72us
+  }
 
+  uint8_t u8g_com_atmega_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    switch (msg) {
+      case U8G_COM_MSG_INIT:
+        // setup the RW pin as output and force it to low
+        u8g_SetPIOutput(u8g, U8G_PI_RW);
+        u8g_SetPILevel(u8g, U8G_PI_RW, 0);
 
-uint8_t u8g_com_atmega_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  switch(msg)
-  {
-    case U8G_COM_MSG_INIT:
-      /* setup the RW pin as output and force it to low */
-      u8g_SetPIOutput(u8g, U8G_PI_RW);
-      u8g_SetPILevel(u8g, U8G_PI_RW, 0);
-
-      u8g_SetPIOutput(u8g, U8G_PI_D0);
-      u8g_SetPIOutput(u8g, U8G_PI_D1);
-      u8g_SetPIOutput(u8g, U8G_PI_D2);
-      u8g_SetPIOutput(u8g, U8G_PI_D3);
-      u8g_SetPIOutput(u8g, U8G_PI_D4);
-      u8g_SetPIOutput(u8g, U8G_PI_D5);
-      u8g_SetPIOutput(u8g, U8G_PI_D6);
-      u8g_SetPIOutput(u8g, U8G_PI_D7);
-      u8g_SetPIOutput(u8g, U8G_PI_EN);
-      u8g_SetPIOutput(u8g, U8G_PI_CS1);
-      u8g_SetPIOutput(u8g, U8G_PI_CS2);
-      u8g_SetPIOutput(u8g, U8G_PI_DI);
-      u8g_SetPILevel(u8g, U8G_PI_CS1, 1);
-      u8g_SetPILevel(u8g, U8G_PI_CS2, 1);
-
-      break;
-    case U8G_COM_MSG_STOP:
-      break;
-    case U8G_COM_MSG_CHIP_SELECT:
-      if ( arg_val == 0 )
-      {
-        /* disable */
+        u8g_SetPIOutput(u8g, U8G_PI_D0);
+        u8g_SetPIOutput(u8g, U8G_PI_D1);
+        u8g_SetPIOutput(u8g, U8G_PI_D2);
+        u8g_SetPIOutput(u8g, U8G_PI_D3);
+        u8g_SetPIOutput(u8g, U8G_PI_D4);
+        u8g_SetPIOutput(u8g, U8G_PI_D5);
+        u8g_SetPIOutput(u8g, U8G_PI_D6);
+        u8g_SetPIOutput(u8g, U8G_PI_D7);
+        u8g_SetPIOutput(u8g, U8G_PI_EN);
+        u8g_SetPIOutput(u8g, U8G_PI_CS1);
+        u8g_SetPIOutput(u8g, U8G_PI_CS2);
+        u8g_SetPIOutput(u8g, U8G_PI_DI);
         u8g_SetPILevel(u8g, U8G_PI_CS1, 1);
         u8g_SetPILevel(u8g, U8G_PI_CS2, 1);
-      }
-      else if ( arg_val == 1 )
-      {
-        /* enable */
-        u8g_SetPILevel(u8g, U8G_PI_CS1, 0);
-        u8g_SetPILevel(u8g, U8G_PI_CS2, 1);
-      }
-      else if ( arg_val == 2 )
-      {
-        /* enable */
-        u8g_SetPILevel(u8g, U8G_PI_CS1, 1);
-        u8g_SetPILevel(u8g, U8G_PI_CS2, 0);
-      }
-      else
-      {
-        /* enable */
-        u8g_SetPILevel(u8g, U8G_PI_CS1, 0);
-        u8g_SetPILevel(u8g, U8G_PI_CS2, 0);
-      }
-      break;
-    case U8G_COM_MSG_WRITE_BYTE:
-      u8g_com_atmega_parallel_write(u8g, arg_val);
-      break;
-    case U8G_COM_MSG_WRITE_SEQ:
-      {
+
+        break;
+      case U8G_COM_MSG_STOP:
+        break;
+      case U8G_COM_MSG_CHIP_SELECT:
+        if (arg_val == 0) {
+          // disable
+          u8g_SetPILevel(u8g, U8G_PI_CS1, 1);
+          u8g_SetPILevel(u8g, U8G_PI_CS2, 1);
+        }
+        else if (arg_val == 1) {
+          // enable
+          u8g_SetPILevel(u8g, U8G_PI_CS1, 0);
+          u8g_SetPILevel(u8g, U8G_PI_CS2, 1);
+        }
+        else if (arg_val == 2) {
+          // enable
+          u8g_SetPILevel(u8g, U8G_PI_CS1, 1);
+          u8g_SetPILevel(u8g, U8G_PI_CS2, 0);
+        }
+        else {
+          // enable
+          u8g_SetPILevel(u8g, U8G_PI_CS1, 0);
+          u8g_SetPILevel(u8g, U8G_PI_CS2, 0);
+        }
+        break;
+      case U8G_COM_MSG_WRITE_BYTE:
+        u8g_com_atmega_parallel_write(u8g, arg_val);
+        break;
+      case U8G_COM_MSG_WRITE_SEQ: {
         register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
+        while (arg_val > 0) {
           u8g_com_atmega_parallel_write(u8g, *ptr++);
           arg_val--;
         }
       }
       break;
-    case U8G_COM_MSG_WRITE_SEQ_P:
-      {
+      case U8G_COM_MSG_WRITE_SEQ_P: {
         register uint8_t *ptr = arg_ptr;
-        while( arg_val > 0 )
-        {
+        while (arg_val > 0) {
           u8g_com_atmega_parallel_write(u8g, u8g_pgm_read(ptr));
           ptr++;
           arg_val--;
         }
       }
       break;
-    case U8G_COM_MSG_ADDRESS:                     /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
-      u8g_SetPILevel(u8g, U8G_PI_DI, arg_val);
-      break;
-    case U8G_COM_MSG_RESET:
-      u8g_SetPILevel(u8g, U8G_PI_RESET, arg_val);
-      break;
+      case U8G_COM_MSG_ADDRESS:                   // define cmd (arg_val = 0) or data mode (arg_val = 1)
+        u8g_SetPILevel(u8g, U8G_PI_DI, arg_val);
+        break;
+      case U8G_COM_MSG_RESET:
+        u8g_SetPILevel(u8g, U8G_PI_RESET, arg_val);
+        break;
+    }
+    return 1;
   }
-  return 1;
-}
 
-#else
+#else // ifdef __AVR__
 
-uint8_t u8g_com_atmega_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
-  return 1;
-}
+  uint8_t u8g_com_atmega_parallel_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
+    return 1;
+  }
 
 #endif /* ARDUINO */
-

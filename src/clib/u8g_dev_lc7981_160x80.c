@@ -31,7 +31,6 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 */
 
 #include "u8g.h"
@@ -39,7 +38,6 @@
 #define WIDTH 160
 #define HEIGHT 80
 #define PAGE_HEIGHT 8
-
 
 /*
   code ideas:
@@ -50,98 +48,91 @@
 */
 
 static const uint8_t u8g_dev_lc7981_160x80_init_seq[] PROGMEM = {
-  U8G_ESC_CS(0),             /* disable chip */
-  U8G_ESC_ADR(1),           /* instruction mode */
-  U8G_ESC_RST(15),           /* do reset low pulse with (15*16)+2 milliseconds (=maximum delay)*/
-  U8G_ESC_CS(1),             /* enable chip */
-  U8G_ESC_DLY(50),         /* delay 50 ms */
+  U8G_ESC_CS(0),             // disable chip
+  U8G_ESC_ADR(1),           // instruction mode
+  U8G_ESC_RST(15),           // do reset low pulse with (15*16)+2 milliseconds (=maximum delay)
+  U8G_ESC_CS(1),             // enable chip
+  U8G_ESC_DLY(50),         // delay 50 ms
 
+  U8G_ESC_ADR(1),               // instruction mode
+  0x000,                                // mode register
+  U8G_ESC_ADR(0),               // data mode
+  0x032,                                // display on (bit 5), master mode on (bit 4), graphics mode on (bit 1)
 
-  U8G_ESC_ADR(1),               /* instruction mode */
-  0x000,                                /* mode register */
-  U8G_ESC_ADR(0),               /* data mode */
-  0x032,                                /* display on (bit 5), master mode on (bit 4), graphics mode on (bit 1)*/
+  U8G_ESC_ADR(1),               // instruction mode
+  0x001,                                // character/bits per pixel pitch
+  U8G_ESC_ADR(0),               // data mode
+  0x007,                                // 8 bits per pixel
 
-  U8G_ESC_ADR(1),               /* instruction mode */
-  0x001,                                /* character/bits per pixel pitch */
-  U8G_ESC_ADR(0),               /* data mode */
-  0x007,                                /* 8 bits per pixel */
+  U8G_ESC_ADR(1),               // instruction mode
+  0x002,                                // number of chars/byte width of the screen
+  U8G_ESC_ADR(0),               // data mode
+  WIDTH / 8 - 1,                         // 8 bits per pixel
 
-  U8G_ESC_ADR(1),               /* instruction mode */
-  0x002,                                /* number of chars/byte width of the screen */
-  U8G_ESC_ADR(0),               /* data mode */
-  WIDTH/8-1,                         /* 8 bits per pixel */
+  U8G_ESC_ADR(1),               // instruction mode
+  0x003,                                // time division
+  U8G_ESC_ADR(0),               // data mode
+  0x07f,                                //
 
-  U8G_ESC_ADR(1),               /* instruction mode */
-  0x003,                                /* time division */
-  U8G_ESC_ADR(0),               /* data mode */
-  0x07f,                                /*  */
+  U8G_ESC_ADR(1),               // instruction mode
+  0x008,                                // display start low
+  U8G_ESC_ADR(0),               // data mode
+  0x000,                                //
 
-  U8G_ESC_ADR(1),               /* instruction mode */
-  0x008,                                /* display start low */
-  U8G_ESC_ADR(0),               /* data mode */
-  0x000,                                /*  */
+  U8G_ESC_ADR(1),               // instruction mode
+  0x009,                                // display start high
+  U8G_ESC_ADR(0),               // data mode
+  0x000,                                //
 
-  U8G_ESC_ADR(1),               /* instruction mode */
-  0x009,                                /* display start high */
-  U8G_ESC_ADR(0),               /* data mode */
-  0x000,                                /*  */
+  U8G_ESC_DLY(10),               // delay 10 ms
 
-  U8G_ESC_DLY(10),               /* delay 10 ms */
-
-  U8G_ESC_CS(0),             /* disable chip */
-  U8G_ESC_END                /* end of sequence */
+  U8G_ESC_CS(0),             // disable chip
+  U8G_ESC_END                // end of sequence
 };
 
-uint8_t u8g_dev_lc7981_160x80_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg)
-{
-  switch(msg)
-  {
+uint8_t u8g_dev_lc7981_160x80_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg) {
+  switch (msg) {
     case U8G_DEV_MSG_INIT:
       u8g_InitCom(u8g, dev, U8G_SPI_CLK_CYCLE_NONE);
       u8g_WriteEscSeqP(u8g, dev, u8g_dev_lc7981_160x80_init_seq);
       break;
     case U8G_DEV_MSG_STOP:
       break;
-    case U8G_DEV_MSG_PAGE_NEXT:
-      {
-        uint8_t y, i;
-        uint16_t disp_ram_adr;
-        uint8_t *ptr;
-        u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
+    case U8G_DEV_MSG_PAGE_NEXT: {
+      uint8_t y, i;
+      uint16_t disp_ram_adr;
+      uint8_t *ptr;
+      u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
 
-        u8g_SetAddress(u8g, dev, 1);           /* cmd mode */
-        u8g_SetChipSelect(u8g, dev, 1);
-        y = pb->p.page_y0;
-        ptr = pb->buf;
-        disp_ram_adr = WIDTH/8;
-        disp_ram_adr *= y;
-        for( i = 0; i < 8; i ++ )
-        {
-          u8g_SetAddress(u8g, dev, 1);           /* cmd mode */
-          u8g_WriteByte(u8g, dev, 0x00a );      /* display ram (cursor) address low byte */
-          u8g_SetAddress(u8g, dev, 0);           /* data mode */
-          u8g_WriteByte(u8g, dev, disp_ram_adr & 0x0ff );
+      u8g_SetAddress(u8g, dev, 1);             // cmd mode
+      u8g_SetChipSelect(u8g, dev, 1);
+      y = pb->p.page_y0;
+      ptr = pb->buf;
+      disp_ram_adr = WIDTH / 8;
+      disp_ram_adr *= y;
+      for ( i = 0; i < 8; i++ ) {
+        u8g_SetAddress(u8g, dev, 1);             // cmd mode
+        u8g_WriteByte(u8g, dev, 0x00a );        // display ram (cursor) address low byte
+        u8g_SetAddress(u8g, dev, 0);             // data mode
+        u8g_WriteByte(u8g, dev, disp_ram_adr & 0x0ff );
 
-          u8g_SetAddress(u8g, dev, 1);           /* cmd mode */
-          u8g_WriteByte(u8g, dev, 0x00b );      /* display ram (cursor) address hight byte */
-          u8g_SetAddress(u8g, dev, 0);           /* data mode */
-          u8g_WriteByte(u8g, dev, disp_ram_adr >> 8 );
+        u8g_SetAddress(u8g, dev, 1);             // cmd mode
+        u8g_WriteByte(u8g, dev, 0x00b );        // display ram (cursor) address hight byte
+        u8g_SetAddress(u8g, dev, 0);             // data mode
+        u8g_WriteByte(u8g, dev, disp_ram_adr >> 8 );
 
-          u8g_SetAddress(u8g, dev, 1);           /* cmd mode */
-          u8g_WriteByte(u8g, dev, 0x00c );      /* write data */
-          u8g_SetAddress(u8g, dev, 0);           /* data mode */
-          u8g_WriteSequence(u8g, dev, WIDTH/8, ptr);
-          ptr += WIDTH/8;
-          disp_ram_adr += WIDTH/8;
-        }
-        u8g_SetChipSelect(u8g, dev, 0);
+        u8g_SetAddress(u8g, dev, 1);             // cmd mode
+        u8g_WriteByte(u8g, dev, 0x00c );        // write data
+        u8g_SetAddress(u8g, dev, 0);             // data mode
+        u8g_WriteSequence(u8g, dev, WIDTH / 8, ptr);
+        ptr += WIDTH / 8;
+        disp_ram_adr += WIDTH / 8;
       }
-      break;
+      u8g_SetChipSelect(u8g, dev, 0);
+    }
+    break;
   }
   return u8g_dev_pb8h1f_base_fn(u8g, dev, msg, arg);
 }
 
 U8G_PB_DEV(u8g_dev_lc7981_160x80_8bit, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_lc7981_160x80_fn, U8G_COM_FAST_PARALLEL);
-
-

@@ -35,54 +35,49 @@
 
 #include "u8g.h"
 
-void u8g_DrawLine(u8g_t *u8g, u8g_uint_t x1, u8g_uint_t y1, u8g_uint_t x2, u8g_uint_t y2)
-{
+void u8g_DrawLine(u8g_t *u8g, u8g_uint_t x1, u8g_uint_t y1, u8g_uint_t x2, u8g_uint_t y2) {
   u8g_uint_t tmp;
-  u8g_uint_t x,y;
+  u8g_uint_t x, y;
   u8g_uint_t dx, dy;
   u8g_int_t err;
   u8g_int_t ystep;
 
   uint8_t swapxy = 0;
 
-  /* no BBX intersection check at the moment, should be added... */
+  // no BBX intersection check at the moment, should be added...
 
-  if ( x1 > x2 ) dx = x1-x2; else dx = x2-x1;
-  if ( y1 > y2 ) dy = y1-y2; else dy = y2-y1;
+  if (x1 > x2) dx = x1 - x2; else dx = x2 - x1;
+  if (y1 > y2) dy = y1 - y2; else dy = y2 - y1;
 
-  if ( dy > dx )
-  {
+  if (dy > dx) {
     swapxy = 1;
-    tmp = dx; dx =dy; dy = tmp;
-    tmp = x1; x1 =y1; y1 = tmp;
-    tmp = x2; x2 =y2; y2 = tmp;
+    tmp = dx; dx = dy; dy = tmp;
+    tmp = x1; x1 = y1; y1 = tmp;
+    tmp = x2; x2 = y2; y2 = tmp;
   }
-  if ( x1 > x2 )
-  {
-    tmp = x1; x1 =x2; x2 = tmp;
-    tmp = y1; y1 =y2; y2 = tmp;
+  if (x1 > x2) {
+    tmp = x1; x1 = x2; x2 = tmp;
+    tmp = y1; y1 = y2; y2 = tmp;
   }
   err = dx >> 1;
-  if ( y2 > y1 ) ystep = 1; else ystep = -1;
+  if (y2 > y1) ystep = 1; else ystep = -1;
   y = y1;
 
-#ifndef  U8G_16BIT
-  if ( x2 == 255 )
-    x2--;
-#else
-  if ( x2 == 0xffff )
-    x2--;
-#endif
+  #ifndef  U8G_16BIT
+    if (x2 == 255)
+      x2--;
+  #else
+    if (x2 == 0xffff)
+      x2--;
+  #endif
 
-  for( x = x1; x <= x2; x++ )
-  {
-    if ( swapxy == 0 )
+  for ( x = x1; x <= x2; x++ ) {
+    if (swapxy == 0)
       u8g_DrawPixel(u8g, x, y);
     else
       u8g_DrawPixel(u8g, y, x);
     err -= (uint8_t)dy;
-    if ( err < 0 )
-    {
+    if (err < 0) {
       y += (u8g_uint_t)ystep;
       err += (u8g_uint_t)dx;
     }

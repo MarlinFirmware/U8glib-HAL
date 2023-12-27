@@ -34,36 +34,31 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 */
 
 #include "u8g.h"
 #include <string.h>
 
-void u8g_pb16h2_Clear(u8g_pb_t *b)
-{
+void u8g_pb16h2_Clear(u8g_pb_t *b) {
   uint8_t *ptr = (uint8_t *)b->buf;
   uint8_t *end_ptr = ptr;
 
-  /* two bits per pixel, 16 bits height --> 8 pixel --> 4 pixel per byte */
+  // two bits per pixel, 16 bits height --> 8 pixel --> 4 pixel per byte
   end_ptr += b->width;
   end_ptr += b->width;
 
-  do
-  {
+  do {
     *ptr++ = 0;
-  } while( ptr != end_ptr );
+  } while (ptr != end_ptr);
 }
 
-void u8g_pb16h2_Init(u8g_pb_t *b, void *buf, u8g_uint_t width)
-{
+void u8g_pb16h2_Init(u8g_pb_t *b, void *buf, u8g_uint_t width) {
   b->buf = buf;
   b->width = width;
   u8g_pb16h2_Clear(b);
 }
 
-static void u8g_pb16h2_set_pixel(u8g_pb_t *b, u8g_uint_t x, u8g_uint_t y, uint8_t color_index, uint8_t is_or)
-{
+static void u8g_pb16h2_set_pixel(u8g_pb_t *b, u8g_uint_t x, u8g_uint_t y, uint8_t color_index, uint8_t is_or) {
   register uint8_t mask;
   register uint16_t tmp;
 
@@ -83,8 +78,7 @@ static void u8g_pb16h2_set_pixel(u8g_pb_t *b, u8g_uint_t x, u8g_uint_t y, uint8_
   tmp = x;
   tmp &= 3;
   tmp <<= 1;
-  if ( is_or == 0 )
-  {
+  if (is_or == 0) {
     mask = 3;
     mask <<= tmp;
     mask = ~mask;
@@ -95,69 +89,53 @@ static void u8g_pb16h2_set_pixel(u8g_pb_t *b, u8g_uint_t x, u8g_uint_t y, uint8_
   *ptr |= color_index;
 }
 
-
-void u8g_pb16h2_SetPixel(u8g_pb_t *b, const u8g_dev_arg_pixel_t * const arg_pixel, uint8_t is_or)
-{
-  if ( arg_pixel->y < b->p.page_y0 )
+void u8g_pb16h2_SetPixel(u8g_pb_t *b, const u8g_dev_arg_pixel_t * const arg_pixel, uint8_t is_or) {
+  if (arg_pixel->y < b->p.page_y0)
     return;
-  if ( arg_pixel->y > b->p.page_y1 )
+  if (arg_pixel->y > b->p.page_y1)
     return;
-  if ( arg_pixel->x >= b->width )
+  if (arg_pixel->x >= b->width)
     return;
   u8g_pb16h2_set_pixel(b, arg_pixel->x, arg_pixel->y, arg_pixel->color, is_or);
 }
 
-
-void u8g_pb16h2_Set8PixelStd(u8g_pb_t *b, u8g_dev_arg_pixel_t *arg_pixel)
-{
+void u8g_pb16h2_Set8PixelStd(u8g_pb_t *b, u8g_dev_arg_pixel_t *arg_pixel) {
   register uint8_t pixel = arg_pixel->pixel;
-  do
-  {
-    if ( pixel & 128 )
-    {
+  do {
+    if (pixel & 128)
       u8g_pb16h2_SetPixel(b, arg_pixel, 0);
-    }
-    switch( arg_pixel->dir )
-    {
+    switch (arg_pixel->dir) {
       case 0: arg_pixel->x++; break;
       case 1: arg_pixel->y++; break;
       case 2: arg_pixel->x--; break;
       case 3: arg_pixel->y--; break;
     }
     pixel <<= 1;
-  } while( pixel != 0  );
+  } while (pixel != 0);
 }
 
-void u8g_pb16h2_Or4PixelStd(u8g_pb_t *b, u8g_dev_arg_pixel_t *arg_pixel)
-{
+void u8g_pb16h2_Or4PixelStd(u8g_pb_t *b, u8g_dev_arg_pixel_t *arg_pixel) {
   register uint8_t pixel = arg_pixel->pixel;
-  do
-  {
+  do {
     arg_pixel->color = pixel & 0x0c0;
     arg_pixel->color >>= 6;
     u8g_pb16h2_SetPixel(b, arg_pixel, 1);
-    switch( arg_pixel->dir )
-    {
+    switch (arg_pixel->dir) {
       case 0: arg_pixel->x++; break;
       case 1: arg_pixel->y++; break;
       case 2: arg_pixel->x--; break;
       case 3: arg_pixel->y--; break;
     }
     pixel <<= 2;
-  } while( pixel != 0  );
+  } while (pixel != 0);
 }
 
-
-uint8_t u8g_dev_pb16h2_base_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg)
-{
+uint8_t u8g_dev_pb16h2_base_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg) {
   u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
-  switch(msg)
-  {
+  switch (msg) {
     case U8G_DEV_MSG_SET_8PIXEL:
-      if ( u8g_pb_Is8PixelVisible(pb, (u8g_dev_arg_pixel_t *)arg) )
-      {
+      if (u8g_pb_Is8PixelVisible(pb, (u8g_dev_arg_pixel_t *)arg))
         u8g_pb16h2_Set8PixelStd(pb, (u8g_dev_arg_pixel_t *)arg);
-      }
       break;
     case U8G_DEV_MSG_SET_PIXEL:
       u8g_pb16h2_SetPixel(pb, (u8g_dev_arg_pixel_t *)arg, 0);
@@ -177,14 +155,14 @@ uint8_t u8g_dev_pb16h2_base_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *ar
       u8g_pb16h2_Clear(pb);
       break;
     case U8G_DEV_MSG_PAGE_NEXT:
-      if ( u8g_page_Next(&(pb->p)) == 0 )
+      if (u8g_page_Next(&(pb->p)) == 0)
         return 0;
       u8g_pb16h2_Clear(pb);
       break;
-#ifdef U8G_DEV_MSG_IS_BBX_INTERSECTION
-    case U8G_DEV_MSG_IS_BBX_INTERSECTION:
-      return u8g_pb_IsIntersection(pb, (u8g_dev_arg_bbx_t *)arg);
-#endif
+      #ifdef U8G_DEV_MSG_IS_BBX_INTERSECTION
+          case U8G_DEV_MSG_IS_BBX_INTERSECTION:
+            return u8g_pb_IsIntersection(pb, (u8g_dev_arg_bbx_t *)arg);
+      #endif
     case U8G_DEV_MSG_GET_PAGE_BOX:
       u8g_pb_GetPageBox(pb, (u8g_box_t *)arg);
       break;
@@ -203,5 +181,3 @@ uint8_t u8g_dev_pb16h2_base_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *ar
   }
   return 1;
 }
-
-
