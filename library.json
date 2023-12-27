@@ -1,14 +1,14 @@
 {
   "name": "U8glib-HAL",
-  "keywords": "u8g, u8glib, arm, hal",
+  "keywords": "u8g, u8glib, arm, hal, lcd, tft, dogm, st7920, ssd1306, ssd1309, graphical, display, driver",
   "id": 1932,
-  "description": "Unofficial repository for combined U8G and U8Glib-ARM with HAL extensions",
+  "description": "Unofficial repository for combined U8G and U8Glib-ARM with Marlin extensions",
   "repository":
   {
     "type": "git",
     "url": "https://github.com/MarlinFirmware/U8glib-HAL.git"
   },
-  "version": "0.5.3",
+  "version": "0.5.4",
   "authors":
   [
     {
@@ -18,6 +18,8 @@
         "name": "Scott Lahteine"
     }
   ],
+  "license": "BSD-2-Clause",
   "frameworks": "*",
-  "platforms": "*"
+  "platforms": "*",
+  "headers": [ "U8glib-HAL.h" ]
 }
