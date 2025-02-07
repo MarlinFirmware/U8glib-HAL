@@ -59,7 +59,7 @@
 
 #include "u8g.h"
 
-#if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32)
+#if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32) && !defined(ARDUINO_ARCH_MFL)
 
   #if ARDUINO < 100
     // #include <WProgram.h>
@@ -337,7 +337,7 @@
     return 1;
   }
 
-#else // if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32)
+#else // if defined(ARDUINO) && !defined(ARDUINO_ARCH_STM32) && !defined(ARDUINO_ARCH_MFL)
 
   uint8_t u8g_com_arduino_t6963_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
     return 1;
