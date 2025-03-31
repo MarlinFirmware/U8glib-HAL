@@ -10,45 +10,39 @@
 #include <Wire.h>
 
 /*
-  BUFFER_LENGTH is defined in libraries\Wire\utility\WireBase.h
+  WIRE_BUFFER_LENGTH is defined in arduino framework libraries\Wire\src\Wire.h
   Default value is 32
   Increate this value to 144 to send U8G_COM_MSG_WRITE_SEQ in single block
 */
 
-#if defined(BUFFER_LENGTH) && BUFFER_LENGTH < 144
-#define I2C_MAX_LENGTH (BUFFER_LENGTH - 1)
-#endif // BUFFER_LENGTH
+#if defined(WIRE_BUFFER_LENGTH) && WIRE_BUFFER_LENGTH < 144
+  #define I2C_MAX_LENGTH (WIRE_BUFFER_LENGTH - 1)
+#endif  // WIRE_BUFFER_LENGTH
 
 static uint8_t control;
-static uint8_t msgInitCount = 2; // Ignore all messages until 2nd U8G_COM_MSG_INIT
+static uint8_t msgInitCount = 2;      // Ignore all messages until 2nd U8G_COM_MSG_INIT
 
-uint8_t u8g_com_mfl_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr)
-{
+uint8_t u8g_com_mfl_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) {
   if (msgInitCount) {
     if (msg == U8G_COM_MSG_INIT) msgInitCount--;
     if (msgInitCount) return -1;
   }
 
-  switch (msg)
-  {
+  switch (msg) {
     case U8G_COM_MSG_INIT:
       Wire.setClock(400000);
       Wire.begin();
       break;
-
-    case U8G_COM_MSG_ADDRESS:           /* define cmd (arg_val = 0) or data mode (arg_val = 1) */
+    case U8G_COM_MSG_ADDRESS:           // Define cmd (arg_val = 0) or data mode (arg_val = 1)
       control = arg_val ? 0x40 : 0x00;
       break;
-
     case U8G_COM_MSG_WRITE_BYTE:
       Wire.beginTransmission(0x3c);
       Wire.write(control);
       Wire.write(arg_val);
       Wire.endTransmission();
       break;
-
-    case U8G_COM_MSG_WRITE_SEQ:
-    {
+    case U8G_COM_MSG_WRITE_SEQ: {
       uint8_t* dataptr = (uint8_t*)arg_ptr;
       #ifdef I2C_MAX_LENGTH
         while (arg_val > 0) {
@@ -70,7 +64,7 @@ uint8_t u8g_com_mfl_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *a
         Wire.write(control);
         Wire.write(dataptr, arg_val);
         Wire.endTransmission();
-      #endif // I2C_MAX_LENGTH
+      #endif  // I2C_MAX_LENGTH
       break;
     }
 
@@ -78,4 +72,4 @@ uint8_t u8g_com_mfl_ssd_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *a
   return 1;
 }
 
-#endif // ARDUINO_ARCH_MFL
+#endif  // ARDUINO_ARCH_MFL
